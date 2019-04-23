@@ -8,20 +8,17 @@ from PIL import Image
 import matplotlib.pyplot as plt
 import numpy as np
 
-testPath = r"D:\Projects\OCT-Image-Classification\RawData\OCT2017\test\CNV\CNV-53018-1.jpeg"
-testOutPath = r"D:\Projects\OCT-Image-Classification\RawData\OCT2017\test\CNV\testImg.npy"
+testPath = r"D:\Projects\OCT-Image-Classification\PreprocessedData\individual images\train"
+subdirs = os.listdir(testPath)
 
+for subdir in subdirs:
+    imgClassPath = os.path.join(testPath, subdir)
+    imgFiles = os.listdir(imgClassPath)
 
-def normImg(img):
-    normImg = (img - np.mean(img))/np.std(img)
-    return normImg
+imgFilesSubset = np.random.choice(imgFiles, 10)
 
-testImg = Image.open(testPath)
-newSize = (224, 224)
-
-testImgReSized = testImg.resize(newSize, Image.ANTIALIAS)
-imgArr = np.asarray(testImgReSized)
-imgNorm = normImg(imgArr)
-
-#%
-
+imgList = []
+for imFile in imgFilesSubset:
+    imgPath = os.path.join(imgClassPath, imFile)
+    img = np.load(imgPath)
+    imgList.append(img)
