@@ -5,9 +5,14 @@ import traceback
 import sys
 from PIL import Image
 import numpy as np
+import skimage
 
-
-def preprocessForCNN(dataPath, outputPath, subdir, nTrain, debug_):
+def preprocessForCNN(dataPath,
+                     outputPath,
+                     subdir,
+                     nTrain,
+                     debug_,
+                     newSize=(224,224,3)):
     """
 
     :param dataPath:
@@ -44,6 +49,7 @@ def preprocessForCNN(dataPath, outputPath, subdir, nTrain, debug_):
         for imgFname in imgFiles:
             imgPath = os.path.join(imgFilesPath, imgFname)
             imgArr = np.load(imgPath)
+            imgArr = skimage.transform.resize(imgArr, newSize)
             imgStack.append(imgArr)
             targetList.append(classLbl)
 

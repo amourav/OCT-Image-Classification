@@ -18,7 +18,7 @@ def preprocessDir(dataPath,
                   outputPath,
                   subdir,
                   debug_,
-                  newSize=(224,224,3)):
+                  newSize=(224,224)):
     print(subdir)
     targetDataPath = os.path.join(dataPath, subdir)
     targetOutputPath = os.path.join(outputPath, subdir)
@@ -37,8 +37,8 @@ def preprocessDir(dataPath,
 
         for imgFname in imgFiles:
             imgPath = os.path.join(imgFilesPath, imgFname)
-            img = np.asarray(Image.open(imgPath))
-            imgReSized = skimage.transform.resize(img, newSize) #img.resize(newSize, Image.ANTIALIAS)
+            img = Image.open(imgPath) #np.asarray(Image.open(imgPath))
+            imgReSized = img.resize(newSize, Image.ANTIALIAS) #skimage.transform.resize(img, newSize)
             imgArr = np.asarray(imgReSized)
             imgNorm = normImg(imgArr)
             imgFnameOut = imgFname.split('.jpeg')[0] + '.npy'
