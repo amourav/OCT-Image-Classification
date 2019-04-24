@@ -5,6 +5,7 @@ import traceback
 import sys
 from PIL import Image
 import numpy as np
+import skimage
 #import logs.config_initialization as config_initialization
 
 
@@ -17,7 +18,7 @@ def preprocessDir(dataPath,
                   outputPath,
                   subdir,
                   debug_,
-                  newSize=(224,224)):
+                  newSize=(224,224,3)):
     print(subdir)
     targetDataPath = os.path.join(dataPath, subdir)
     targetOutputPath = os.path.join(outputPath, subdir)
@@ -36,8 +37,8 @@ def preprocessDir(dataPath,
 
         for imgFname in imgFiles:
             imgPath = os.path.join(imgFilesPath, imgFname)
-            img = Image.open(imgPath)
-            imgReSized = img.resize(newSize, Image.ANTIALIAS)
+            img = np.asarray(Image.open(imgPath))
+            imgReSized = skimage.transform.resize(img, newSize) #img.resize(newSize, Image.ANTIALIAS)
             imgArr = np.asarray(imgReSized)
             imgNorm = normImg(imgArr)
             imgFnameOut = imgFname.split('.jpeg')[0] + '.npy'

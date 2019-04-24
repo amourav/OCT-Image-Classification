@@ -48,7 +48,6 @@ def preprocessForCNN(dataPath, outputPath, subdir, nTrain, debug_):
             targetList.append(classLbl)
 
     imgStack = np.stack(imgStack, axis=0)
-    imgStack = imgStack[..., np.newaxis]
     targetList = np.asarray(targetList)
 
     #shuffle
