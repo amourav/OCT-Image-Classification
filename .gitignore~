@@ -1,3 +1,7 @@
 # don't track these files
 RawData/*
 PreprocessedData/*
+
+# exceptions
+!RawData/.gitkeep
+!PreprocessedData/.gitkeep

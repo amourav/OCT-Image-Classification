@@ -10,6 +10,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
+    <SUITE FILE_PATH="coverage/OCT_Image_Classification$trainCNN.coverage" NAME="trainCNN Coverage Results" MODIFIED="1556161400898" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/code" />
     <SUITE FILE_PATH="coverage/OCT_Image_Classification$preprocessForCNN.coverage" NAME="preprocessForCNN Coverage Results" MODIFIED="1555988595890" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/code" />
     <SUITE FILE_PATH="coverage/OCT_Image_Classification$preprocessDev.coverage" NAME="preprocessImgs Coverage Results" MODIFIED="1556074276609" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/code" />
   </component>
@@ -30,10 +31,31 @@
       <file leaf-file-name="trainCNN.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/code/trainCNN.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2850">
-              <caret line="114" column="51" selection-start-line="114" selection-start-column="51" selection-end-line="114" selection-end-column="51" />
+            <state relative-caret-position="250">
+              <caret line="25" column="21" selection-start-line="25" selection-start-column="21" selection-end-line="25" selection-end-column="21" />
               <folding>
                 <element signature="e#0#81#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="runLocalCtrlPredGridSearch.py" pinned="false" current-in-tab="false">
+        <entry file="file://W:/Python/BrainMets/RADIOMICS/runLocalCtrlPredGridSearch.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="261">
+              <caret line="130" column="50" selection-start-line="130" selection-start-column="34" selection-end-line="130" selection-end-column="50" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="radiomicsPredUtils.py" pinned="false" current-in-tab="false">
+        <entry file="file://W:/Python/BrainMets/Utils/radiomicsPredUtils.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="936">
+              <caret line="1290" column="20" selection-start-line="1290" selection-start-column="4" selection-end-line="1290" selection-end-column="20" />
+              <folding>
+                <element signature="e#0#9#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -60,32 +82,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="preprocessRunner.py" pinned="false" current-in-tab="false">
-        <entry file="file://W:/Python/BrainMets/PREPROCESSING/preprocessRunner.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-100">
-              <caret line="5" column="14" selection-start-line="5" selection-end-line="6" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="UTILITIES.py" pinned="false" current-in-tab="false">
         <entry file="file://W:/Python/BrainMets/old code/UTILITIES.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="400">
-              <caret line="57" selection-start-line="57" selection-end-line="58" selection-end-column="21" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="preprocessDev.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/code/preprocessDev.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="425">
-              <caret line="17" column="14" selection-start-line="17" selection-end-line="18" />
-              <folding>
-                <element signature="e#4#22#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="186">
+              <caret line="236" column="19" selection-start-line="236" selection-start-column="6" selection-end-line="236" selection-end-column="19" />
             </state>
           </provider>
         </entry>
@@ -93,17 +94,23 @@
       <file leaf-file-name="UTILITIES_UNET2D.py" pinned="false" current-in-tab="false">
         <entry file="file://W:/Python/BrainMets/old code/unet2d/UTILITIES_UNET2D.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="325">
-              <caret line="46" lean-forward="true" selection-start-line="46" selection-end-line="46" />
-              <folding>
-                <element signature="e#95#113#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="-15291">
+              <caret line="41" column="30" selection-start-line="41" selection-start-column="30" selection-end-line="41" selection-end-column="30" />
             </state>
           </provider>
         </entry>
       </file>
       <file leaf-file-name="UNET2D GKGRP1 KFOLD Full Data-Copy2.ipynb" pinned="false" current-in-tab="false">
         <entry file="file://W:/Python/BrainMets/old code/unet2d/notebooks/UNET2D GKGRP1 KFOLD Full Data-Copy2.ipynb">
+          <provider selected="true" editor-type-id="ipnb-editor">
+            <state>
+              <selected id="1" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="UNET2D GKGRP1.ipynb" pinned="false" current-in-tab="false">
+        <entry file="file://W:/Python/BrainMets/old code/unet2d/notebooks/UNET2D GKGRP1.ipynb">
           <provider selected="true" editor-type-id="ipnb-editor">
             <state>
               <selected id="1" />
@@ -123,6 +130,13 @@
   <component name="FindInProjectRecents">
     <findStrings>
       <find>shuff</find>
+      <find>FEAT_SELC_MTHD_C</find>
+      <find>FEAT_SELC_MTHD_A</find>
+      <find>predLocalControl</find>
+      <find>Record_LOSS_METRICS</find>
+      <find>PrintCallback</find>
+      <find>ModelCheckpoint</find>
+      <find>CALLBACK</find>
     </findStrings>
   </component>
   <component name="IdeDocumentHistory">
@@ -132,6 +146,7 @@
         <option value="$PROJECT_DIR$/code/preprocessDev.py" />
         <option value="$PROJECT_DIR$/code/preprocessImgs.py" />
         <option value="$PROJECT_DIR$/code/preprocessForCNN.py" />
+        <option value="W:/Python/BrainMets/Utils/radiomicsPredUtils.py" />
         <option value="$PROJECT_DIR$/code/trainCNN.py" />
       </list>
     </option>
@@ -176,7 +191,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="W:/Python/BrainMets/old code/UTILITIES.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/code/trainCNN.py" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
   </component>
@@ -192,7 +207,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.preprocessImgs">
+  <component name="RunManager" selected="Python.trainCNN">
     <configuration name="preprocessDev" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="OCT-Image-Classification" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -250,8 +265,28 @@
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
     </configuration>
+    <configuration name="trainCNN" type="PythonConfigurationType" factoryName="Python">
+      <module name="OCT-Image-Classification" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Anaconda\envs\py36\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/code" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/code/trainCNN.py" />
+      <option name="PARAMETERS" value="-xtrn &quot;D:\Projects\OCT-Image-Classification\PreprocessedData\preprocessedForCNN\imgData_train_1000.npy&quot; -xval &quot;D:\Projects\OCT-Image-Classification\PreprocessedData\preprocessedForCNN\imgData_val.npy&quot; -ytrn &quot;D:\Projects\OCT-Image-Classification\PreprocessedData\preprocessedForCNN\targetData_train.npy&quot; -yval &quot;D:\Projects\OCT-Image-Classification\PreprocessedData\preprocessedForCNN\targetData_val.npy&quot; -o &quot;D:\Projects\OCT-Image-Classification\modelOutput&quot; -d 1" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+    </configuration>
     <list>
       <item itemvalue="Python.preprocessForCNN" />
+      <item itemvalue="Python.trainCNN" />
       <item itemvalue="Python.preprocessImgs" />
       <item itemvalue="Python.preprocessDev" />
     </list>
@@ -284,16 +319,16 @@
       <window_info anchor="bottom" id="Database Changes" show_stripe_button="false" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.32939914" />
       <window_info anchor="bottom" id="Version Control" show_stripe_button="false" />
-      <window_info active="true" anchor="bottom" id="Python Console" visible="true" weight="0.32624868" />
+      <window_info anchor="bottom" id="Python Console" weight="0.32624868" />
       <window_info anchor="bottom" id="Terminal" />
       <window_info content_ui="combo" id="Project" order="0" weight="0.24973932" />
       <window_info anchor="right" id="R Packages" />
       <window_info anchor="bottom" id="Docker" show_stripe_button="false" />
       <window_info anchor="right" id="R Graphics" />
       <window_info anchor="right" id="Database" />
-      <window_info anchor="right" id="SciView" visible="true" weight="0.19895834" />
+      <window_info anchor="right" id="SciView" visible="true" weight="0.16041666" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.39914164" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.3985122" />
       <window_info id="Favorites" side_tool="true" />
       <window_info anchor="bottom" id="Find" order="1" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -369,11 +404,11 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/code/trainCNN.py</url>
-          <line>96</line>
-          <option name="timeStamp" value="11" />
+          <line>110</line>
+          <option name="timeStamp" value="17" />
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="12" />
+      <option name="time" value="18" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
@@ -391,13 +426,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://W:/Python/BrainMets/old code/unet2d/notebooks/UNET2D GKGRP1 KFOLD Full Data-Copy2.ipynb">
-      <provider selected="true" editor-type-id="ipnb-editor">
-        <state>
-          <selected id="1" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/code/preprocessDev.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="425">
@@ -405,13 +433,6 @@
           <folding>
             <element signature="e#4#22#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://W:/Python/BrainMets/old code/UTILITIES.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="400">
-          <caret line="57" selection-start-line="57" selection-end-line="58" selection-end-column="21" />
         </state>
       </provider>
     </entry>
@@ -442,20 +463,55 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://W:/Python/BrainMets/RADIOMICS/runLocalCtrlPredGridSearch.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="261">
+          <caret line="130" column="50" selection-start-line="130" selection-start-column="34" selection-end-line="130" selection-end-column="50" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://W:/Python/BrainMets/Utils/radiomicsPredUtils.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="936">
+          <caret line="1290" column="20" selection-start-line="1290" selection-start-column="4" selection-end-line="1290" selection-end-column="20" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://W:/Python/BrainMets/old code/unet2d/notebooks/UNET2D GKGRP1.ipynb">
+      <provider selected="true" editor-type-id="ipnb-editor">
+        <state>
+          <selected id="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://W:/Python/BrainMets/old code/UTILITIES.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="186">
+          <caret line="236" column="19" selection-start-line="236" selection-start-column="6" selection-end-line="236" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://W:/Python/BrainMets/old code/unet2d/UTILITIES_UNET2D.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="325">
-          <caret line="46" lean-forward="true" selection-start-line="46" selection-end-line="46" />
-          <folding>
-            <element signature="e#95#113#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="-15291">
+          <caret line="41" column="30" selection-start-line="41" selection-start-column="30" selection-end-line="41" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://W:/Python/BrainMets/old code/unet2d/notebooks/UNET2D GKGRP1 KFOLD Full Data-Copy2.ipynb">
+      <provider selected="true" editor-type-id="ipnb-editor">
+        <state>
+          <selected id="1" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/code/trainCNN.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2850">
-          <caret line="114" column="51" selection-start-line="114" selection-start-column="51" selection-end-line="114" selection-end-column="51" />
+        <state relative-caret-position="250">
+          <caret line="25" column="21" selection-start-line="25" selection-start-column="21" selection-end-line="25" selection-end-column="21" />
           <folding>
             <element signature="e#0#81#0" expanded="true" />
           </folding>
