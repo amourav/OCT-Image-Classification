@@ -67,7 +67,7 @@ def trainModel(xTrn, yTrn,
                outputPath,
                modelName, d,
                nEpochs=100,
-               batchSize=50):
+               batchSize=30):
 
     if d:
         nEpochs = 3
