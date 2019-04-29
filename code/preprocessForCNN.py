@@ -1,11 +1,10 @@
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter, ArgumentError
 import os
-#from preprocessingUtils import normImg
 import traceback
 import sys
-from PIL import Image
 import numpy as np
 import skimage
+
 
 def preprocessForCNN(dataPath,
                      outputPath,
@@ -14,24 +13,23 @@ def preprocessForCNN(dataPath,
                      debug_,
                      newSize=(224,224,3)):
     """
-
-    :param dataPath:
-    :param outputPath:
-    :param subdir:
-    :param nTrain:
-    :param debug_:
+    Second preprocessing step. Make images compatiple with keras fitting procedure by stacking the images
+    :param dataPath (str): path to preprocessed npy image arrays
+    :param outputPath (str): path to output directory for preprocessed stacks of images
+    :param subdir (str): preprocess either the train / test / val / all three subdirectories
+    :param nTrain (int): random sample training
+    :param debug_ (int): debug_ = 1 to test code
     :return:
     """
+
     imgTypeDict = {
         "NORMAL": 0,
         "DRUSEN": 1,
         "CNV": 2,
         "DME": 3,
     }
-
     print(subdir)
     targetDataPath = os.path.join(dataPath, subdir)
-
     diseaseDirs = os.listdir(targetDataPath)
     imgStack, targetList = [], []
     for imgType in diseaseDirs:
@@ -45,29 +43,25 @@ def preprocessForCNN(dataPath,
         imgFiles = [f for f in imgFiles if f.endswith('.npy')]
         if subdir == 'train':
             imgFiles = np.random.choice(imgFiles, nClass)
-
         for imgFname in imgFiles:
             imgPath = os.path.join(imgFilesPath, imgFname)
             imgArr = np.load(imgPath)
             imgArr = skimage.transform.resize(imgArr, newSize)
             imgStack.append(imgArr)
             targetList.append(classLbl)
-
     imgStack = np.stack(imgStack, axis=0)
     targetList = np.asarray(targetList)
-
     #shuffle
     idxList = np.arange(len(targetList))
     np.random.shuffle(idxList)
     imgStack = imgStack[idxList]
     targetList = targetList[idxList]
-
+    # sample images for training
     if subdir == 'train':
         imgStackOutPath = os.path.join(outputPath, "imgData_{}_{}.npy".format(subdir, nTrain))
     else:
         imgStackOutPath = os.path.join(outputPath, "imgData_{}.npy".format(subdir))
     targetListOutPath = os.path.join(outputPath, "targetData_{}.npy".format(subdir))
-
     np.save(imgStackOutPath, imgStack)
     np.save(targetListOutPath, targetList)
 
@@ -94,13 +88,15 @@ def get_parser():
 
 def main_driver(dataPath, outputPath, subdir, nTrain, d):
     """
-
-    :param dataPath:
-    :param outputPath:
-    :param subdir:
-    :param debug_:
+    initialize output directory and call preprocessForCNN
+    :param dataPath (str): path to preprocessed npy image arrays
+    :param outputPath (str): path to output directory for preprocessed stacks of images
+    :param subdir (str): preprocess either the train / test / val / all three subdirectories
+    :param nTrain (int): random sample training
+    :param d: set d=1 for code testing.
     :return:
     """
+
     if d == 1:
         print('Debugging mode ON')
         debug_ = True
@@ -117,7 +113,6 @@ def main_driver(dataPath, outputPath, subdir, nTrain, d):
     else:
         preprocessForCNN(dataPath, outputPath, subdir, nTrain, debug_)
 
-#%%
 
 if __name__ == "__main__":
     parser = get_parser()

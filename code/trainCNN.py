@@ -1,15 +1,13 @@
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter, ArgumentError
 import os
-#from preprocessingUtils import normImg
 import traceback
 import sys
-from PIL import Image
 import numpy as np
 from keras.applications.inception_v3 import InceptionV3
 from keras.applications.vgg16 import VGG16
 from keras.layers import GlobalAveragePooling2D
 from keras.layers import Dense
-from keras.models import Model, Input, Sequential
+from keras.models import Model, Input
 from keras.optimizers import Adam
 from keras.utils import to_categorical
 from keras.backend import set_image_data_format
@@ -22,11 +20,11 @@ def getModel(modelName='InceptionV3',
              inputShape=(224,224,3),
              nClasses=4):
     """
-
-    :param modelName:
-    :param inputShape:
-    :param nClasses:
-    :return:
+    model getter
+    :param modelName (str): Name of CNN model to train. Either [InceptionV3 or VGG16]
+    :param inputShape (tuple-(Xres, YRes, nChannels)): Input shape for CNN model.
+    :param nClasses (int): NUmber of unique output classes.
+    :return: model: Keras CNN Model.
     """
     input_tensor = Input(shape=inputShape)
     if modelName == 'InceptionV3':
@@ -46,10 +44,8 @@ def getModel(modelName='InceptionV3',
     x = Dense(1024, activation='relu')(x)
     # and a logistic layer -- let's say we have 200 classes
     predictions = Dense(nClasses, activation='softmax')(x)
-
     # this is the model we will train
     model = Model(inputs=base_model.input, outputs=predictions)
-
     # first: train only the top layers (which were randomly initialized)
     # i.e. freeze all convolutional InceptionV3 layers
     for layer in base_model.layers:
@@ -67,7 +63,20 @@ def trainModel(xTrn, yTrn,
                outputPath,
                modelName, d,
                nEpochs=100,
-               batchSize=30):
+               batchSize=20):
+    """
+    Train CNN Model
+    :param xTrn (npy array): Input training image data (nTrain, Xres, Yres, nChannels=3)
+    :param yTrn (npy array): Target training image classes (nTrain, )
+    :param XVal (npy array): Input val image data (nTrain, Xres, Yres, nChannels=3)
+    :param yVal (npy array): Target val image classes (nTrain, )
+    :param outputPath (str): Path to output dir.
+    :param modelName (str): Name of pretrained Keras model.
+    :param d (bool):
+    :param nEpochs (int): Number of epochs to train model.
+    :param batchSize (int): Number of images to use in each training batch.
+    :return: None
+    """
 
     if d:
         nEpochs = 3
@@ -78,7 +87,6 @@ def trainModel(xTrn, yTrn,
 
     now = datetime.datetime.now()
     today = str(now.date())
-    #set_image_data_format('channels_last')
     model = getModel(modelName=modelName)
     print(model.summary())
     modelOutputDir = os.path.join(outputPath,
@@ -143,6 +151,17 @@ def get_parser():
 def main_driver(XTrainPath, yTrainPath,
                 XValPath, yValPath,
                 outputPath, model, d):
+    """
+    Load Training and Validation data and call trainModel.
+    :param XTrainPath (str): path to training image data
+    :param yTrainPath (str): path to training target classes
+    :param XValPath (str): path to val image data
+    :param yValPath (str): path to val target classes
+    :param outputPath (str): path to output dir
+    :param model (str): Name of Keras pretrained model
+    :param d (str): set d=1 to debug.
+    :return: None
+    """
     d = bool(d)
     if d:
         print('debugging mode: ON')

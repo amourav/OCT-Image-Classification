@@ -1,15 +1,17 @@
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter, ArgumentError
 import os
-#from preprocessingUtils import normImg
 import traceback
 import sys
 from PIL import Image
 import numpy as np
-import skimage
-#import logs.config_initialization as config_initialization
 
 
 def normImg(img):
+    """
+    normalize image intensity to zero mean and unit variance
+    :param img (2d npy array): input image
+    :return: normImg (2d npy array)
+    """
     normImg = (img - np.mean(img)) / np.std(img)
     return normImg
 
@@ -19,10 +21,19 @@ def preprocessDir(dataPath,
                   subdir,
                   debug_,
                   newSize=(224,224)):
+    """
+    Preprocess directory of .jpeg images.
+    Each image is normalized and resized to desired resolution
+    :param dataPath (str): path to input directory of raw images
+    :param outputPath (str): path to output directory
+    :param subdir (str): preprocess either the train / test / val / all three subdirectories
+    :param debug_ (int): debug_ = 1 to test code
+    :param newSize (tuple (Xres, YRes)): desired resolution of preprocessed images
+    :return: None
+    """
     print(subdir)
     targetDataPath = os.path.join(dataPath, subdir)
     targetOutputPath = os.path.join(outputPath, subdir)
-
     diseaseDirs = os.listdir(targetDataPath)
     for imgType in diseaseDirs:
         print('\t', imgType)
@@ -68,12 +79,13 @@ def get_parser():
 
 def main_driver(dataPath, outputPath, subdir, d):
     """
+    Initialize output directory and call preprocessDir
 
-    :param dataPath:
-    :param outputPath:
-    :param subdir:
-    :param debug_:
-    :return:
+    :param dataPath (str): path to input directory of raw images
+    :param outputPath (str): path to output directory
+    :param subdir (str): preprocess either the train / test / val / all three subdirectories
+    :param d (int): d = 1 to test code ()
+    :return: None
     """
     if d == 1:
         debug_ = True
@@ -89,7 +101,6 @@ def main_driver(dataPath, outputPath, subdir, d):
     else:
         preprocessDir(dataPath, outputPath, subdir, debug_)
 
-#%%
 
 if __name__ == "__main__":
     parser = get_parser()
@@ -100,7 +111,6 @@ if __name__ == "__main__":
                     args.subdir,
                     args.d)
         print('Done!')
-
     except ArgumentError as arg_exception:
         traceback.print_exc()
     except Exception as exception:
