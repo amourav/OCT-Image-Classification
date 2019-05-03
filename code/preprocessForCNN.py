@@ -96,6 +96,8 @@ def main_driver(dataPath, outputPath, subdir, nTrain, d):
     :param d: set d=1 for code testing.
     :return:
     """
+    if not(type(nTrain)==int):
+        nTrain = int(nTrain)
 
     if d == 1:
         print('Debugging mode ON')

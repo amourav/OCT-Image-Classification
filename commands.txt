@@ -1,5 +1,10 @@
 python preprocessImgs.py -i "D:\Projects\OCT-Image-Classification\RawData\OCT2017" -o "D:\Projects\OCT-Image-Classification\PreprocessedData\individual images" -subdir "all" -d 0
 
+scp -r PreprocessedData\preprocessedForCNN amourav@graham.computecanada.ca:home/amourav/project/amourav/Python/temp/
+
+
 python preprocessForCNN.py -i "D:\Projects\OCT-Image-Classification\PreprocessedData\individual images" -o "D:\Projects\OCT-Image-Classification\PreprocessedData\preprocessedForCNN" -subdir "all" -n 1000
 
-python trainCNN.py -xtrn "D:\Projects\OCT-Image-Classification\PreprocessedData\preprocessedForCNN\imgData_train_1000.npy" -xval "D:\Projects\OCT-Image-Classification\PreprocessedData\preprocessedForCNN\imgData_val.npy" -ytrn "D:\Projects\OCT-Image-Classification\PreprocessedData\preprocessedForCNN\targetData_train.npy" -yval "D:\Projects\OCT-Image-Classification\PreprocessedData\preprocessedForCNN\targetData_val.npy" -o "D:\Projects\OCT-Image-Classification\modelOutput"
+python trainCNN.py -xtrn "D:\Projects\OCT-Image-Classification\PreprocessedData\preprocessedForCNN\imgData_train_1000.npy" -xval "D:\Projects\OCT-Image-Classification\PreprocessedData\preprocessedForCNN\imgData_val.npy" -ytrn "D:\Projects\OCT-Image-Classification\PreprocessedData\preprocessedForCNN\targetData_train.npy" -yval "D:\Projects\OCT-Image-Classification\PreprocessedData\preprocessedForCNN\targetData_val.npy" -o "D:\Projects\OCT-Image-Classification\modelOutput" -m "InceptionV3"
+
+python trainCNN.py -xtrn "D:\Projects\OCT-Image-Classification\PreprocessedData\preprocessedForCNN\imgData_train_1000.npy" -xval "D:\Projects\OCT-Image-Classification\PreprocessedData\preprocessedForCNN\imgData_val.npy" -ytrn "D:\Projects\OCT-Image-Classification\PreprocessedData\preprocessedForCNN\targetData_train.npy" -yval "D:\Projects\OCT-Image-Classification\PreprocessedData\preprocessedForCNN\targetData_val.npy" -o "D:\Projects\OCT-Image-Classification\modelOutput" -m "VGG16"

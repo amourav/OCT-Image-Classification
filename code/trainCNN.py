@@ -5,6 +5,8 @@ import sys
 import numpy as np
 from keras.applications.inception_v3 import InceptionV3
 from keras.applications.vgg16 import VGG16
+from keras.applications.resnet50 import ResNet50
+from keras.applications.xception import Xception
 from keras.layers import GlobalAveragePooling2D
 from keras.layers import Dense
 from keras.models import Model, Input
@@ -16,9 +18,10 @@ import datetime
 import pickle
 
 
-def getModel(modelName='InceptionV3',
+def getModel(modelName,
              inputShape=(224,224,3),
-             nClasses=4):
+             nClasses=4,
+             lastLayer=256):
     """
     model getter
     :param modelName (str): Name of CNN model to train. Either [InceptionV3 or VGG16]
@@ -35,13 +38,21 @@ def getModel(modelName='InceptionV3',
         base_model = VGG16(weights='imagenet',
                            include_top=False,
                            input_tensor=input_tensor)
+    elif modelName == 'ResNet50':
+        base_model = ResNet50(weights='imagenet',
+                              include_top=False,
+                              input_tensor=input_tensor)
+    elif  modelName == 'Xception':
+        base_model = Xception(weights='imagenet',
+                                include_top=False,
+                                input_tensor=input_tensor)
     else:
         raise Exception('model name not recognized')
     # add a global spatial average pooling layer
     x = base_model.output
     x = GlobalAveragePooling2D()(x)
     # let's add a fully-connected layer
-    x = Dense(1024, activation='relu')(x)
+    x = Dense(lastLayer, activation='relu')(x)
     # and a logistic layer -- let's say we have 200 classes
     predictions = Dense(nClasses, activation='softmax')(x)
     # this is the model we will train
@@ -86,7 +97,9 @@ def trainModel(xTrn, yTrn,
             XVal, yVal = XVal[0:nDebug], yVal[0:nDebug]
 
     now = datetime.datetime.now()
-    today = str(now.date())
+    today = str(now.date()) + \
+                '_' + str(now.hour) + \
+                '_' + str(now.minute)
     model = getModel(modelName=modelName)
     print(model.summary())
     modelOutputDir = os.path.join(outputPath,
