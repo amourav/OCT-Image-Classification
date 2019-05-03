@@ -1,0 +1,9 @@
+# don't track these files
+RawData/*
+PreprocessedData/*
+modelOutput/*
+
+# exceptions
+!RawData/.gitkeep
+!PreprocessedData/.gitkeep
+!modelOutput/.gitkeep
