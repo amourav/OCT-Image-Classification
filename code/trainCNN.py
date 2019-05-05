@@ -21,7 +21,7 @@ import pickle
 def getModel(modelName,
              inputShape=(224,224,3),
              nClasses=4,
-             lastLayer=256):
+             lastLayer=512):
     """
     model getter
     :param modelName (str): Name of CNN model to train. Either [InceptionV3 or VGG16]
@@ -73,8 +73,9 @@ def trainModel(xTrn, yTrn,
                XVal, yVal,
                outputPath,
                modelName, d,
-               nEpochs=100,
-               batchSize=20):
+               nEpochs=150,
+               batchSize=30,
+               lastLayer=512):
     """
     Train CNN Model
     :param xTrn (npy array): Input training image data (nTrain, Xres, Yres, nChannels=3)
@@ -95,12 +96,12 @@ def trainModel(xTrn, yTrn,
         xTrn, yTrn = xTrn[0:nDebug], yTrn[0:nDebug]
         if not (XVal is None) and not (yVal is None):
             XVal, yVal = XVal[0:nDebug], yVal[0:nDebug]
-
+    
     now = datetime.datetime.now()
     today = str(now.date()) + \
                 '_' + str(now.hour) + \
                 '_' + str(now.minute)
-    model = getModel(modelName=modelName)
+    model = getModel(modelName=modelName, lastLayer=lastLayer)
     print(model.summary())
     modelOutputDir = os.path.join(outputPath,
                                    modelName + '_' +
@@ -115,7 +116,7 @@ def trainModel(xTrn, yTrn,
         valData = None
 
     # Set Callbacks
-    modelOutPath = os.path.join(modelOutputDir, 'modelName.hdf5')
+    modelOutPath = os.path.join(modelOutputDir, '{}.hdf5'.format(modelName))
     modelCheckpoint = ModelCheckpoint(modelOutPath, monitor='val_loss',
                                       save_best_only=True,
                                       mode='auto', period=1)
@@ -130,7 +131,11 @@ def trainModel(xTrn, yTrn,
                         shuffle=True)
     historyPath = os.path.join(modelOutputDir, 'modelHistory.pickle')
     pickle.dump(history, open(historyPath, 'wb'))
-    model.save(os.path.join(modelOutputDir, 'modelName_final.hdf5'))
+    model.save(os.path.join(modelOutputDir, '{}_final.hdf5'.format(modelName)))
+    with open(os.path.join(modelOutputDir, 'trnInfo.txt'), 'w') as fid:
+        fid.write("nEpochs: {} \n".format(nEpochs))
+        fid.write("batchSize: {} \n".format(batchSize))
+        fid.write("lastLayer: {} \n".format(lastLayer))
     print('done!')
 
 
@@ -175,6 +180,7 @@ def main_driver(XTrainPath, yTrainPath,
     :param d (str): set d=1 to debug.
     :return: None
     """
+    print('trn path:', XTrainPath)
     d = bool(d)
     if d:
         print('debugging mode: ON')
@@ -190,11 +196,14 @@ def main_driver(XTrainPath, yTrainPath,
         XVal = None
         yVal = None
     if not(os.path.isdir(outputPath)):
-        os.mkdir(outputPath)
+        os.makedirs(outputPath)
     trainModel(xTrn, yTrn,
                XVal, yVal,
                outputPath,
                model, d)
+    with open(os.path.join(outputPath, 'dataInfo.txt'), 'w') as fid:
+        fid.write("XTrainPath: {} \n".format(XTrainPath))
+        fid.write("XValPath: {} \n".format(XValPath))
 
 
 if __name__ == "__main__":

@@ -6,8 +6,8 @@
 #SBATCH --output=%N-%j.out  # %N for node name, %j for jobID
 
 module load cuda cudnn 
-source tensorflow/bin/activate
+source activate
 
 
-
+python --version
 python ./tensorflow-test.py
