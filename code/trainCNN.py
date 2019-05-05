@@ -14,6 +14,7 @@ from keras.optimizers import Adam
 from keras.utils import to_categorical
 from keras.backend import set_image_data_format
 from keras.callbacks import ModelCheckpoint
+from keras.preprocessing.image import ImageDataGenerator
 import datetime
 import pickle
 
@@ -72,7 +73,8 @@ def getModel(modelName,
 def trainModel(xTrn, yTrn,
                XVal, yVal,
                outputPath,
-               modelName, d,
+               modelName,
+               aug, d,
                nEpochs=150,
                batchSize=30,
                lastLayer=512):
@@ -105,6 +107,7 @@ def trainModel(xTrn, yTrn,
     print(model.summary())
     modelOutputDir = os.path.join(outputPath,
                                    modelName + '_' +
+                                   "dataAug_" + str(aug) +
                                    today)
     if not(os.path.isdir(modelOutputDir)):
         os.mkdir(modelOutputDir)
@@ -121,14 +124,36 @@ def trainModel(xTrn, yTrn,
                                       save_best_only=True,
                                       mode='auto', period=1)
     callbacks = [modelCheckpoint]
-    history = model.fit(x=xTrn,
-                        y=yTrn,
-                        batch_size=batchSize,
-                        epochs=nEpochs,
-                        verbose=1,
-                        callbacks=callbacks,
-                        validation_data=valData,
-                        shuffle=True)
+    if not (aug):
+        history = model.fit(x=xTrn,
+                            y=yTrn,
+                            batch_size=batchSize,
+                            epochs=nEpochs,
+                            verbose=1,
+                            callbacks=callbacks,
+                            validation_data=valData,
+                            shuffle=True)
+    else:
+        datagen = ImageDataGenerator(
+            featurewise_center=False,
+            featurewise_std_normalization=False,
+            samplewise_center=True,
+            samplewise_std_normalization=True,
+            rotation_range=2,
+            width_shift_range=0.05,
+            height_shift_range=0.05,
+            brightness_range=0.02,
+            shear_range=2,
+            zoom_range=0.05,
+            vertical_flip=False,
+            horizontal_flip=True)
+        history = model.fit_generator(datagen.flow(xTrn, yTrn,
+                                                   batch_size=batchSize),
+                                      steps_per_epoch=len(xTrn) / batchSize,
+                                      epochs=nEpochs, callbacks=callbacks,
+                                      validation_data=valData, shuffle=True,
+                                      verbose=1)
+
     historyPath = os.path.join(modelOutputDir, 'modelHistory.pickle')
     pickle.dump(history, open(historyPath, 'wb'))
     model.save(os.path.join(modelOutputDir, '{}_final.hdf5'.format(modelName)))
@@ -158,6 +183,11 @@ def get_parser():
     module_parser.add_argument("-m", dest="model", type=str,
                                default='InceptionV3',
                                help='model (default: inception)')
+    module_parser.add_argument("-aug", dest="aug",
+                               type=int,
+                               default=0,
+                               choices=[1, 0],
+                               help='augment: 1 - ON, 0 - OFF')
     module_parser.add_argument("-d", dest="d",
                                type=int,
                                default=0,
@@ -168,7 +198,7 @@ def get_parser():
 
 def main_driver(XTrainPath, yTrainPath,
                 XValPath, yValPath,
-                outputPath, model, d):
+                outputPath, model, aug, d):
     """
     Load Training and Validation data and call trainModel.
     :param XTrainPath (str): path to training image data
@@ -181,6 +211,7 @@ def main_driver(XTrainPath, yTrainPath,
     :return: None
     """
     print('trn path:', XTrainPath)
+    aug = bool(aug)
     d = bool(d)
     if d:
         print('debugging mode: ON')
@@ -200,7 +231,7 @@ def main_driver(XTrainPath, yTrainPath,
     trainModel(xTrn, yTrn,
                XVal, yVal,
                outputPath,
-               model, d)
+               model, aug, d)
     with open(os.path.join(outputPath, 'dataInfo.txt'), 'w') as fid:
         fid.write("XTrainPath: {} \n".format(XTrainPath))
         fid.write("XValPath: {} \n".format(XValPath))
@@ -216,6 +247,7 @@ if __name__ == "__main__":
                     args.yValPath,
                     args.outputPath,
                     args.model,
+                    args.aug,
                     args.d)
         print('Done!')
 
