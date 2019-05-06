@@ -26,23 +26,20 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="trainCNN.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="trainCNN.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/code/trainCNN.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="183">
-              <caret line="158" column="48" selection-start-line="158" selection-start-column="25" selection-end-line="158" selection-end-column="48" />
-              <folding>
-                <element signature="e#0#81#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="175">
+              <caret line="7" column="32" selection-start-line="7" selection-end-line="8" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="modelVariance.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="modelVariance.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/code/modelVariance.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="227">
-              <caret line="45" column="26" lean-forward="true" selection-start-line="45" selection-start-column="26" selection-end-line="45" selection-end-column="26" />
+            <state relative-caret-position="275">
+              <caret line="17" column="54" selection-start-line="17" selection-start-column="54" selection-end-line="17" selection-end-column="54" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
@@ -311,14 +308,13 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="490" y="2" width="1447" height="1047" extended-state="0" />
-    <editor active="true" />
     <layout>
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Event Log" side_tool="true" />
+      <window_info anchor="bottom" id="Event Log" sideWeight="0.5003494" side_tool="true" visible="true" weight="0.32939914" />
       <window_info anchor="bottom" id="Database Changes" show_stripe_button="false" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32939914" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.32939914" />
       <window_info anchor="bottom" id="Version Control" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Python Console" weight="0.32939914" />
+      <window_info active="true" anchor="bottom" id="Python Console" sideWeight="0.4996506" visible="true" weight="0.32939914" />
       <window_info anchor="bottom" id="Terminal" />
       <window_info content_ui="combo" id="Project" order="0" weight="0.24973932" />
       <window_info anchor="right" id="R Packages" />
@@ -404,7 +400,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/code/modelVariance.py</url>
-          <line>32</line>
+          <line>30</line>
           <option name="timeStamp" value="18" />
         </line-breakpoint>
       </breakpoints>
@@ -519,9 +515,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="352">
           <caret line="202" column="26" lean-forward="true" selection-start-line="202" selection-start-column="26" selection-end-line="202" selection-end-column="26" />
-          <folding>
-            <element signature="e#0#81#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -651,23 +644,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/code/trainCNN.py">
+    <entry file="file://$PROJECT_DIR$/code/modelVariance.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="183">
-          <caret line="158" column="48" selection-start-line="158" selection-start-column="25" selection-end-line="158" selection-end-column="48" />
+        <state relative-caret-position="275">
+          <caret line="17" column="54" selection-start-line="17" selection-start-column="54" selection-end-line="17" selection-end-column="54" />
           <folding>
-            <element signature="e#0#81#0" expanded="true" />
+            <element signature="e#0#9#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/code/modelVariance.py">
+    <entry file="file://$PROJECT_DIR$/code/trainCNN.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="227">
-          <caret line="45" column="26" lean-forward="true" selection-start-line="45" selection-start-column="26" selection-end-line="45" selection-end-column="26" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="175">
+          <caret line="7" column="32" selection-start-line="7" selection-end-line="8" />
         </state>
       </provider>
     </entry>
