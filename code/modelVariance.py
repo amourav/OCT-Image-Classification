@@ -22,8 +22,6 @@ def get_parser():
                                help="directory of test data")
     module_parser.add_argument("-o", dest="outputDir", type=str,
                                help="directory of output")
-    module_parser.add_argument("-o", dest="outputDir", type=str,
-                               help="directory of output")
     module_parser.add_argument("-m", dest="modelName", type=str,
                                default='VGG16',
                                help='modelName (default: VGG16)')
@@ -40,7 +38,7 @@ def main_driver(modelBaseDir, dataPath, outputDir, modelName):
     classMapR = {i: lbl for lbl, i in classMap.items()}
     lbls = classMap.keys()
 
-    varainceExperimentDir = join(modelBaseDir, "modelOutput\subsample")
+    varainceExperimentDir = modelBaseDir
 
     modelHistPathList = []
     bestModelPathList = []
@@ -72,7 +70,7 @@ def main_driver(modelBaseDir, dataPath, outputDir, modelName):
     yTestPredDict = {}
     for i, modelPath in enumerate(bestModelPathList):
         model = load_model(modelPath)
-        yTestPred = model.predict(xTest, batch_size=1, verbose=1)
+        yTestPred = model.predict(xTest, batch_size=20, verbose=1)
         yTestPredDict[i] = yTestPred
         yPredProbUrgent = UrgentVRoutne(yTestPred, classMap)
         modelPredUrgetDF['yPredProb_' + str(i)] = yPredProbUrgent
