@@ -13,32 +13,24 @@
     <SUITE FILE_PATH="coverage/OCT_Image_Classification$trainCNN.coverage" NAME="trainCNN Coverage Results" MODIFIED="1556161400898" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/code" />
     <SUITE FILE_PATH="coverage/OCT_Image_Classification$preprocessForCNN.coverage" NAME="preprocessForCNN Coverage Results" MODIFIED="1555988595890" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/code" />
     <SUITE FILE_PATH="coverage/OCT_Image_Classification$preprocessDev.coverage" NAME="preprocessImgs Coverage Results" MODIFIED="1556074276609" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/code" />
+    <SUITE FILE_PATH="coverage/OCT_Image_Classification$test.coverage" NAME="test Coverage Results" MODIFIED="1557114297837" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/code" />
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="preprocessForCNN.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/code/preprocessForCNN.py">
+      <file leaf-file-name="runLocalCtrlPredGridSearch.py" pinned="false" current-in-tab="false">
+        <entry file="file://W:/Python/BrainMets/RADIOMICS/runLocalCtrlPredGridSearch.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret column="24" selection-end-line="1" />
+            <state relative-caret-position="311">
+              <caret line="90" column="78" selection-start-line="90" selection-start-column="65" selection-end-line="90" selection-end-column="78" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="evalUtils.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/code/evalUtils.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="350">
-              <caret line="14" column="42" lean-forward="true" selection-start-line="14" selection-start-column="42" selection-end-line="14" selection-end-column="42" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="trainCNN.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="trainCNN.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/code/trainCNN.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="400">
-              <caret line="154" column="48" lean-forward="true" selection-start-line="154" selection-start-column="48" selection-end-line="154" selection-end-column="48" />
+            <state relative-caret-position="183">
+              <caret line="158" column="48" selection-start-line="158" selection-start-column="25" selection-end-line="158" selection-end-column="48" />
               <folding>
                 <element signature="e#0#81#0" expanded="true" />
               </folding>
@@ -46,11 +38,23 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="runLocalCtrlPredGridSearch.py" pinned="false" current-in-tab="false">
-        <entry file="file://W:/Python/BrainMets/RADIOMICS/runLocalCtrlPredGridSearch.py">
+      <file leaf-file-name="modelVariance.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/code/modelVariance.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="311">
-              <caret line="90" column="78" selection-start-line="90" selection-start-column="65" selection-end-line="90" selection-end-column="78" />
+            <state relative-caret-position="227">
+              <caret line="45" column="26" lean-forward="true" selection-start-line="45" selection-start-column="26" selection-end-line="45" selection-end-column="26" />
+              <folding>
+                <element signature="e#0#9#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="test.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/code/test.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="25">
+              <caret line="1" column="18" selection-start-line="1" selection-start-column="18" selection-end-line="1" selection-end-column="18" />
             </state>
           </provider>
         </entry>
@@ -102,11 +106,12 @@
       <find>today</find>
       <find>KeyWrd.LOGISTIC_REGRESSION()</find>
       <find>plot</find>
-      <find>nTrain</find>
       <find>set_image_data_format</find>
-      <find>classMap</find>
       <find>aug</find>
       <find>ImageDataGenerator</find>
+      <find>classMap</find>
+      <find>nTrain</find>
+      <find>dump</find>
     </findStrings>
   </component>
   <component name="IdeDocumentHistory">
@@ -119,6 +124,8 @@
         <option value="$PROJECT_DIR$/code/preprocessForCNN.py" />
         <option value="$PROJECT_DIR$/code/evalUtils.py" />
         <option value="$PROJECT_DIR$/code/trainCNN.py" />
+        <option value="$PROJECT_DIR$/code/test.py" />
+        <option value="$PROJECT_DIR$/code/modelVariance.py" />
       </list>
     </option>
   </component>
@@ -132,9 +139,9 @@
     <packageJsonPaths />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="347" />
+    <option name="x" value="490" />
     <option name="y" value="2" />
-    <option name="width" value="1590" />
+    <option name="width" value="1447" />
     <option name="height" value="1047" />
   </component>
   <component name="ProjectView">
@@ -163,7 +170,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/code/evalUtils.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/code/test.py" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
   </component>
@@ -179,7 +186,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.trainCNN">
+  <component name="RunManager" selected="Python.test">
     <configuration name="preprocessDev" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="OCT-Image-Classification" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -237,6 +244,25 @@
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
     </configuration>
+    <configuration name="test" type="PythonConfigurationType" factoryName="Python">
+      <module name="OCT-Image-Classification" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="C:\Anaconda\envs\py36\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/code" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/code/test.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+    </configuration>
     <configuration name="trainCNN" type="PythonConfigurationType" factoryName="Python">
       <module name="OCT-Image-Classification" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -259,6 +285,7 @@
     <list>
       <item itemvalue="Python.preprocessForCNN" />
       <item itemvalue="Python.trainCNN" />
+      <item itemvalue="Python.test" />
       <item itemvalue="Python.preprocessImgs" />
       <item itemvalue="Python.preprocessDev" />
     </list>
@@ -283,22 +310,22 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="347" y="2" width="1590" height="1047" extended-state="0" />
+    <frame x="490" y="2" width="1447" height="1047" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" side_tool="true" />
       <window_info anchor="bottom" id="Database Changes" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.32939914" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32939914" />
       <window_info anchor="bottom" id="Version Control" show_stripe_button="false" />
-      <window_info active="true" anchor="bottom" id="Python Console" visible="true" weight="0.32939914" />
+      <window_info anchor="bottom" id="Python Console" weight="0.32939914" />
       <window_info anchor="bottom" id="Terminal" />
       <window_info content_ui="combo" id="Project" order="0" weight="0.24973932" />
       <window_info anchor="right" id="R Packages" />
       <window_info anchor="bottom" id="Docker" show_stripe_button="false" />
       <window_info anchor="right" id="R Graphics" />
       <window_info anchor="right" id="Database" />
-      <window_info anchor="right" id="SciView" visible="true" weight="0.1956798" />
+      <window_info anchor="right" id="SciView" visible="true" weight="0.09014675" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.3985122" />
       <window_info id="Favorites" side_tool="true" />
@@ -372,11 +399,16 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/code/trainCNN.py</url>
-          <line>172</line>
+          <line>173</line>
           <option name="timeStamp" value="17" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/code/modelVariance.py</url>
+          <line>32</line>
+          <option name="timeStamp" value="18" />
+        </line-breakpoint>
       </breakpoints>
-      <option name="time" value="18" />
+      <option name="time" value="19" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
@@ -571,13 +603,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://W:/Python/BrainMets/RADIOMICS/runLocalCtrlPredGridSearch.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="311">
-          <caret line="90" column="78" selection-start-line="90" selection-start-column="65" selection-end-line="90" selection-end-column="78" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://W:/Python/BrainMets/Utils/radiomicsPredUtils.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="233">
@@ -598,13 +623,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/code/preprocessForCNN.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="24" selection-end-line="1" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/code/evalUtils.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="350">
@@ -612,12 +630,43 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/code/preprocessForCNN.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="24" selection-end-line="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://W:/Python/BrainMets/RADIOMICS/runLocalCtrlPredGridSearch.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="311">
+          <caret line="90" column="78" selection-start-line="90" selection-start-column="65" selection-end-line="90" selection-end-column="78" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/code/test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="25">
+          <caret line="1" column="18" selection-start-line="1" selection-start-column="18" selection-end-line="1" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/code/trainCNN.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="400">
-          <caret line="154" column="48" lean-forward="true" selection-start-line="154" selection-start-column="48" selection-end-line="154" selection-end-column="48" />
+        <state relative-caret-position="183">
+          <caret line="158" column="48" selection-start-line="158" selection-start-column="25" selection-end-line="158" selection-end-column="48" />
           <folding>
             <element signature="e#0#81#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/code/modelVariance.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="227">
+          <caret line="45" column="26" lean-forward="true" selection-start-line="45" selection-start-column="26" selection-end-line="45" selection-end-column="26" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
           </folding>
         </state>
       </provider>
