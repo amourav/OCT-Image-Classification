@@ -29,8 +29,11 @@
       <file leaf-file-name="trainCNN.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/code/trainCNN.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="175">
-              <caret line="7" column="32" selection-start-line="7" selection-end-line="8" />
+            <state relative-caret-position="-1075">
+              <caret line="77" column="24" lean-forward="true" selection-start-line="77" selection-start-column="24" selection-end-line="77" selection-end-column="24" />
+              <folding>
+                <element signature="e#0#81#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -38,11 +41,8 @@
       <file leaf-file-name="modelVariance.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/code/modelVariance.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="275">
-              <caret line="17" column="54" selection-start-line="17" selection-start-column="54" selection-end-line="17" selection-end-column="54" />
-              <folding>
-                <element signature="e#0#9#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="125">
+              <caret line="8" column="32" lean-forward="true" selection-start-line="8" selection-end-line="9" />
             </state>
           </provider>
         </entry>
@@ -120,9 +120,9 @@
         <option value="$PROJECT_DIR$/code/preprocessImgs.py" />
         <option value="$PROJECT_DIR$/code/preprocessForCNN.py" />
         <option value="$PROJECT_DIR$/code/evalUtils.py" />
-        <option value="$PROJECT_DIR$/code/trainCNN.py" />
         <option value="$PROJECT_DIR$/code/test.py" />
         <option value="$PROJECT_DIR$/code/modelVariance.py" />
+        <option value="$PROJECT_DIR$/code/trainCNN.py" />
       </list>
     </option>
   </component>
@@ -136,9 +136,9 @@
     <packageJsonPaths />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="490" />
-    <option name="y" value="2" />
-    <option name="width" value="1447" />
+    <option name="x" value="745" />
+    <option name="y" value="1" />
+    <option name="width" value="1169" />
     <option name="height" value="1047" />
   </component>
   <component name="ProjectView">
@@ -307,21 +307,22 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="490" y="2" width="1447" height="1047" extended-state="0" />
+    <frame x="745" y="1" width="1169" height="1047" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Event Log" sideWeight="0.5003494" side_tool="true" visible="true" weight="0.32939914" />
+      <window_info anchor="bottom" id="Event Log" sideWeight="0.24891587" side_tool="true" visible="true" weight="0.32939914" />
       <window_info anchor="bottom" id="Database Changes" show_stripe_button="false" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.32939914" />
       <window_info anchor="bottom" id="Version Control" show_stripe_button="false" />
-      <window_info active="true" anchor="bottom" id="Python Console" sideWeight="0.4996506" visible="true" weight="0.32939914" />
+      <window_info active="true" anchor="bottom" id="Python Console" sideWeight="0.75108415" visible="true" weight="0.32939914" />
       <window_info anchor="bottom" id="Terminal" />
       <window_info content_ui="combo" id="Project" order="0" weight="0.24973932" />
       <window_info anchor="right" id="R Packages" />
       <window_info anchor="bottom" id="Docker" show_stripe_button="false" />
       <window_info anchor="right" id="R Graphics" />
       <window_info anchor="right" id="Database" />
-      <window_info anchor="right" id="SciView" visible="true" weight="0.09014675" />
+      <window_info anchor="right" id="SciView" visible="true" weight="0.111882046" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.3985122" />
       <window_info id="Favorites" side_tool="true" />
@@ -395,7 +396,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/code/trainCNN.py</url>
-          <line>173</line>
+          <line>177</line>
           <option name="timeStamp" value="17" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
@@ -515,6 +516,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="352">
           <caret line="202" column="26" lean-forward="true" selection-start-line="202" selection-start-column="26" selection-end-line="202" selection-end-column="26" />
+          <folding>
+            <element signature="e#0#81#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -646,18 +650,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/code/modelVariance.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="275">
-          <caret line="17" column="54" selection-start-line="17" selection-start-column="54" selection-end-line="17" selection-end-column="54" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="125">
+          <caret line="8" column="32" lean-forward="true" selection-start-line="8" selection-end-line="9" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/code/trainCNN.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="175">
-          <caret line="7" column="32" selection-start-line="7" selection-end-line="8" />
+        <state relative-caret-position="-1075">
+          <caret line="77" column="24" lean-forward="true" selection-start-line="77" selection-start-column="24" selection-end-line="77" selection-end-column="24" />
+          <folding>
+            <element signature="e#0#81#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

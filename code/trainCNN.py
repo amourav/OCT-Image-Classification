@@ -22,7 +22,8 @@ import pickle
 def getModel(modelName,
              inputShape=(224,224,3),
              nClasses=4,
-             lastLayer=512):
+             lastLayer=512,
+             weights='imagenet'):
     """
     model getter
     :param modelName (str): Name of CNN model to train. Either [InceptionV3 or VGG16]
@@ -32,21 +33,21 @@ def getModel(modelName,
     """
     input_tensor = Input(shape=inputShape)
     if modelName == 'InceptionV3':
-        base_model = InceptionV3(weights='imagenet',
+        base_model = InceptionV3(weights=weights,
                                  include_top=False,
                                  input_tensor=input_tensor)
     elif modelName == 'VGG16':
-        base_model = VGG16(weights='imagenet',
+        base_model = VGG16(weights=weights,
                            include_top=False,
                            input_tensor=input_tensor)
     elif modelName == 'ResNet50':
-        base_model = ResNet50(weights='imagenet',
+        base_model = ResNet50(weights=weights,
                               include_top=False,
                               input_tensor=input_tensor)
-    elif  modelName == 'Xception':
-        base_model = Xception(weights='imagenet',
-                                include_top=False,
-                                input_tensor=input_tensor)
+    elif modelName == 'Xception':
+        base_model = Xception(weights=weights,
+                              include_top=False,
+                              input_tensor=input_tensor)
     else:
         raise Exception('model name not recognized')
     # add a global spatial average pooling layer
@@ -74,6 +75,7 @@ def trainModel(xTrn, yTrn,
                XVal, yVal,
                outputPath,
                modelName,
+               modelWeights,
                aug, d,
                nEpochs=200,
                batchSize=30,
@@ -103,7 +105,9 @@ def trainModel(xTrn, yTrn,
     today = str(now.date()) + \
                 '_' + str(now.hour) + \
                 '_' + str(now.minute)
-    model = getModel(modelName=modelName, lastLayer=lastLayer)
+    model = getModel(modelName=modelName,
+                     weights=modelWeights,
+                     lastLayer=lastLayer)
     print(model.summary())
     modelOutputDir = os.path.join(outputPath,
                                    modelName + '_' +
@@ -184,6 +188,10 @@ def get_parser():
     module_parser.add_argument("-m", dest="model", type=str,
                                default='InceptionV3',
                                help='model (default: inception)')
+    module_parser.add_argument("-w", dest="modelWeights", type=str,
+                               default='imagenet',
+                               help='model weights')
+
     module_parser.add_argument("-aug", dest="aug",
                                type=int,
                                default=0,
@@ -199,7 +207,9 @@ def get_parser():
 
 def main_driver(XTrainPath, yTrainPath,
                 XValPath, yValPath,
-                outputPath, model, aug, d):
+                outputPath, model,
+                modelWeights,
+                aug, d):
     """
     Load Training and Validation data and call trainModel.
     :param XTrainPath (str): path to training image data
@@ -232,7 +242,8 @@ def main_driver(XTrainPath, yTrainPath,
     trainModel(xTrn, yTrn,
                XVal, yVal,
                outputPath,
-               model, aug, d)
+               model, modelWeights,
+               aug, d)
     with open(os.path.join(outputPath, 'dataInfo.txt'), 'w') as fid:
         fid.write("XTrainPath: {} \n".format(XTrainPath))
         fid.write("XValPath: {} \n".format(XValPath))
@@ -248,6 +259,7 @@ if __name__ == "__main__":
                     args.yValPath,
                     args.outputPath,
                     args.model,
+                    args.modelWeights,
                     args.aug,
                     args.d)
         print('Done!')
