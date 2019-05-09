@@ -2,7 +2,7 @@
 #SBATCH --gres=gpu:1        # request GPU "generic resource"
 #SBATCH --cpus-per-task=2   # maximum CPU cores per GPU request: 6 on Cedar, 16 on Graham.
 #SBATCH --mem=16000M        # memory per node
-#SBATCH --time=0-8:00      # time (DD-HH:MM)
+#SBATCH --time=0-10:00      # time (DD-HH:MM)
 #SBATCH --output=../modelOutput/logs/%x-%N-%j.out  # %N for node name, %j for jobID
 #SBATCH --account=def-amartel
 #SBATCH --array=1-10
@@ -11,15 +11,14 @@ module load cuda cudnn
 source activate
 python --version
 
-
 basePath="../PreprocessedData/preprocessedForCNN/subsample_$SLURM_ARRAY_TASK_ID"
 xtrnPath="$basePath/imgData_train_1000.npy"
 xvalPath="$basePath/imgData_val.npy"
 ytrnPath="$basePath/targetData_train.npy"
 yvalPath="$basePath/targetData_val.npy"
 model="VGG16"
-aug=1
-output="../modelOutput/subsampleAug/$SLURM_ARRAY_TASK_ID"
+#weights="../pretrainedModelWeights/Xception/xception_weights_tf_dim_ordering_tf_kernels_notop.h5"
+aug="1"
+output="../modelOutput/subsample_$model/$SLURM_ARRAY_TASK_ID"
 
-
-python ./trainCNN.py -xtrn "$xtrnPath" -xval "$xvalPath" -ytrn "$ytrnPath" -yval "$yvalPath" -o "$output" -m "$model" -aug "$aug"
+python ./trainCNN.py -xtrn "$xtrnPath" -xval "$xvalPath" -ytrn "$ytrnPath" -yval "$yvalPath" -o "$output" -m "$model" -aug "$aug" #-w "$weights"

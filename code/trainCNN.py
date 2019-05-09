@@ -77,7 +77,7 @@ def trainModel(xTrn, yTrn,
                modelName,
                modelWeights,
                aug, d,
-               nEpochs=200,
+               nEpochs=150,
                batchSize=30,
                lastLayer=512):
     """
@@ -138,17 +138,18 @@ def trainModel(xTrn, yTrn,
                             validation_data=valData,
                             shuffle=True)
     else:
+        print('fitting image generator')
         datagen = ImageDataGenerator(
             featurewise_center=False,
             featurewise_std_normalization=False,
             samplewise_center=True,
             samplewise_std_normalization=True,
-            rotation_range=5,
-            width_shift_range=0.06,
+            rotation_range=8,
+            width_shift_range=0.1,
             height_shift_range=0,
-            zoom_range=0.06,  
-            brightness_range=(0.92, 1.08),
-            shear_range=5,
+            zoom_range=0.1,  
+            brightness_range=(0.90, 1.1),
+            shear_range=10,
             fill_mode='nearest',
             vertical_flip=False,
             horizontal_flip=True)
@@ -223,6 +224,7 @@ def main_driver(XTrainPath, yTrainPath,
     """
     print('trn path:', XTrainPath)
     aug = bool(aug)
+    print("data augmentation: {}".format(aug))
     d = bool(d)
     if d:
         print('debugging mode: ON')
