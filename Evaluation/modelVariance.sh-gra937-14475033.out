@@ -5,8 +5,8 @@ Due to MODULEPATH changes, the following have been reloaded:
 Python 3.5.4
 Using TensorFlow backend.
 Traceback (most recent call last):
-  File "./modelVariance.py", line 89, in <module>
+  File "./modelVariance.py", line 90, in <module>
     args.modelName)
-  File "./modelVariance.py", line 49, in main_driver
-    assert (len(vggDir) == 1)
-AssertionError
+  File "./modelVariance.py", line 50, in main_driver
+    raise Exception(modelDir)
+Exception: []
