@@ -45,9 +45,10 @@ def main_driver(modelBaseDir, dataPath, outputDir, modelName):
     for i in range(1, 11):
         expPathi = join(varainceExperimentDir, str(i))
         files = os.listdir(expPathi)
-        vggDir = [f for f in files if modelName in f]
-        assert (len(vggDir) == 1)
-        modelPathi = join(expPathi, vggDir[0])
+        modelDir = [f for f in files if modelName in f]
+        if not(len(modelDir) == 1):
+          raise Exception(modelDir)
+        modelPathi = join(expPathi, modelDir[0])
         modelHistPath = join(modelPathi, "modelHistory.pickle")
         modelPath = join(modelPathi, "{}.hdf5".format(modelName))
         modelHistPathList.append(modelHistPath)

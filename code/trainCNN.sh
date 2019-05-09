@@ -17,7 +17,7 @@ xvalPath="../PreprocessedData/preprocessedForCNN/imgData_val.npy"
 ytrnPath="../PreprocessedData/preprocessedForCNN/targetData_train.npy"
 yvalPath="../PreprocessedData/preprocessedForCNN/targetData_val.npy"
 model="VGG16"
+#weights="../pretrainedModelWeights/InceptionV3/inception_v3_weights_tf_dim_ordering_tf_kernels_notop.h5"
 output="../modelOutput"
 aug=1
-
 python ./trainCNN.py -xtrn "$xtrnPath" -xval "$xvalPath" -ytrn "$ytrnPath" -yval "$yvalPath" -o "$output" -m "$model" -aug "$aug"
