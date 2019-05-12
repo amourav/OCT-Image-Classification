@@ -14,6 +14,7 @@ from keras.optimizers import Adam
 from keras.utils import to_categorical
 from keras.backend import set_image_data_format
 from keras.callbacks import ModelCheckpoint
+from keras.preprocessing.image import ImageDataGenerator
 import datetime
 import pickle
 
@@ -21,7 +22,8 @@ import pickle
 def getModel(modelName,
              inputShape=(224,224,3),
              nClasses=4,
-             lastLayer=256):
+             lastLayer=512,
+             weights='imagenet'):
     """
     model getter
     :param modelName (str): Name of CNN model to train. Either [InceptionV3 or VGG16]
@@ -31,21 +33,21 @@ def getModel(modelName,
     """
     input_tensor = Input(shape=inputShape)
     if modelName == 'InceptionV3':
-        base_model = InceptionV3(weights='imagenet',
+        base_model = InceptionV3(weights=weights,
                                  include_top=False,
                                  input_tensor=input_tensor)
     elif modelName == 'VGG16':
-        base_model = VGG16(weights='imagenet',
+        base_model = VGG16(weights=weights,
                            include_top=False,
                            input_tensor=input_tensor)
     elif modelName == 'ResNet50':
-        base_model = ResNet50(weights='imagenet',
+        base_model = ResNet50(weights=weights,
                               include_top=False,
                               input_tensor=input_tensor)
-    elif  modelName == 'Xception':
-        base_model = Xception(weights='imagenet',
-                                include_top=False,
-                                input_tensor=input_tensor)
+    elif modelName == 'Xception':
+        base_model = Xception(weights=weights,
+                              include_top=False,
+                              input_tensor=input_tensor)
     else:
         raise Exception('model name not recognized')
     # add a global spatial average pooling layer
@@ -72,9 +74,12 @@ def getModel(modelName,
 def trainModel(xTrn, yTrn,
                XVal, yVal,
                outputPath,
-               modelName, d,
-               nEpochs=100,
-               batchSize=20):
+               modelName,
+               modelWeights,
+               aug, d,
+               nEpochs=150,
+               batchSize=30,
+               lastLayer=512):
     """
     Train CNN Model
     :param xTrn (npy array): Input training image data (nTrain, Xres, Yres, nChannels=3)
@@ -95,15 +100,18 @@ def trainModel(xTrn, yTrn,
         xTrn, yTrn = xTrn[0:nDebug], yTrn[0:nDebug]
         if not (XVal is None) and not (yVal is None):
             XVal, yVal = XVal[0:nDebug], yVal[0:nDebug]
-
+    
     now = datetime.datetime.now()
     today = str(now.date()) + \
                 '_' + str(now.hour) + \
                 '_' + str(now.minute)
-    model = getModel(modelName=modelName)
+    model = getModel(modelName=modelName,
+                     weights=modelWeights,
+                     lastLayer=lastLayer)
     print(model.summary())
     modelOutputDir = os.path.join(outputPath,
                                    modelName + '_' +
+                                   "dataAug_" + str(aug) +
                                    today)
     if not(os.path.isdir(modelOutputDir)):
         os.mkdir(modelOutputDir)
@@ -115,22 +123,50 @@ def trainModel(xTrn, yTrn,
         valData = None
 
     # Set Callbacks
-    modelOutPath = os.path.join(modelOutputDir, 'modelName.hdf5')
+    modelOutPath = os.path.join(modelOutputDir, '{}.hdf5'.format(modelName))
     modelCheckpoint = ModelCheckpoint(modelOutPath, monitor='val_loss',
                                       save_best_only=True,
                                       mode='auto', period=1)
     callbacks = [modelCheckpoint]
-    history = model.fit(x=xTrn,
-                        y=yTrn,
-                        batch_size=batchSize,
-                        epochs=nEpochs,
-                        verbose=1,
-                        callbacks=callbacks,
-                        validation_data=valData,
-                        shuffle=True)
+    if not (aug):
+        history = model.fit(x=xTrn,
+                            y=yTrn,
+                            batch_size=batchSize,
+                            epochs=nEpochs,
+                            verbose=1,
+                            callbacks=callbacks,
+                            validation_data=valData,
+                            shuffle=True)
+    else:
+        print('fitting image generator')
+        datagen = ImageDataGenerator(
+            featurewise_center=False,
+            featurewise_std_normalization=False,
+            samplewise_center=True,
+            samplewise_std_normalization=True,
+            rotation_range=15,
+            width_shift_range=0.1,
+            height_shift_range=0,
+            zoom_range=0.1,  
+            brightness_range=(0.90, 1.1),
+            shear_range=15,
+            fill_mode='nearest',
+            vertical_flip=False,
+            horizontal_flip=True)
+        history = model.fit_generator(datagen.flow(xTrn, yTrn,
+                                                   batch_size=batchSize),
+                                      steps_per_epoch=len(xTrn) / batchSize,
+                                      epochs=nEpochs, callbacks=callbacks,
+                                      validation_data=valData, shuffle=True,
+                                      verbose=1)
+
     historyPath = os.path.join(modelOutputDir, 'modelHistory.pickle')
     pickle.dump(history, open(historyPath, 'wb'))
-    model.save(os.path.join(modelOutputDir, 'modelName_final.hdf5'))
+    model.save(os.path.join(modelOutputDir, '{}_final.hdf5'.format(modelName)))
+    with open(os.path.join(modelOutputDir, 'trnInfo.txt'), 'w') as fid:
+        fid.write("nEpochs: {} \n".format(nEpochs))
+        fid.write("batchSize: {} \n".format(batchSize))
+        fid.write("lastLayer: {} \n".format(lastLayer))
     print('done!')
 
 
@@ -153,6 +189,15 @@ def get_parser():
     module_parser.add_argument("-m", dest="model", type=str,
                                default='InceptionV3',
                                help='model (default: inception)')
+    module_parser.add_argument("-w", dest="modelWeights", type=str,
+                               default='imagenet',
+                               help='model weights')
+
+    module_parser.add_argument("-aug", dest="aug",
+                               type=int,
+                               default=0,
+                               choices=[1, 0],
+                               help='augment: 1 - ON, 0 - OFF')
     module_parser.add_argument("-d", dest="d",
                                type=int,
                                default=0,
@@ -163,7 +208,9 @@ def get_parser():
 
 def main_driver(XTrainPath, yTrainPath,
                 XValPath, yValPath,
-                outputPath, model, d):
+                outputPath, model,
+                modelWeights,
+                aug, d):
     """
     Load Training and Validation data and call trainModel.
     :param XTrainPath (str): path to training image data
@@ -175,6 +222,9 @@ def main_driver(XTrainPath, yTrainPath,
     :param d (str): set d=1 to debug.
     :return: None
     """
+    print('trn path:', XTrainPath)
+    aug = bool(aug)
+    print("data augmentation: {}".format(aug))
     d = bool(d)
     if d:
         print('debugging mode: ON')
@@ -190,11 +240,15 @@ def main_driver(XTrainPath, yTrainPath,
         XVal = None
         yVal = None
     if not(os.path.isdir(outputPath)):
-        os.mkdir(outputPath)
+        os.makedirs(outputPath)
     trainModel(xTrn, yTrn,
                XVal, yVal,
                outputPath,
-               model, d)
+               model, modelWeights,
+               aug, d)
+    with open(os.path.join(outputPath, 'dataInfo.txt'), 'w') as fid:
+        fid.write("XTrainPath: {} \n".format(XTrainPath))
+        fid.write("XValPath: {} \n".format(XValPath))
 
 
 if __name__ == "__main__":
@@ -207,6 +261,8 @@ if __name__ == "__main__":
                     args.yValPath,
                     args.outputPath,
                     args.model,
+                    args.modelWeights,
+                    args.aug,
                     args.d)
         print('Done!')
 
