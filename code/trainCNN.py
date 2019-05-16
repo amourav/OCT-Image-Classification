@@ -77,7 +77,7 @@ def trainModel(xTrn, yTrn,
                outputPath,
                modelName,
                modelWeights,
-               aug, d,
+               aug, d, note,
                xTest = None,
                nEpochs=150,
                batchSize=30,
@@ -98,10 +98,13 @@ def trainModel(xTrn, yTrn,
 
     if d:
         nEpochs = 3
-        nDebug = 200
+        batchSize = 2
+        nDebug = 20
         xTrn, yTrn = xTrn[0:nDebug], yTrn[0:nDebug]
         if not (XVal is None) and not (yVal is None):
             XVal, yVal = XVal[0:nDebug], yVal[0:nDebug]
+        if xTest is not None:
+            xTest = xTest[0:nDebug]
     
     now = datetime.datetime.now()
     today = str(now.date()) + \
@@ -114,7 +117,7 @@ def trainModel(xTrn, yTrn,
     modelOutputDir = os.path.join(outputPath,
                                    modelName + '_' +
                                    "dataAug_" + str(aug) +
-                                   today)
+                                   today + '_' + note)
     if not(os.path.isdir(modelOutputDir)):
         os.mkdir(modelOutputDir)
     yTrn = to_categorical(yTrn)
@@ -130,7 +133,7 @@ def trainModel(xTrn, yTrn,
                                       save_best_only=True,
                                       mode='auto', period=1)
     callbacks = [modelCheckpoint]
-    if not (aug):
+    if not(aug):
         history = model.fit(x=xTrn,
                             y=yTrn,
                             batch_size=batchSize,
@@ -161,15 +164,17 @@ def trainModel(xTrn, yTrn,
                                       epochs=nEpochs, callbacks=callbacks,
                                       validation_data=valData, shuffle=True,
                                       verbose=1)
-    historyPath = os.path.join(modelOutputDir, 'modelHistory.pickle')
-    histDf = pd.DataFrame(hist)
+    historyPath = os.path.join(modelOutputDir, '{}_History.csv'.format(modelName))
     hist = history.history
+    histDf = pd.DataFrame(hist)
+    histDf.to_csv(historyPath)
     if xTest is not None:
-        pass
-
-
-    #
-    pickle.dump(history, open(historyPath, 'wb'))
+        print('running model pred on test set')
+        yTestPred = model.predict(xTest,
+                                  batch_size=20,
+                                  verbose=1)
+        yTestPredPath = os.path.join(modelOutputDir, 'yTestPred.npy')
+        np.save(yTestPredPath, yTestPred)
     model.save(os.path.join(modelOutputDir, '{}_final.hdf5'.format(modelName)))
     with open(os.path.join(modelOutputDir, 'trnInfo.txt'), 'w') as fid:
         fid.write("nEpochs: {} \n".format(nEpochs))
@@ -192,7 +197,7 @@ def get_parser():
     module_parser.add_argument("-yval", dest="yValPath", type=str,
                                default='',
                                help="y val path")
-    module_parser.add_argument("-tx", dest="XTestPath", type=str,
+    module_parser.add_argument("-xtest", dest="XTestPath", type=str,
                                default=None,
                                help='model weights')
     module_parser.add_argument("-o", dest="outputPath", type=str,
@@ -213,6 +218,10 @@ def get_parser():
                                default=0,
                                choices=[1, 0],
                                help='debug: 1 - ON, 0 - OFF')
+    module_parser.add_argument("-n", dest="note",
+                               type=str,
+                               default='',
+                               help='note: will be added to output file path')
     return module_parser
 
 
@@ -221,7 +230,7 @@ def main_driver(XTrainPath, yTrainPath,
                 XTestPath,
                 outputPath, model,
                 modelWeights,
-                aug, d):
+                aug, d, note):
     """
     Load Training and Validation data and call trainModel.
     :param XTrainPath (str): path to training image data
@@ -261,11 +270,11 @@ def main_driver(XTrainPath, yTrainPath,
                XVal, yVal,
                outputPath,
                model, modelWeights,
-               aug, d, xTest=xTest)
+               aug, d, note, xTest=xTest)
     with open(os.path.join(outputPath, 'dataInfo.txt'), 'w') as fid:
         fid.write("XTrainPath: {} \n".format(XTrainPath))
         fid.write("XValPath: {} \n".format(XValPath))
-    print('done!')
+        fid.write("XTestPath: {} \n".format(str(XTestPath)))
 
 
 if __name__ == "__main__":
@@ -281,7 +290,8 @@ if __name__ == "__main__":
                     args.model,
                     args.modelWeights,
                     args.aug,
-                    args.d)
+                    args.d,
+                    args.note)
         print('Done!')
 
     except ArgumentError as arg_exception:
