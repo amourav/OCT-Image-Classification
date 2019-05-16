@@ -21,8 +21,7 @@ def preprocessDir(dataPath,
                   outputPath,
                   subdir,
                   nTrain,
-                  newSize,
-                  debug_):
+                  newSize):
     """
     Preprocess directory of .jpeg images.
     Each image is normalized and resized to desired resolution
@@ -120,23 +119,22 @@ def main_driver(dataPath, outputPath, subdir,
     :return: None
     """
     if d == 1:
-        debug_ = True
-    else:
-        debug_ = False
+        print('debug mode: ON')
+        subdir = 'train'
+        nTrain = 10
+
     assert(os.path.isdir(dataPath))
     newSize = (int(xRes), int(yRes), 3)
     if not(os.path.isdir(outputPath)):
-        os.mkdir(outputPath)
-
+        os.makedirs(outputPath)
+    print(outputPath)
     if subdir == 'all':
         for subdir in ['test', 'train', 'val']:
             preprocessDir(dataPath, outputPath,
-                          subdir, nTrain, newSize,
-                          debug_)
+                          subdir, nTrain, newSize)
     else:
-        preprocessDir(dataPath, outputPath, nTrain,
-                      subdir, nTrain, newSize,
-                      debug_)
+        preprocessDir(dataPath, outputPath,
+                      subdir, nTrain, newSize)
 
 
 if __name__ == "__main__":

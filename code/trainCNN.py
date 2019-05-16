@@ -3,6 +3,7 @@ import os
 import traceback
 import sys
 import numpy as np
+import pandas as pd
 from keras.applications.inception_v3 import InceptionV3
 from keras.applications.vgg16 import VGG16
 from keras.applications.resnet50 import ResNet50
@@ -77,6 +78,7 @@ def trainModel(xTrn, yTrn,
                modelName,
                modelWeights,
                aug, d,
+               xTest = None,
                nEpochs=150,
                batchSize=30,
                lastLayer=512):
@@ -159,15 +161,21 @@ def trainModel(xTrn, yTrn,
                                       epochs=nEpochs, callbacks=callbacks,
                                       validation_data=valData, shuffle=True,
                                       verbose=1)
-
     historyPath = os.path.join(modelOutputDir, 'modelHistory.pickle')
+    histDf = pd.DataFrame(hist)
+    hist = history.history
+    if xTest is not None:
+        pass
+
+
+    #
     pickle.dump(history, open(historyPath, 'wb'))
     model.save(os.path.join(modelOutputDir, '{}_final.hdf5'.format(modelName)))
     with open(os.path.join(modelOutputDir, 'trnInfo.txt'), 'w') as fid:
         fid.write("nEpochs: {} \n".format(nEpochs))
         fid.write("batchSize: {} \n".format(batchSize))
         fid.write("lastLayer: {} \n".format(lastLayer))
-    print('done!')
+    return history
 
 
 def get_parser():
@@ -184,6 +192,9 @@ def get_parser():
     module_parser.add_argument("-yval", dest="yValPath", type=str,
                                default='',
                                help="y val path")
+    module_parser.add_argument("-tx", dest="XTestPath", type=str,
+                               default=None,
+                               help='model weights')
     module_parser.add_argument("-o", dest="outputPath", type=str,
                                help='base dir for outputs')
     module_parser.add_argument("-m", dest="model", type=str,
@@ -192,7 +203,6 @@ def get_parser():
     module_parser.add_argument("-w", dest="modelWeights", type=str,
                                default='imagenet',
                                help='model weights')
-
     module_parser.add_argument("-aug", dest="aug",
                                type=int,
                                default=0,
@@ -208,6 +218,7 @@ def get_parser():
 
 def main_driver(XTrainPath, yTrainPath,
                 XValPath, yValPath,
+                XTestPath,
                 outputPath, model,
                 modelWeights,
                 aug, d):
@@ -231,8 +242,13 @@ def main_driver(XTrainPath, yTrainPath,
     set_image_data_format('channels_last')
     assert(os.path.isfile(XTrainPath))
     assert(os.path.isfile(yTrainPath))
+    if XTestPath is not None:
+        assert(os.path.isfile(XTestPath))
+        xTest = np.load(XTestPath)
     xTrn = np.load(XTrainPath)
     yTrn = np.load(yTrainPath)
+
+
     if os.path.isfile(XValPath) and os.path.isfile(yValPath):
         XVal = np.load(XValPath)
         yVal = np.load(yValPath)
@@ -245,10 +261,11 @@ def main_driver(XTrainPath, yTrainPath,
                XVal, yVal,
                outputPath,
                model, modelWeights,
-               aug, d)
+               aug, d, xTest=xTest)
     with open(os.path.join(outputPath, 'dataInfo.txt'), 'w') as fid:
         fid.write("XTrainPath: {} \n".format(XTrainPath))
         fid.write("XValPath: {} \n".format(XValPath))
+    print('done!')
 
 
 if __name__ == "__main__":
@@ -259,6 +276,7 @@ if __name__ == "__main__":
                     args.yTrainPath,
                     args.XValPath,
                     args.yValPath,
+                    args.XTestPath,
                     args.outputPath,
                     args.model,
                     args.modelWeights,
