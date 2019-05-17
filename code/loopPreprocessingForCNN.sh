@@ -3,8 +3,8 @@ input="..\RawData\OCT2017"
 subDirs='all'
 outputBase="..\PreprocessedData\preprocessedForCNN\resample_"
 nsamples=1000
-xRes=224
-yRes=224
+xRes=299
+yRes=299
 outputBase2="$outputBase($xRes, $yRes)\subsample_"
 
 source "C:\Anaconda\Scripts\activate" py36
