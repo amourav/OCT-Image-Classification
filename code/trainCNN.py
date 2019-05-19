@@ -9,7 +9,7 @@ from keras.applications.vgg16 import VGG16
 from keras.applications.resnet50 import ResNet50
 from keras.applications.xception import Xception
 from keras.layers import GlobalAveragePooling2D
-from keras.layers import Dense
+from keras.layers import Dense, Flatten
 from keras.models import Model, Input
 from keras.optimizers import Adam
 from keras.utils import to_categorical
@@ -21,9 +21,9 @@ import pickle
 
 
 def getModel(modelName,
-             inputShape=(224,224,3),
+             inputShape,
              nClasses=4,
-             lastLayer=512,
+             lastLayer=4096,
              weights='imagenet'):
     """
     model getter
@@ -53,10 +53,12 @@ def getModel(modelName,
         raise Exception('model name not recognized')
     # add a global spatial average pooling layer
     x = base_model.output
-    x = GlobalAveragePooling2D()(x)
+    #x = GlobalAveragePooling2D()(x)
+    x = Flatten()(x)
     # let's add a fully-connected layer
     x = Dense(lastLayer, activation='relu')(x)
-    # and a logistic layer -- let's say we have 200 classes
+    x = Dense(lastLayer, activation='relu')(x)
+    # and a logistic layer
     predictions = Dense(nClasses, activation='softmax')(x)
     # this is the model we will train
     model = Model(inputs=base_model.input, outputs=predictions)
@@ -110,9 +112,13 @@ def trainModel(xTrn, yTrn,
     today = str(now.date()) + \
                 '_' + str(now.hour) + \
                 '_' + str(now.minute)
-    model = getModel(modelName=modelName,
+    xShape = xTrn.shape
+    xShape = (xShape[1], xShape[2], xShape[3])
+    model = getModel(modelName=modelName, 
+                     inputShape=xShape,
                      weights=modelWeights,
                      lastLayer=lastLayer)
+    print(note)
     print(model.summary())
     modelOutputDir = os.path.join(outputPath,
                                    modelName + '_' +

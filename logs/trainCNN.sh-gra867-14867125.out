@@ -1,0 +1,14 @@
+
+Due to MODULEPATH changes, the following have been reloaded:
+  1) openmpi/2.1.1
+
+Python 3.5.4
+Using TensorFlow backend.
+Traceback (most recent call last):
+  File "./trainCNN.py", line 294, in <module>
+    args.note)
+  File "./trainCNN.py", line 252, in main_driver
+    assert(os.path.isfile(XTrainPath))
+AssertionError
+trn path: ../PreprocessedData/preprocessedForCNN/224x224/imgData_(224, 224, 3)_train_1000.npy
+data augmentation: False

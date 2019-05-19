@@ -1,0 +1,331 @@
+
+Due to MODULEPATH changes, the following have been reloaded:
+  1) openmpi/2.1.1
+
+Python 3.5.4
+2019-05-17 11:54:35.996305: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1432] Found device 0 with properties: 
+name: Tesla P100-PCIE-12GB major: 6 minor: 0 memoryClockRate(GHz): 1.3285
+pciBusID: 0000:04:00.0
+totalMemory: 11.91GiB freeMemory: 11.63GiB
+2019-05-17 11:54:35.996479: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1511] Adding visible gpu devices: 0
+2019-05-17 11:54:36.417893: I tensorflow/core/common_runtime/gpu/gpu_device.cc:982] Device interconnect StreamExecutor with strength 1 edge matrix:
+2019-05-17 11:54:36.418053: I tensorflow/core/common_runtime/gpu/gpu_device.cc:988]      0 
+2019-05-17 11:54:36.418095: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1001] 0:   N 
+2019-05-17 11:54:36.418440: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1115] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 11251 MB memory) -> physical GPU (device: 0, name: Tesla P100-PCIE-12GB, pci bus id: 0000:04:00.0, compute capability: 6.0)
+2019-05-17 11:54:36.418992: I tensorflow/core/common_runtime/process_util.cc:69] Creating new thread pool with default inter op setting: 2. Tune using inter_op_parallelism_threads for best performance.
+trn path: ../PreprocessedData/preprocessedForCNN/224x224/imgData_(224, 224, 3)_train_n1000.npy
+data augmentation: False
+flattenInsteadofGAP_2L
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+input_1 (InputLayer)         (None, 224, 224, 3)       0         
+_________________________________________________________________
+block1_conv1 (Conv2D)        (None, 224, 224, 64)      1792      
+_________________________________________________________________
+block1_conv2 (Conv2D)        (None, 224, 224, 64)      36928     
+_________________________________________________________________
+block1_pool (MaxPooling2D)   (None, 112, 112, 64)      0         
+_________________________________________________________________
+block2_conv1 (Conv2D)        (None, 112, 112, 128)     73856     
+_________________________________________________________________
+block2_conv2 (Conv2D)        (None, 112, 112, 128)     147584    
+_________________________________________________________________
+block2_pool (MaxPooling2D)   (None, 56, 56, 128)       0         
+_________________________________________________________________
+block3_conv1 (Conv2D)        (None, 56, 56, 256)       295168    
+_________________________________________________________________
+block3_conv2 (Conv2D)        (None, 56, 56, 256)       590080    
+_________________________________________________________________
+block3_conv3 (Conv2D)        (None, 56, 56, 256)       590080    
+_________________________________________________________________
+block3_pool (MaxPooling2D)   (None, 28, 28, 256)       0         
+_________________________________________________________________
+block4_conv1 (Conv2D)        (None, 28, 28, 512)       1180160   
+_________________________________________________________________
+block4_conv2 (Conv2D)        (None, 28, 28, 512)       2359808   
+_________________________________________________________________
+block4_conv3 (Conv2D)        (None, 28, 28, 512)       2359808   
+_________________________________________________________________
+block4_pool (MaxPooling2D)   (None, 14, 14, 512)       0         
+_________________________________________________________________
+block5_conv1 (Conv2D)        (None, 14, 14, 512)       2359808   
+_________________________________________________________________
+block5_conv2 (Conv2D)        (None, 14, 14, 512)       2359808   
+_________________________________________________________________
+block5_conv3 (Conv2D)        (None, 14, 14, 512)       2359808   
+_________________________________________________________________
+block5_pool (MaxPooling2D)   (None, 7, 7, 512)         0         
+_________________________________________________________________
+flatten_1 (Flatten)          (None, 25088)             0         
+_________________________________________________________________
+dense_1 (Dense)              (None, 512)               12845568  
+_________________________________________________________________
+dense_2 (Dense)              (None, 4)                 2052      
+=================================================================
+Total params: 27,562,308
+Trainable params: 12,847,620
+Non-trainable params: 14,714,688
+_________________________________________________________________
+None
+Train on 1000 samples, validate on 32 samples
+Epoch 1/150
+
+  30/1000 [..............................] - ETA: 1:41 - loss: 1.5854 - acc: 0.1333 - categorical_crossentropy: 1.5854
+  60/1000 [>.............................] - ETA: 51s - loss: 1.9156 - acc: 0.1333 - categorical_crossentropy: 1.9156 
+  90/1000 [=>............................] - ETA: 34s - loss: 1.9915 - acc: 0.1889 - categorical_crossentropy: 1.9915
+ 120/1000 [==>...........................] - ETA: 25s - loss: 1.9803 - acc: 0.1917 - categorical_crossentropy: 1.9803
+ 150/1000 [===>..........................] - ETA: 20s - loss: 1.8506 - acc: 0.2333 - categorical_crossentropy: 1.8506
+ 180/1000 [====>.........................] - ETA: 16s - loss: 1.7424 - acc: 0.2611 - categorical_crossentropy: 1.7424
+ 210/1000 [=====>........................] - ETA: 14s - loss: 1.7637 - acc: 0.2524 - categorical_crossentropy: 1.7637
+ 240/1000 [======>.......................] - ETA: 12s - loss: 1.7562 - acc: 0.2375 - categorical_crossentropy: 1.7562
+ 270/1000 [=======>......................] - ETA: 11s - loss: 1.6890 - acc: 0.2704 - categorical_crossentropy: 1.6890
+ 300/1000 [========>.....................] - ETA: 9s - loss: 1.6409 - acc: 0.2900 - categorical_crossentropy: 1.6409 
+ 330/1000 [========>.....................] - ETA: 8s - loss: 1.6156 - acc: 0.2970 - categorical_crossentropy: 1.6156
+ 360/1000 [=========>....................] - ETA: 7s - loss: 1.5999 - acc: 0.3111 - categorical_crossentropy: 1.5999
+ 390/1000 [==========>...................] - ETA: 7s - loss: 1.5896 - acc: 0.3256 - categorical_crossentropy: 1.5896
+ 420/1000 [===========>..................] - ETA: 6s - loss: 1.5808 - acc: 0.3333 - categorical_crossentropy: 1.5808
+ 450/1000 [============>.................] - ETA: 5s - loss: 1.5562 - acc: 0.3378 - categorical_crossentropy: 1.5562
+ 480/1000 [=============>................] - ETA: 5s - loss: 1.5212 - acc: 0.3542 - categorical_crossentropy: 1.5212
+ 510/1000 [==============>...............] - ETA: 4s - loss: 1.4999 - acc: 0.3667 - categorical_crossentropy: 1.4999
+ 540/1000 [===============>..............] - ETA: 4s - loss: 1.4875 - acc: 0.3667 - categorical_crossentropy: 1.4875
+ 570/1000 [================>.............] - ETA: 3s - loss: 1.4740 - acc: 0.3684 - categorical_crossentropy: 1.4740
+ 600/1000 [=================>............] - ETA: 3s - loss: 1.4612 - acc: 0.3700 - categorical_crossentropy: 1.4612
+ 630/1000 [=================>............] - ETA: 3s - loss: 1.4397 - acc: 0.3810 - categorical_crossentropy: 1.4397
+ 660/1000 [==================>...........] - ETA: 2s - loss: 1.4185 - acc: 0.3939 - categorical_crossentropy: 1.4185
+ 690/1000 [===================>..........] - ETA: 2s - loss: 1.4000 - acc: 0.4043 - categorical_crossentropy: 1.4000
+ 720/1000 [====================>.........] - ETA: 2s - loss: 1.3821 - acc: 0.4167 - categorical_crossentropy: 1.3821
+ 750/1000 [=====================>........] - ETA: 1s - loss: 1.3714 - acc: 0.4160 - categorical_crossentropy: 1.3714
+ 780/1000 [======================>.......] - ETA: 1s - loss: 1.3588 - acc: 0.4231 - categorical_crossentropy: 1.3588
+ 810/1000 [=======================>......] - ETA: 1s - loss: 1.3409 - acc: 0.4346 - categorical_crossentropy: 1.3409
+ 840/1000 [========================>.....] - ETA: 1s - loss: 1.3256 - acc: 0.4440 - categorical_crossentropy: 1.3256
+ 870/1000 [=========================>....] - ETA: 0s - loss: 1.3153 - acc: 0.4506 - categorical_crossentropy: 1.3153
+ 900/1000 [==========================>...] - ETA: 0s - loss: 1.3070 - acc: 0.4544 - categorical_crossentropy: 1.3070
+ 930/1000 [==========================>...] - ETA: 0s - loss: 1.2992 - acc: 0.4581 - categorical_crossentropy: 1.2992
+ 960/1000 [===========================>..] - ETA: 0s - loss: 1.2910 - acc: 0.4615 - categorical_crossentropy: 1.2910
+ 990/1000 [============================>.] - ETA: 0s - loss: 1.2818 - acc: 0.4657 - categorical_crossentropy: 1.2818
+1000/1000 [==============================] - 8s 8ms/step - loss: 1.2804 - acc: 0.4660 - categorical_crossentropy: 1.2804 - val_loss: 0.6776 - val_acc: 0.8125 - val_categorical_crossentropy: 0.6776
+Epoch 2/150
+
+  30/1000 [..............................] - ETA: 3s - loss: 0.7763 - acc: 0.8000 - categorical_crossentropy: 0.7763
+  60/1000 [>.............................] - ETA: 3s - loss: 0.7464 - acc: 0.7500 - categorical_crossentropy: 0.7464
+  90/1000 [=>............................] - ETA: 3s - loss: 0.7600 - acc: 0.7556 - categorical_crossentropy: 0.7600
+ 120/1000 [==>...........................] - ETA: 3s - loss: 0.7661 - acc: 0.7500 - categorical_crossentropy: 0.7661
+ 150/1000 [===>..........................] - ETA: 3s - loss: 0.7536 - acc: 0.7533 - categorical_crossentropy: 0.7536
+ 180/1000 [====>.........................] - ETA: 3s - loss: 0.7677 - acc: 0.7389 - categorical_crossentropy: 0.7677
+ 210/1000 [=====>........................] - ETA: 2s - loss: 0.7659 - acc: 0.7429 - categorical_crossentropy: 0.7659
+ 240/1000 [======>.......................] - ETA: 2s - loss: 0.7661 - acc: 0.7333 - categorical_crossentropy: 0.7661
+ 270/1000 [=======>......................] - ETA: 2s - loss: 0.7600 - acc: 0.7296 - categorical_crossentropy: 0.7600
+ 300/1000 [========>.....................] - ETA: 2s - loss: 0.7766 - acc: 0.7200 - categorical_crossentropy: 0.7766
+ 330/1000 [========>.....................] - ETA: 2s - loss: 0.7704 - acc: 0.7303 - categorical_crossentropy: 0.7704
+ 360/1000 [=========>....................] - ETA: 2s - loss: 0.7710 - acc: 0.7333 - categorical_crossentropy: 0.7710
+ 390/1000 [==========>...................] - ETA: 2s - loss: 0.7641 - acc: 0.7410 - categorical_crossentropy: 0.7641
+ 420/1000 [===========>..................] - ETA: 2s - loss: 0.7854 - acc: 0.7262 - categorical_crossentropy: 0.7854
+ 450/1000 [============>.................] - ETA: 2s - loss: 0.7956 - acc: 0.7178 - categorical_crossentropy: 0.7956
+ 480/1000 [=============>................] - ETA: 1s - loss: 0.7945 - acc: 0.7167 - categorical_crossentropy: 0.7945
+ 510/1000 [==============>...............] - ETA: 1s - loss: 0.7887 - acc: 0.7196 - categorical_crossentropy: 0.7887
+ 540/1000 [===============>..............] - ETA: 1s - loss: 0.7795 - acc: 0.7241 - categorical_crossentropy: 0.7795
+ 570/1000 [================>.............] - ETA: 1s - loss: 0.7977 - acc: 0.7123 - categorical_crossentropy: 0.7977
+ 600/1000 [=================>............] - ETA: 1s - loss: 0.7920 - acc: 0.7117 - categorical_crossentropy: 0.7920
+ 630/1000 [=================>............] - ETA: 1s - loss: 0.7824 - acc: 0.7143 - categorical_crossentropy: 0.7824
+ 660/1000 [==================>...........] - ETA: 1s - loss: 0.7824 - acc: 0.7121 - categorical_crossentropy: 0.7824
+ 690/1000 [===================>..........] - ETA: 1s - loss: 0.7822 - acc: 0.7130 - categorical_crossentropy: 0.7822
+ 720/1000 [====================>.........] - ETA: 1s - loss: 0.7789 - acc: 0.7125 - categorical_crossentropy: 0.7789
+ 750/1000 [=====================>........] - ETA: 0s - loss: 0.7691 - acc: 0.7160 - categorical_crossentropy: 0.7691
+ 780/1000 [======================>.......] - ETA: 0s - loss: 0.7665 - acc: 0.7115 - categorical_crossentropy: 0.7665
+ 810/1000 [=======================>......] - ETA: 0s - loss: 0.7660 - acc: 0.7111 - categorical_crossentropy: 0.7660
+ 840/1000 [========================>.....] - ETA: 0s - loss: 0.7627 - acc: 0.7119 - categorical_crossentropy: 0.7627
+ 870/1000 [=========================>....] - ETA: 0s - loss: 0.7578 - acc: 0.7161 - categorical_crossentropy: 0.7578
+ 900/1000 [==========================>...] - ETA: 0s - loss: 0.7542 - acc: 0.7178 - categorical_crossentropy: 0.7542
+ 930/1000 [==========================>...] - ETA: 0s - loss: 0.7489 - acc: 0.7204 - categorical_crossentropy: 0.7489
+ 960/1000 [===========================>..] - ETA: 0s - loss: 0.7455 - acc: 0.7208 - categorical_crossentropy: 0.7455
+ 990/1000 [============================>.] - ETA: 0s - loss: 0.7463 - acc: 0.7192 - categorical_crossentropy: 0.7463
+1000/1000 [==============================] - 4s 4ms/step - loss: 0.7443 - acc: 0.7200 - categorical_crossentropy: 0.7443 - val_loss: 0.6595 - val_acc: 0.7187 - val_categorical_crossentropy: 0.6595
+Epoch 3/150
+
+  30/1000 [..............................] - ETA: 3s - loss: 0.6494 - acc: 0.7333 - categorical_crossentropy: 0.6494
+  60/1000 [>.............................] - ETA: 3s - loss: 0.6820 - acc: 0.7167 - categorical_crossentropy: 0.6820
+  90/1000 [=>............................] - ETA: 3s - loss: 0.6798 - acc: 0.7333 - categorical_crossentropy: 0.6798
+ 120/1000 [==>...........................] - ETA: 3s - loss: 0.6477 - acc: 0.7667 - categorical_crossentropy: 0.6477
+ 150/1000 [===>..........................] - ETA: 3s - loss: 0.6348 - acc: 0.7533 - categorical_crossentropy: 0.6348
+ 180/1000 [====>.........................] - ETA: 3s - loss: 0.6763 - acc: 0.7333 - categorical_crossentropy: 0.6763
+ 210/1000 [=====>........................] - ETA: 3s - loss: 0.6432 - acc: 0.7524 - categorical_crossentropy: 0.6432
+ 240/1000 [======>.......................] - ETA: 2s - loss: 0.6469 - acc: 0.7500 - categorical_crossentropy: 0.6469
+ 270/1000 [=======>......................] - ETA: 2s - loss: 0.6354 - acc: 0.7593 - categorical_crossentropy: 0.6354
+ 300/1000 [========>.....................] - ETA: 2s - loss: 0.6336 - acc: 0.7533 - categorical_crossentropy: 0.6336
+ 330/1000 [========>.....................] - ETA: 2s - loss: 0.6339 - acc: 0.7515 - categorical_crossentropy: 0.6339
+ 360/1000 [=========>....................] - ETA: 2s - loss: 0.6330 - acc: 0.7556 - categorical_crossentropy: 0.6330
+ 390/1000 [==========>...................] - ETA: 2s - loss: 0.6159 - acc: 0.7692 - categorical_crossentropy: 0.6159
+ 420/1000 [===========>..................] - ETA: 2s - loss: 0.6127 - acc: 0.7714 - categorical_crossentropy: 0.6127
+ 450/1000 [============>.................] - ETA: 2s - loss: 0.6074 - acc: 0.7778 - categorical_crossentropy: 0.6074
+ 480/1000 [=============>................] - ETA: 1s - loss: 0.6116 - acc: 0.7750 - categorical_crossentropy: 0.6116
+ 510/1000 [==============>...............] - ETA: 1s - loss: 0.6066 - acc: 0.7784 - categorical_crossentropy: 0.6066
+ 540/1000 [===============>..............] - ETA: 1s - loss: 0.5996 - acc: 0.7815 - categorical_crossentropy: 0.5996
+ 570/1000 [================>.............] - ETA: 1s - loss: 0.5941 - acc: 0.7860 - categorical_crossentropy: 0.5941
+ 600/1000 [=================>............] - ETA: 1s - loss: 0.5894 - acc: 0.7883 - categorical_crossentropy: 0.5894
+ 630/1000 [=================>............] - ETA: 1s - loss: 0.5819 - acc: 0.7905 - categorical_crossentropy: 0.5819
+ 660/1000 [==================>...........] - ETA: 1s - loss: 0.5713 - acc: 0.7985 - categorical_crossentropy: 0.5713
+ 690/1000 [===================>..........] - ETA: 1s - loss: 0.5788 - acc: 0.7942 - categorical_crossentropy: 0.5788
+ 720/1000 [====================>.........] - ETA: 1s - loss: 0.5843 - acc: 0.7903 - categorical_crossentropy: 0.5843
+ 750/1000 [=====================>........] - ETA: 0s - loss: 0.5802 - acc: 0.7933 - categorical_crossentropy: 0.5802
+ 780/1000 [======================>.......] - ETA: 0s - loss: 0.5794 - acc: 0.7949 - categorical_crossentropy: 0.5794
+ 810/1000 [=======================>......] - ETA: 0s - loss: 0.5806 - acc: 0.7975 - categorical_crossentropy: 0.5806
+ 840/1000 [========================>.....] - ETA: 0s - loss: 0.5793 - acc: 0.7988 - categorical_crossentropy: 0.5793
+ 870/1000 [=========================>....] - ETA: 0s - loss: 0.5795 - acc: 0.7977 - categorical_crossentropy: 0.5795
+ 900/1000 [==========================>...] - ETA: 0s - loss: 0.5784 - acc: 0.7989 - categorical_crossentropy: 0.5784
+ 930/1000 [==========================>...] - ETA: 0s - loss: 0.5702 - acc: 0.8032 - categorical_crossentropy: 0.5702
+ 960/1000 [===========================>..] - ETA: 0s - loss: 0.5727 - acc: 0.8031 - categorical_crossentropy: 0.5727
+ 990/1000 [============================>.] - ETA: 0s - loss: 0.5668 - acc: 0.8061 - categorical_crossentropy: 0.5668
+1000/1000 [==============================] - 4s 4ms/step - loss: 0.5660 - acc: 0.8060 - categorical_crossentropy: 0.5660 - val_loss: 0.3706 - val_acc: 0.9062 - val_categorical_crossentropy: 0.3706
+Epoch 4/150
+
+  30/1000 [..............................] - ETA: 3s - loss: 0.3460 - acc: 0.9667 - categorical_crossentropy: 0.3460
+  60/1000 [>.............................] - ETA: 3s - loss: 0.4081 - acc: 0.9000 - categorical_crossentropy: 0.4081
+  90/1000 [=>............................] - ETA: 3s - loss: 0.4126 - acc: 0.8667 - categorical_crossentropy: 0.4126
+ 120/1000 [==>...........................] - ETA: 3s - loss: 0.4482 - acc: 0.8417 - categorical_crossentropy: 0.4482
+ 150/1000 [===>..........................] - ETA: 3s - loss: 0.4361 - acc: 0.8400 - categorical_crossentropy: 0.4361
+ 180/1000 [====>.........................] - ETA: 3s - loss: 0.4459 - acc: 0.8444 - categorical_crossentropy: 0.4459
+ 210/1000 [=====>........................] - ETA: 2s - loss: 0.4592 - acc: 0.8476 - categorical_crossentropy: 0.4592
+ 240/1000 [======>.......................] - ETA: 2s - loss: 0.4643 - acc: 0.8458 - categorical_crossentropy: 0.4643
+ 270/1000 [=======>......................] - ETA: 2s - loss: 0.4666 - acc: 0.8370 - categorical_crossentropy: 0.4666
+ 300/1000 [========>.....................] - ETA: 2s - loss: 0.4595 - acc: 0.8400 - categorical_crossentropy: 0.4595
+ 330/1000 [========>.....................] - ETA: 2s - loss: 0.4593 - acc: 0.8333 - categorical_crossentropy: 0.4593
+ 360/1000 [=========>....................] - ETA: 2s - loss: 0.4441 - acc: 0.8417 - categorical_crossentropy: 0.4441
+ 390/1000 [==========>...................] - ETA: 2s - loss: 0.4680 - acc: 0.8359 - categorical_crossentropy: 0.4680
+ 420/1000 [===========>..................] - ETA: 2s - loss: 0.4755 - acc: 0.8286 - categorical_crossentropy: 0.4755
+ 450/1000 [============>.................] - ETA: 2s - loss: 0.4663 - acc: 0.8356 - categorical_crossentropy: 0.4663
+ 480/1000 [=============>................] - ETA: 1s - loss: 0.4608 - acc: 0.8375 - categorical_crossentropy: 0.4608
+ 510/1000 [==============>...............] - ETA: 1s - loss: 0.4632 - acc: 0.8353 - categorical_crossentropy: 0.4632
+ 540/1000 [===============>..............] - ETA: 1s - loss: 0.4644 - acc: 0.8370 - categorical_crossentropy: 0.4644
+ 570/1000 [================>.............] - ETA: 1s - loss: 0.4718 - acc: 0.8298 - categorical_crossentropy: 0.4718
+ 600/1000 [=================>............] - ETA: 1s - loss: 0.4666 - acc: 0.8350 - categorical_crossentropy: 0.4666
+ 630/1000 [=================>............] - ETA: 1s - loss: 0.4604 - acc: 0.8381 - categorical_crossentropy: 0.4604
+ 660/1000 [==================>...........] - ETA: 1s - loss: 0.4661 - acc: 0.8394 - categorical_crossentropy: 0.4661
+ 690/1000 [===================>..........] - ETA: 1s - loss: 0.4708 - acc: 0.8348 - categorical_crossentropy: 0.4708
+ 720/1000 [====================>.........] - ETA: 1s - loss: 0.4693 - acc: 0.8319 - categorical_crossentropy: 0.4693
+ 750/1000 [=====================>........] - ETA: 0s - loss: 0.4732 - acc: 0.8307 - categorical_crossentropy: 0.4732
+ 780/1000 [======================>.......] - ETA: 0s - loss: 0.4672 - acc: 0.8359 - categorical_crossentropy: 0.4672
+ 810/1000 [=======================>......] - ETA: 0s - loss: 0.4697 - acc: 0.8370 - categorical_crossentropy: 0.4697
+ 840/1000 [========================>.....] - ETA: 0s - loss: 0.4694 - acc: 0.8381 - categorical_crossentropy: 0.4694
+ 870/1000 [=========================>....] - ETA: 0s - loss: 0.4637 - acc: 0.8414 - categorical_crossentropy: 0.4637
+ 900/1000 [==========================>...] - ETA: 0s - loss: 0.4639 - acc: 0.8378 - categorical_crossentropy: 0.4639
+ 930/1000 [==========================>...] - ETA: 0s - loss: 0.4682 - acc: 0.8344 - categorical_crossentropy: 0.4682
+ 960/1000 [===========================>..] - ETA: 0s - loss: 0.4675 - acc: 0.8354 - categorical_crossentropy: 0.4675
+ 990/1000 [============================>.] - ETA: 0s - loss: 0.4635 - acc: 0.8364 - categorical_crossentropy: 0.4635
+1000/1000 [==============================] - 4s 4ms/step - loss: 0.4707 - acc: 0.8330 - categorical_crossentropy: 0.4707 - val_loss: 0.3655 - val_acc: 0.8437 - val_categorical_crossentropy: 0.3655
+Epoch 5/150
+
+  30/1000 [..............................] - ETA: 3s - loss: 0.4522 - acc: 0.8667 - categorical_crossentropy: 0.4522
+  60/1000 [>.............................] - ETA: 3s - loss: 0.4061 - acc: 0.8667 - categorical_crossentropy: 0.4061
+  90/1000 [=>............................] - ETA: 3s - loss: 0.3730 - acc: 0.8778 - categorical_crossentropy: 0.3730
+ 120/1000 [==>...........................] - ETA: 3s - loss: 0.4018 - acc: 0.8667 - categorical_crossentropy: 0.4018
+ 150/1000 [===>..........................] - ETA: 3s - loss: 0.4149 - acc: 0.8533 - categorical_crossentropy: 0.4149
+ 180/1000 [====>.........................] - ETA: 3s - loss: 0.4255 - acc: 0.8500 - categorical_crossentropy: 0.4255
+ 210/1000 [=====>........................] - ETA: 3s - loss: 0.4166 - acc: 0.8524 - categorical_crossentropy: 0.4166
+ 240/1000 [======>.......................] - ETA: 2s - loss: 0.4085 - acc: 0.8625 - categorical_crossentropy: 0.4085
+ 270/1000 [=======>......................] - ETA: 2s - loss: 0.4066 - acc: 0.8630 - categorical_crossentropy: 0.4066
+ 300/1000 [========>.....................] - ETA: 2s - loss: 0.4005 - acc: 0.8633 - categorical_crossentropy: 0.4005
+ 330/1000 [========>.....................] - ETA: 2s - loss: 0.4060 - acc: 0.8667 - categorical_crossentropy: 0.4060
+ 360/1000 [=========>....................] - ETA: 2s - loss: 0.4033 - acc: 0.8694 - categorical_crossentropy: 0.4033
+ 390/1000 [==========>...................] - ETA: 2s - loss: 0.3953 - acc: 0.8718 - categorical_crossentropy: 0.3953
+ 420/1000 [===========>..................] - ETA: 2s - loss: 0.4071 - acc: 0.8690 - categorical_crossentropy: 0.4071
+ 450/1000 [============>.................] - ETA: 2s - loss: 0.4062 - acc: 0.8689 - categorical_crossentropy: 0.4062
+ 480/1000 [=============>................] - ETA: 1s - loss: 0.4053 - acc: 0.8667 - categorical_crossentropy: 0.4053
+ 510/1000 [==============>...............] - ETA: 1s - loss: 0.4020 - acc: 0.8667 - categorical_crossentropy: 0.4020
+ 540/1000 [===============>..............] - ETA: 1s - loss: 0.4104 - acc: 0.8574 - categorical_crossentropy: 0.4104
+ 570/1000 [================>.............] - ETA: 1s - loss: 0.4019 - acc: 0.8632 - categorical_crossentropy: 0.4019
+ 600/1000 [=================>............] - ETA: 1s - loss: 0.3975 - acc: 0.8633 - categorical_crossentropy: 0.3975
+ 630/1000 [=================>............] - ETA: 1s - loss: 0.4005 - acc: 0.8635 - categorical_crossentropy: 0.4005
+ 660/1000 [==================>...........] - ETA: 1s - loss: 0.4071 - acc: 0.8652 - categorical_crossentropy: 0.4071
+ 690/1000 [===================>..........] - ETA: 1s - loss: 0.4085 - acc: 0.8652 - categorical_crossentropy: 0.4085
+ 720/1000 [====================>.........] - ETA: 1s - loss: 0.4106 - acc: 0.8653 - categorical_crossentropy: 0.4106
+ 750/1000 [=====================>........] - ETA: 0s - loss: 0.4114 - acc: 0.8653 - categorical_crossentropy: 0.4114
+ 780/1000 [======================>.......] - ETA: 0s - loss: 0.4116 - acc: 0.8654 - categorical_crossentropy: 0.4116
+ 810/1000 [=======================>......] - ETA: 0s - loss: 0.4116 - acc: 0.8654 - categorical_crossentropy: 0.4116
+ 840/1000 [========================>.....] - ETA: 0s - loss: 0.4133 - acc: 0.8655 - categorical_crossentropy: 0.4133
+ 870/1000 [=========================>....] - ETA: 0s - loss: 0.4089 - acc: 0.8678 - categorical_crossentropy: 0.4089
+ 900/1000 [==========================>...] - ETA: 0s - loss: 0.4132 - acc: 0.8678 - categorical_crossentropy: 0.4132
+ 930/1000 [==========================>...] - ETA: 0s - loss: 0.4096 - acc: 0.8699 - categorical_crossentropy: 0.4096
+ 960/1000 [===========================>..] - ETA: 0s - loss: 0.4047 - acc: 0.8719 - categorical_crossentropy: 0.4047
+ 990/1000 [============================>.] - ETA: 0s - loss: 0.4014 - acc: 0.8727 - categorical_crossentropy: 0.4014
+1000/1000 [==============================] - 4s 4ms/step - loss: 0.3990 - acc: 0.8740 - categorical_crossentropy: 0.3990 - val_loss: 0.3430 - val_acc: 0.8750 - val_categorical_crossentropy: 0.3430
+Epoch 6/150
+
+  30/1000 [..............................] - ETA: 3s - loss: 0.3753 - acc: 0.8667 - categorical_crossentropy: 0.3753
+  60/1000 [>.............................] - ETA: 3s - loss: 0.3791 - acc: 0.8833 - categorical_crossentropy: 0.3791
+  90/1000 [=>............................] - ETA: 3s - loss: 0.3440 - acc: 0.9111 - categorical_crossentropy: 0.3440
+ 120/1000 [==>...........................] - ETA: 3s - loss: 0.3174 - acc: 0.9167 - categorical_crossentropy: 0.3174
+ 150/1000 [===>..........................] - ETA: 3s - loss: 0.3359 - acc: 0.9000 - categorical_crossentropy: 0.3359
+ 180/1000 [====>.........................] - ETA: 3s - loss: 0.3321 - acc: 0.9056 - categorical_crossentropy: 0.3321
+ 210/1000 [=====>........................] - ETA: 3s - loss: 0.3108 - acc: 0.9190 - categorical_crossentropy: 0.3108
+ 240/1000 [======>.......................] - ETA: 2s - loss: 0.3148 - acc: 0.9250 - categorical_crossentropy: 0.3148
+ 270/1000 [=======>......................] - ETA: 2s - loss: 0.3304 - acc: 0.9185 - categorical_crossentropy: 0.3304
+ 300/1000 [========>.....................] - ETA: 2s - loss: 0.3256 - acc: 0.9167 - categorical_crossentropy: 0.3256
+ 330/1000 [========>.....................] - ETA: 2s - loss: 0.3170 - acc: 0.9242 - categorical_crossentropy: 0.3170
+ 360/1000 [=========>....................] - ETA: 2s - loss: 0.3209 - acc: 0.9222 - categorical_crossentropy: 0.3209
+ 390/1000 [==========>...................] - ETA: 2s - loss: 0.3115 - acc: 0.9256 - categorical_crossentropy: 0.3115
+ 420/1000 [===========>..................] - ETA: 2s - loss: 0.3102 - acc: 0.9238 - categorical_crossentropy: 0.3102
+ 450/1000 [============>.................] - ETA: 2s - loss: 0.3130 - acc: 0.9200 - categorical_crossentropy: 0.3130
+ 480/1000 [=============>................] - ETA: 1s - loss: 0.3139 - acc: 0.9187 - categorical_crossentropy: 0.3139
+ 510/1000 [==============>...............] - ETA: 1s - loss: 0.3137 - acc: 0.9157 - categorical_crossentropy: 0.3137
+ 540/1000 [===============>..............] - ETA: 1s - loss: 0.3173 - acc: 0.9130 - categorical_crossentropy: 0.3173
+ 570/1000 [================>.............] - ETA: 1s - loss: 0.3216 - acc: 0.9105 - categorical_crossentropy: 0.3216
+ 600/1000 [=================>............] - ETA: 1s - loss: 0.3236 - acc: 0.9083 - categorical_crossentropy: 0.3236
+ 630/1000 [=================>............] - ETA: 1s - loss: 0.3245 - acc: 0.9095 - categorical_crossentropy: 0.3245
+ 660/1000 [==================>...........] - ETA: 1s - loss: 0.3256 - acc: 0.9106 - categorical_crossentropy: 0.3256
+ 690/1000 [===================>..........] - ETA: 1s - loss: 0.3270 - acc: 0.9101 - categorical_crossentropy: 0.3270
+ 720/1000 [====================>.........] - ETA: 1s - loss: 0.3269 - acc: 0.9097 - categorical_crossentropy: 0.3269
+ 750/1000 [=====================>........] - ETA: 0s - loss: 0.3279 - acc: 0.9080 - categorical_crossentropy: 0.3279
+ 780/1000 [======================>.......] - ETA: 0s - loss: 0.3262 - acc: 0.9077 - categorical_crossentropy: 0.3262
+ 810/1000 [=======================>......] - ETA: 0s - loss: 0.3241 - acc: 0.9086 - categorical_crossentropy: 0.3241
+ 840/1000 [========================>.....] - ETA: 0s - loss: 0.3241 - acc: 0.9095 - categorical_crossentropy: 0.3241
+ 870/1000 [=========================>....] - ETA: 0s - loss: 0.3233 - acc: 0.9115 - categorical_crossentropy: 0.3233
+ 900/1000 [==========================>...] - ETA: 0s - loss: 0.3226 - acc: 0.9111 - categorical_crossentropy: 0.3226
+ 930/1000 [==========================>...] - ETA: 0s - loss: 0.3250 - acc: 0.9086 - categorical_crossentropy: 0.3250
+ 960/1000 [===========================>..] - ETA: 0s - loss: 0.3223 - acc: 0.9094 - categorical_crossentropy: 0.3223
+ 990/1000 [============================>.] - ETA: 0s - loss: 0.3222 - acc: 0.9101 - categorical_crossentropy: 0.3222
+1000/1000 [==============================] - 4s 4ms/step - loss: 0.3215 - acc: 0.9100 - categorical_crossentropy: 0.3215 - val_loss: 0.2856 - val_acc: 0.9062 - val_categorical_crossentropy: 0.2856
+Epoch 7/150
+
+  30/1000 [..............................] - ETA: 3s - loss: 0.3584 - acc: 0.9000 - categorical_crossentropy: 0.3584
+  60/1000 [>.............................] - ETA: 3s - loss: 0.4092 - acc: 0.8667 - categorical_crossentropy: 0.4092
+  90/1000 [=>............................] - ETA: 3s - loss: 0.3489 - acc: 0.8889 - categorical_crossentropy: 0.3489
+ 120/1000 [==>...........................] - ETA: 3s - loss: 0.3118 - acc: 0.9000 - categorical_crossentropy: 0.3118
+ 150/1000 [===>..........................] - ETA: 3s - loss: 0.2910 - acc: 0.9200 - categorical_crossentropy: 0.2910
+ 180/1000 [====>.........................] - ETA: 3s - loss: 0.2720 - acc: 0.9278 - categorical_crossentropy: 0.2720
+ 210/1000 [=====>........................] - ETA: 2s - loss: 0.2859 - acc: 0.9286 - categorical_crossentropy: 0.2859
+ 240/1000 [======>.......................] - ETA: 2s - loss: 0.2753 - acc: 0.9375 - categorical_crossentropy: 0.2753
+ 270/1000 [=======>......................] - ETA: 2s - loss: 0.2683 - acc: 0.9444 - categorical_crossentropy: 0.2683
+ 300/1000 [========>.....................] - ETA: 2s - loss: 0.2724 - acc: 0.9433 - categorical_crossentropy: 0.2724
+ 330/1000 [========>.....................] - ETA: 2s - loss: 0.2680 - acc: 0.9424 - categorical_crossentropy: 0.2680
+ 360/1000 [=========>....................] - ETA: 2s - loss: 0.2647 - acc: 0.9417 - categorical_crossentropy: 0.2647
+ 390/1000 [==========>...................] - ETA: 2s - loss: 0.2692 - acc: 0.9385 - categorical_crossentropy: 0.2692
+ 420/1000 [===========>..................] - ETA: 2s - loss: 0.2684 - acc: 0.9405 - categorical_crossentropy: 0.2684
+ 450/1000 [============>.................] - ETA: 2s - loss: 0.2668 - acc: 0.9422 - categorical_crossentropy: 0.2668
+ 480/1000 [=============>................] - ETA: 1s - loss: 0.2654 - acc: 0.9396 - categorical_crossentropy: 0.2654
+ 510/1000 [==============>...............] - ETA: 1s - loss: 0.2656 - acc: 0.9412 - categorical_crossentropy: 0.2656
+ 540/1000 [===============>..............] - ETA: 1s - loss: 0.2729 - acc: 0.9370 - categorical_crossentropy: 0.2729
+ 570/1000 [================>.............] - ETA: 1s - loss: 0.2698 - acc: 0.9368 - categorical_crossentropy: 0.2698
+ 600/1000 [=================>............] - ETA: 1s - loss: 0.2646 - acc: 0.9383 - categorical_crossentropy: 0.2646
+ 630/1000 [=================>............] - ETA: 1s - loss: 0.2628 - acc: 0.9397 - categorical_crossentropy: 0.2628
+ 660/1000 [==================>...........] - ETA: 1s - loss: 0.2645 - acc: 0.9394 - categorical_crossentropy: 0.2645
+ 690/1000 [===================>..........] - ETA: 1s - loss: 0.2677 - acc: 0.9333 - categorical_crossentropy: 0.2677
+ 720/1000 [====================>.........] - ETA: 1s - loss: 0.2639 - acc: 0.9361 - categorical_crossentropy: 0.2639
+ 750/1000 [=====================>........] - ETA: 0s - loss: 0.2644 - acc: 0.9360 - categorical_crossentropy: 0.2644
+ 780/1000 [======================>.......] - ETA: 0s - loss: 0.2678 - acc: 0.9333 - categorical_crossentropy: 0.2678
+ 810/1000 [=======================>......] - ETA: 0s - loss: 0.2678 - acc: 0.9321 - categorical_crossentropy: 0.2678
+ 840/1000 [========================>.....] - ETA: 0s - loss: 0.2685 - acc: 0.9310 - categorical_crossentropy: 0.2685
+ 870/1000 [=========================>....] - ETA: 0s - loss: 0.2743 - acc: 0.9253 - categorical_crossentropy: 0.2743
+ 900/1000 [==========================>...] - ETA: 0s - loss: 0.2782 - acc: 0.9233 - categorical_crossentropy: 0.2782
+ 930/1000 [==========================>...] - ETA: 0s - loss: 0.2795 - acc: 0.9237 - categorical_crossentropy: 0.2795
+ 960/1000 [===========================>..] - ETA: 0s - loss: 0.2830 - acc: 0.9229 - categorical_crossentropy: 0.2830
+ 990/1000 [============================>.] - ETA: 0s - loss: 0.2849 - acc: 0.9192 - categorical_crossentropy: 0.2849
+1000/1000 [==============================] - 4s 4ms/step - loss: 0.2832 - acc: 0.9200 - categorical_crossentropy: 0.2832 - val_loss: 0.2653 - val_acc: 0.8750 - val_categorical_crossentropy: 0.2653
+Epoch 8/150
+
+  30/1000 [..............................] - ETA: 3s - loss: 0.1284 - acc: 1.0000 - categorical_crossentropy: 0.1284
+  60/1000 [>.............................] - ETA: 3s - loss: 0.2070 - acc: 0.9667 - categorical_crossentropy: 0.2070
+  90/1000 [=>............................] - ETA: 3s - loss: 0.2037 - acc: 0.9444 - categorical_crossentropy: 0.2037
+ 120/1000 [==>...........................] - ETA: 3s - loss: 0.1954 - acc: 0.9583 - categorical_crossentropy: 0.1954
+ 150/1000 [===>..........................] - ETA: 3s - loss: 0.2410 - acc: 0.9533 - categorical_crossentropy: 0.2410
+ 180/1000 [====>.........................] - ETA: 3s - loss: 0.2600 - acc: 0.9333 - categorical_crossentropy: 0.2600slurmstepd: error: *** JOB 14882529 ON gra936 CANCELLED AT 2019-05-17T11:55:13 ***

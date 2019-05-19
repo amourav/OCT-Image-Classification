@@ -1,0 +1,91 @@
+
+Due to MODULEPATH changes, the following have been reloaded:
+  1) openmpi/2.1.1
+
+Python 3.5.4
+2019-05-17 00:19:21.844077: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1432] Found device 0 with properties: 
+name: Tesla P100-PCIE-12GB major: 6 minor: 0 memoryClockRate(GHz): 1.3285
+pciBusID: 0000:04:00.0
+totalMemory: 11.91GiB freeMemory: 11.63GiB
+2019-05-17 00:19:21.844239: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1511] Adding visible gpu devices: 0
+2019-05-17 00:19:22.206158: I tensorflow/core/common_runtime/gpu/gpu_device.cc:982] Device interconnect StreamExecutor with strength 1 edge matrix:
+2019-05-17 00:19:22.206319: I tensorflow/core/common_runtime/gpu/gpu_device.cc:988]      0 
+2019-05-17 00:19:22.206362: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1001] 0:   N 
+2019-05-17 00:19:22.206710: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1115] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 11251 MB memory) -> physical GPU (device: 0, name: Tesla P100-PCIE-12GB, pci bus id: 0000:04:00.0, compute capability: 6.0)
+2019-05-17 00:19:22.207344: I tensorflow/core/common_runtime/process_util.cc:69] Creating new thread pool with default inter op setting: 2. Tune using inter_op_parallelism_threads for best performance.
+trn path: ../PreprocessedData/preprocessedForCNN/224x224/imgData_(224, 224, 3)_train_n1000.npy
+data augmentation: False
+debugging mode: ON
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+input_1 (InputLayer)         (None, 224, 224, 3)       0         
+_________________________________________________________________
+block1_conv1 (Conv2D)        (None, 224, 224, 64)      1792      
+_________________________________________________________________
+block1_conv2 (Conv2D)        (None, 224, 224, 64)      36928     
+_________________________________________________________________
+block1_pool (MaxPooling2D)   (None, 112, 112, 64)      0         
+_________________________________________________________________
+block2_conv1 (Conv2D)        (None, 112, 112, 128)     73856     
+_________________________________________________________________
+block2_conv2 (Conv2D)        (None, 112, 112, 128)     147584    
+_________________________________________________________________
+block2_pool (MaxPooling2D)   (None, 56, 56, 128)       0         
+_________________________________________________________________
+block3_conv1 (Conv2D)        (None, 56, 56, 256)       295168    
+_________________________________________________________________
+block3_conv2 (Conv2D)        (None, 56, 56, 256)       590080    
+_________________________________________________________________
+block3_conv3 (Conv2D)        (None, 56, 56, 256)       590080    
+_________________________________________________________________
+block3_pool (MaxPooling2D)   (None, 28, 28, 256)       0         
+_________________________________________________________________
+block4_conv1 (Conv2D)        (None, 28, 28, 512)       1180160   
+_________________________________________________________________
+block4_conv2 (Conv2D)        (None, 28, 28, 512)       2359808   
+_________________________________________________________________
+block4_conv3 (Conv2D)        (None, 28, 28, 512)       2359808   
+_________________________________________________________________
+block4_pool (MaxPooling2D)   (None, 14, 14, 512)       0         
+_________________________________________________________________
+block5_conv1 (Conv2D)        (None, 14, 14, 512)       2359808   
+_________________________________________________________________
+block5_conv2 (Conv2D)        (None, 14, 14, 512)       2359808   
+_________________________________________________________________
+block5_conv3 (Conv2D)        (None, 14, 14, 512)       2359808   
+_________________________________________________________________
+block5_pool (MaxPooling2D)   (None, 7, 7, 512)         0         
+_________________________________________________________________
+global_average_pooling2d_1 ( (None, 512)               0         
+_________________________________________________________________
+dense_1 (Dense)              (None, 512)               262656    
+_________________________________________________________________
+dense_2 (Dense)              (None, 4)                 2052      
+=================================================================
+Total params: 14,979,396
+Trainable params: 264,708
+Non-trainable params: 14,714,688
+_________________________________________________________________
+None
+Train on 20 samples, validate on 20 samples
+Epoch 1/3
+
+ 2/20 [==>...........................] - ETA: 19s - loss: 0.8317 - acc: 1.0000 - categorical_crossentropy: 0.8317
+12/20 [=================>............] - ETA: 1s - loss: 1.3735 - acc: 0.4167 - categorical_crossentropy: 1.3735 
+20/20 [==============================] - 3s 126ms/step - loss: 1.4606 - acc: 0.3000 - categorical_crossentropy: 1.4606 - val_loss: 1.4383 - val_acc: 0.3000 - val_categorical_crossentropy: 1.4383
+Epoch 2/3
+
+ 2/20 [==>...........................] - ETA: 0s - loss: 1.5482 - acc: 0.0000e+00 - categorical_crossentropy: 1.5482
+12/20 [=================>............] - ETA: 0s - loss: 1.2703 - acc: 0.3333 - categorical_crossentropy: 1.2703    
+20/20 [==============================] - 0s 11ms/step - loss: 1.2933 - acc: 0.3000 - categorical_crossentropy: 1.2933 - val_loss: 1.4727 - val_acc: 0.3000 - val_categorical_crossentropy: 1.4727
+Epoch 3/3
+
+ 2/20 [==>...........................] - ETA: 0s - loss: 1.0255 - acc: 0.5000 - categorical_crossentropy: 1.0255
+12/20 [=================>............] - ETA: 0s - loss: 1.1802 - acc: 0.5833 - categorical_crossentropy: 1.1802
+20/20 [==============================] - 0s 11ms/step - loss: 1.1652 - acc: 0.5500 - categorical_crossentropy: 1.1652 - val_loss: 1.5446 - val_acc: 0.2000 - val_categorical_crossentropy: 1.5446
+running model pred on test set
+
+20/20 [==============================] - 1s 37ms/step
+Using TensorFlow backend.
+Done!
