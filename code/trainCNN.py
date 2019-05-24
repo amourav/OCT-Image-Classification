@@ -17,6 +17,7 @@ from keras.backend import set_image_data_format
 from keras.callbacks import ModelCheckpoint
 from keras.preprocessing.image import ImageDataGenerator
 import datetime
+import time
 import pickle
 
 
@@ -41,14 +42,23 @@ def getModel(modelName,
         base_model = VGG16(weights=weights,
                            include_top=False,
                            input_tensor=input_tensor)
+        """
+        x = base_model.output
+        x = Flatten()(x)
+        lastLayer=4096
+        x = Dense(lastLayer, activation='relu')(x)
+        x = Dense(lastLayer, activation='relu')(x)
+        """
     elif modelName == 'ResNet50':
         base_model = ResNet50(weights=weights,
                               include_top=False,
                               input_tensor=input_tensor)
+        x = base_model.output
     elif modelName == 'Xception':
         base_model = Xception(weights=weights,
                               include_top=False,
                               input_tensor=input_tensor)
+        x = base_model.output
     else:
         raise Exception('model name not recognized')
     # add a global spatial average pooling layer
@@ -81,9 +91,9 @@ def trainModel(xTrn, yTrn,
                modelWeights,
                aug, d, note,
                xTest = None,
-               nEpochs=150,
+               nEpochs=250,
                batchSize=30,
-               lastLayer=512):
+               lastLayer=4096):
     """
     Train CNN Model
     :param xTrn (npy array): Input training image data (nTrain, Xres, Yres, nChannels=3)
@@ -139,6 +149,7 @@ def trainModel(xTrn, yTrn,
                                       save_best_only=True,
                                       mode='auto', period=1)
     callbacks = [modelCheckpoint]
+    t0 = time.time()
     if not(aug):
         history = model.fit(x=xTrn,
                             y=yTrn,
@@ -170,6 +181,8 @@ def trainModel(xTrn, yTrn,
                                       epochs=nEpochs, callbacks=callbacks,
                                       validation_data=valData, shuffle=True,
                                       verbose=1)
+    dt = (time.time() - t0)/3600
+    print("training time: {} h".format(dt))
     historyPath = os.path.join(modelOutputDir, '{}_History.csv'.format(modelName))
     hist = history.history
     histDf = pd.DataFrame(hist)
