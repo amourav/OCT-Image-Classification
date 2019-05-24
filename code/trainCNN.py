@@ -38,17 +38,19 @@ def getModel(modelName,
         base_model = InceptionV3(weights=weights,
                                  include_top=False,
                                  input_tensor=input_tensor)
+        x = base_model.output
+        x = GlobalAveragePooling2D()(x)
     elif modelName == 'VGG16':
         base_model = VGG16(weights=weights,
                            include_top=False,
                            input_tensor=input_tensor)
-        """
+
+        lastLayer = 4096
         x = base_model.output
         x = Flatten()(x)
-        lastLayer=4096
         x = Dense(lastLayer, activation='relu')(x)
         x = Dense(lastLayer, activation='relu')(x)
-        """
+
     elif modelName == 'ResNet50':
         base_model = ResNet50(weights=weights,
                               include_top=False,
@@ -62,6 +64,8 @@ def getModel(modelName,
     else:
         raise Exception('model name not recognized')
     # add a global spatial average pooling layer
+
+    """
     x = base_model.output
     #x = GlobalAveragePooling2D()(x)
     x = Flatten()(x)
@@ -69,6 +73,7 @@ def getModel(modelName,
     x = Dense(lastLayer, activation='relu')(x)
     x = Dense(lastLayer, activation='relu')(x)
     # and a logistic layer
+    """
     predictions = Dense(nClasses, activation='softmax')(x)
     # this is the model we will train
     model = Model(inputs=base_model.input, outputs=predictions)

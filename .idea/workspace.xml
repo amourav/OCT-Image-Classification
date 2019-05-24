@@ -10,7 +10,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/OCT_Image_Classification$trainCNN.coverage" NAME="trainCNN Coverage Results" MODIFIED="1557980887187" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/code" />
+    <SUITE FILE_PATH="coverage/OCT_Image_Classification$trainCNN.coverage" NAME="trainCNN Coverage Results" MODIFIED="1558717337650" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/code" />
     <SUITE FILE_PATH="coverage/OCT_Image_Classification$preprocess.coverage" NAME="preprocess Coverage Results" MODIFIED="1557692249539" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/code" />
     <SUITE FILE_PATH="coverage/OCT_Image_Classification$preprocessForCNN.coverage" NAME="preprocessForCNN Coverage Results" MODIFIED="1555988595890" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/code" />
     <SUITE FILE_PATH="coverage/OCT_Image_Classification$preprocessDev.coverage" NAME="preprocessImgs Coverage Results" MODIFIED="1556074276609" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/code" />
@@ -18,20 +18,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="runLocalCtrlPredGridSearch.py" pinned="false" current-in-tab="false">
-        <entry file="file://W:/Python/BrainMets/RADIOMICS/runLocalCtrlPredGridSearch.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2050">
-              <caret line="90" column="78" selection-start-line="90" selection-start-column="65" selection-end-line="90" selection-end-column="78" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="trainCNN.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="trainCNN.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/code/trainCNN.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2400">
-              <caret line="298" selection-start-line="298" selection-end-line="298" />
+            <state relative-caret-position="262">
+              <caret line="300" column="60" lean-forward="true" selection-start-line="300" selection-start-column="60" selection-end-line="300" selection-end-column="60" />
             </state>
           </provider>
         </entry>
@@ -41,72 +32,6 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="-175">
               <caret line="11" column="20" selection-start-line="11" selection-start-column="20" selection-end-line="11" selection-end-column="20" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="preprocess.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/code/preprocess.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3425">
-              <caret line="143" column="34" selection-start-line="143" selection-start-column="34" selection-end-line="143" selection-end-column="34" />
-              <folding>
-                <element signature="e#0#81#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="loopPreprocessingForCNN.sh" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/code/loopPreprocessingForCNN.sh">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="150">
-              <caret line="6" column="8" selection-start-line="6" selection-start-column="8" selection-end-line="6" selection-end-column="8" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="preprocessForCNN.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/code/preprocessForCNN.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="125">
-              <caret line="5" column="5" selection-start-line="5" selection-end-line="6" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="modelVariance.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/code/modelVariance.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1875">
-              <caret line="75" column="60" selection-start-line="75" selection-start-column="8" selection-end-line="75" selection-end-column="60" />
-              <folding>
-                <element signature="e#0#9#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="radiomicsPredUtils.py" pinned="false" current-in-tab="false">
-        <entry file="file://W:/Python/BrainMets/Utils/radiomicsPredUtils.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="11425">
-              <caret line="502" column="13" selection-start-line="502" selection-start-column="13" selection-end-line="502" selection-end-column="13" />
-              <folding>
-                <element signature="e#0#9#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="tmpRadUtils.py" pinned="false" current-in-tab="false">
-        <entry file="file://W:/Python/BrainMets/Utils/tmpRadUtils.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="9800">
-              <caret line="434" column="52" selection-start-line="434" selection-start-column="4" selection-end-line="434" selection-end-column="52" />
-              <folding>
-                <element signature="e#0#31#0" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -142,8 +67,8 @@
       <find>dump</find>
       <find>save</find>
       <find>Done</find>
-      <find>UrgentVRoutne</find>
       <find>to_</find>
+      <find>UrgentVRoutne</find>
     </findStrings>
   </component>
   <component name="IdeDocumentHistory">
@@ -158,8 +83,8 @@
         <option value="$PROJECT_DIR$/code/preprocessForCNN.py" />
         <option value="$PROJECT_DIR$/code/preprocess.py" />
         <option value="$PROJECT_DIR$/code/loopPreprocessingForCNN.sh" />
-        <option value="$PROJECT_DIR$/code/trainCNN.py" />
         <option value="$PROJECT_DIR$/code/evalUtils.py" />
+        <option value="$PROJECT_DIR$/code/trainCNN.py" />
       </list>
     </option>
   </component>
@@ -173,8 +98,9 @@
     <packageJsonPaths />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="623" />
-    <option name="width" value="1304" />
+    <option name="x" value="46" />
+    <option name="y" value="2" />
+    <option name="width" value="1535" />
     <option name="height" value="1047" />
   </component>
   <component name="ProjectView">
@@ -345,25 +271,25 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="623" y="0" width="1304" height="1047" extended-state="0" />
+    <frame x="46" y="2" width="1535" height="1047" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.2826087" side_tool="true" visible="true" weight="0.33154505" />
+      <window_info anchor="bottom" id="Event Log" order="7" sideWeight="0.14549045" side_tool="true" visible="true" weight="0.39806867" />
       <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Version Control" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Python Console" order="7" sideWeight="0.746875" weight="0.32624868" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.7173913" visible="true" weight="0.33154505" />
+      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.71757734" weight="0.33154505" />
       <window_info anchor="bottom" id="Terminal" order="7" />
       <window_info content_ui="combo" id="Project" order="0" weight="0.24973932" />
       <window_info anchor="right" id="R Packages" order="3" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="right" id="R Graphics" order="3" />
       <window_info anchor="right" id="Database" order="3" />
-      <window_info anchor="right" id="SciView" order="3" visible="true" weight="0.39596274" />
+      <window_info anchor="right" id="SciView" order="3" visible="true" weight="0.3357472" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
-      <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.49956635" weight="0.39806867" />
+      <window_info active="true" anchor="bottom" id="Debug" order="3" sideWeight="0.85450953" visible="true" weight="0.39806867" />
       <window_info anchor="bottom" id="Debug" order="3" sideWeight="0.49956635" weight="0.39806867" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
@@ -449,11 +375,6 @@
           <option name="timeStamp" value="10" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/code/trainCNN.py</url>
-          <line>210</line>
-          <option name="timeStamp" value="17" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/code/modelVariance.py</url>
           <line>30</line>
           <option name="timeStamp" value="18" />
@@ -465,11 +386,26 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/code/trainCNN.py</url>
-          <line>287</line>
+          <line>292</line>
           <option name="timeStamp" value="20" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/code/trainCNN.py</url>
+          <line>131</line>
+          <option name="timeStamp" value="21" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/code/trainCNN.py</url>
+          <line>35</line>
+          <option name="timeStamp" value="22" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/code/trainCNN.py</url>
+          <line>83</line>
+          <option name="timeStamp" value="23" />
+        </line-breakpoint>
       </breakpoints>
-      <option name="time" value="21" />
+      <option name="time" value="24" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
@@ -809,13 +745,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/code/trainCNN.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2400">
-          <caret line="298" selection-start-line="298" selection-end-line="298" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/code/evalUtils.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-175">
@@ -825,11 +754,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/code/modelVariance.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1875">
+        <state relative-caret-position="750">
           <caret line="75" column="60" selection-start-line="75" selection-start-column="8" selection-end-line="75" selection-end-column="60" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/code/trainCNN.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="262">
+          <caret line="300" column="60" lean-forward="true" selection-start-line="300" selection-start-column="60" selection-end-line="300" selection-end-column="60" />
         </state>
       </provider>
     </entry>
