@@ -27,7 +27,7 @@ def plotModelHist(modelHistory,
     input: modelHistory (output of model.fit)
     return: matplotlib figure
     """
-    hist = modelHistory.history
+    hist = modelHistory #.history
     trnLoss = np.array(hist['loss'])
     valLoss = np.array(hist['val_loss'])
     trnMetric = np.array(hist[metricName])
