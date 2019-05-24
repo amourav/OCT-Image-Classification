@@ -1,0 +1,98 @@
+Python 3.5.4
+2019-05-23 20:04:39.231749: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1432] Found device 0 with properties: 
+name: Tesla P100-PCIE-12GB major: 6 minor: 0 memoryClockRate(GHz): 1.3285
+pciBusID: 0000:04:00.0
+totalMemory: 11.91GiB freeMemory: 11.63GiB
+2019-05-23 20:04:39.231897: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1511] Adding visible gpu devices: 0
+2019-05-23 20:04:39.585765: I tensorflow/core/common_runtime/gpu/gpu_device.cc:982] Device interconnect StreamExecutor with strength 1 edge matrix:
+2019-05-23 20:04:39.585909: I tensorflow/core/common_runtime/gpu/gpu_device.cc:988]      0 
+2019-05-23 20:04:39.585949: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1001] 0:   N 
+2019-05-23 20:04:39.586280: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1115] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 11251 MB memory) -> physical GPU (device: 0, name: Tesla P100-PCIE-12GB, pci bus id: 0000:04:00.0, compute capability: 6.0)
+2019-05-23 20:04:39.586818: I tensorflow/core/common_runtime/process_util.cc:69] Creating new thread pool with default inter op setting: 2. Tune using inter_op_parallelism_threads for best performance.
+trn path: ../PreprocessedData/preprocessedForCNN/224x224/imgData_(224, 224, 3)_train_n1000.npy
+data augmentation: False
+debugging mode: ON
+default
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+input_1 (InputLayer)         (None, 224, 224, 3)       0         
+_________________________________________________________________
+block1_conv1 (Conv2D)        (None, 224, 224, 64)      1792      
+_________________________________________________________________
+block1_conv2 (Conv2D)        (None, 224, 224, 64)      36928     
+_________________________________________________________________
+block1_pool (MaxPooling2D)   (None, 112, 112, 64)      0         
+_________________________________________________________________
+block2_conv1 (Conv2D)        (None, 112, 112, 128)     73856     
+_________________________________________________________________
+block2_conv2 (Conv2D)        (None, 112, 112, 128)     147584    
+_________________________________________________________________
+block2_pool (MaxPooling2D)   (None, 56, 56, 128)       0         
+_________________________________________________________________
+block3_conv1 (Conv2D)        (None, 56, 56, 256)       295168    
+_________________________________________________________________
+block3_conv2 (Conv2D)        (None, 56, 56, 256)       590080    
+_________________________________________________________________
+block3_conv3 (Conv2D)        (None, 56, 56, 256)       590080    
+_________________________________________________________________
+block3_pool (MaxPooling2D)   (None, 28, 28, 256)       0         
+_________________________________________________________________
+block4_conv1 (Conv2D)        (None, 28, 28, 512)       1180160   
+_________________________________________________________________
+block4_conv2 (Conv2D)        (None, 28, 28, 512)       2359808   
+_________________________________________________________________
+block4_conv3 (Conv2D)        (None, 28, 28, 512)       2359808   
+_________________________________________________________________
+block4_pool (MaxPooling2D)   (None, 14, 14, 512)       0         
+_________________________________________________________________
+block5_conv1 (Conv2D)        (None, 14, 14, 512)       2359808   
+_________________________________________________________________
+block5_conv2 (Conv2D)        (None, 14, 14, 512)       2359808   
+_________________________________________________________________
+block5_conv3 (Conv2D)        (None, 14, 14, 512)       2359808   
+_________________________________________________________________
+block5_pool (MaxPooling2D)   (None, 7, 7, 512)         0         
+_________________________________________________________________
+flatten_1 (Flatten)          (None, 25088)             0         
+_________________________________________________________________
+dense_1 (Dense)              (None, 512)               12845568  
+_________________________________________________________________
+dense_2 (Dense)              (None, 512)               262656    
+_________________________________________________________________
+dense_3 (Dense)              (None, 4)                 2052      
+=================================================================
+Total params: 27,824,964
+Trainable params: 13,110,276
+Non-trainable params: 14,714,688
+_________________________________________________________________
+None
+Train on 20 samples, validate on 20 samples
+Epoch 1/3
+
+ 2/20 [==>...........................] - ETA: 22s - loss: 1.0111 - acc: 1.0000 - categorical_crossentropy: 1.0111
+ 8/20 [===========>..................] - ETA: 3s - loss: 0.9562 - acc: 0.7500 - categorical_crossentropy: 0.9562 
+14/20 [====================>.........] - ETA: 1s - loss: 1.6577 - acc: 0.5714 - categorical_crossentropy: 1.6577
+20/20 [==============================] - 3s 147ms/step - loss: 1.5487 - acc: 0.5000 - categorical_crossentropy: 1.5487 - val_loss: 1.7806 - val_acc: 0.3000 - val_categorical_crossentropy: 1.7806
+Epoch 2/3
+
+ 2/20 [==>...........................] - ETA: 0s - loss: 0.7317 - acc: 0.5000 - categorical_crossentropy: 0.7317
+ 8/20 [===========>..................] - ETA: 0s - loss: 0.5806 - acc: 0.8750 - categorical_crossentropy: 0.5806
+14/20 [====================>.........] - ETA: 0s - loss: 0.8213 - acc: 0.7857 - categorical_crossentropy: 0.8213
+20/20 [==============================] - 0s 14ms/step - loss: 0.8361 - acc: 0.7500 - categorical_crossentropy: 0.8361 - val_loss: 2.0970 - val_acc: 0.2000 - val_categorical_crossentropy: 2.0970
+Epoch 3/3
+
+ 2/20 [==>...........................] - ETA: 0s - loss: 0.7671 - acc: 0.5000 - categorical_crossentropy: 0.7671
+ 8/20 [===========>..................] - ETA: 0s - loss: 0.8284 - acc: 0.6250 - categorical_crossentropy: 0.8284
+14/20 [====================>.........] - ETA: 0s - loss: 0.7285 - acc: 0.7143 - categorical_crossentropy: 0.7285
+20/20 [==============================] - 0s 14ms/step - loss: 0.7017 - acc: 0.7000 - categorical_crossentropy: 0.7017 - val_loss: 1.7899 - val_acc: 0.3000 - val_categorical_crossentropy: 1.7899
+training time: 0.001297495894961887 h
+running model pred on test set
+
+20/20 [==============================] - 1s 38ms/step
+Using TensorFlow backend.
+Done!
+Exception ignored in: <bound method BaseSession.__del__ of <tensorflow.python.client.session.Session object at 0x2af4c4a19f28>>
+Traceback (most recent call last):
+  File "/home/amourav/tensorflow/lib/python3.5/site-packages/tensorflow/python/client/session.py", line 738, in __del__
+TypeError: 'NoneType' object is not callable
