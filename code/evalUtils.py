@@ -18,6 +18,27 @@ from keras.backend import set_image_data_format
 set_image_data_format('channels_last')
 
 
+def reportBinaryScores(yTrueUrgent, yPredProbUrgent, v=0):
+    yPredUrgent = yPredProbUrgent.round().astype(np.int)
+    tn, fp, fn, tp = confusion_matrix(yTrueUrgent.astype(np.float),
+                                      yPredUrgent).ravel()
+    tpr = tp/(tp + fn)
+    tnr = tn/(tn + fp)
+    fpr = fp/(fp + tn)
+    fnr = fn/(fn + tp)
+    plr = tpr/fpr #positive likelihood ratio
+    nlr = fnr/tnr # negative likelihood ratio
+    acc = accuracy_score(yTrueUrgent,
+                         yPredUrgent)
+    if v:
+        print('\t accuracy: {0:.3g}'.format(acc))
+        print("\t sensitivity {0:.3g}".format(tpr))
+        print("\t specificity {0:.3g}".format(tnr))
+        print("\t positive likelihood ratio {0:.3g}".format(plr))
+        print("\t negative likelihood ratio {0:.3g}".format(nlr))
+        print("\n")
+    return acc, tpr, tnr, plr, nlr
+
 def plotModelHist(modelHistory,
                   lossName='categorical cross entropy',
                   metricName='acc',
