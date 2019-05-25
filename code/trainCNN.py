@@ -24,7 +24,7 @@ import pickle
 def getModel(modelName,
              inputShape,
              nClasses=4,
-             lastLayer=4096,
+             lastLayer=1024,
              weights='imagenet'):
     """
     model getter
@@ -38,6 +38,7 @@ def getModel(modelName,
         base_model = InceptionV3(weights=weights,
                                  include_top=False,
                                  input_tensor=input_tensor)
+        lastLayer = None
         x = base_model.output
         x = GlobalAveragePooling2D()(x)
     elif modelName == 'VGG16':
@@ -45,22 +46,25 @@ def getModel(modelName,
                            include_top=False,
                            input_tensor=input_tensor)
 
-        lastLayer = 4096
+        #lastLayer = 4096
         x = base_model.output
         x = Flatten()(x)
         x = Dense(lastLayer, activation='relu')(x)
         x = Dense(lastLayer, activation='relu')(x)
-
     elif modelName == 'ResNet50':
         base_model = ResNet50(weights=weights,
                               include_top=False,
                               input_tensor=input_tensor)
+        #lastLayer = 2048
         x = base_model.output
+        x = GlobalAveragePooling2D()(x)
+        #x = Dense(lastLayer, activation='relu')(x)
     elif modelName == 'Xception':
         base_model = Xception(weights=weights,
                               include_top=False,
                               input_tensor=input_tensor)
         x = base_model.output
+        x = GlobalAveragePooling2D()(x)
     else:
         raise Exception('model name not recognized')
     # add a global spatial average pooling layer
@@ -112,7 +116,7 @@ def trainModel(xTrn, yTrn,
     :param batchSize (int): Number of images to use in each training batch.
     :return: None
     """
-
+    print(modelName)
     if d:
         nEpochs = 3
         batchSize = 2
@@ -201,10 +205,12 @@ def trainModel(xTrn, yTrn,
         np.save(yTestPredPath, yTestPred)
     model.save(os.path.join(modelOutputDir, '{}_final.hdf5'.format(modelName)))
     with open(os.path.join(modelOutputDir, 'trnInfo.txt'), 'w') as fid:
+        fid.write("model: {} \n".format(modelName))
+        fid.write("x shape: {} \n".format(xShape))
         fid.write("nEpochs: {} \n".format(nEpochs))
         fid.write("batchSize: {} \n".format(batchSize))
         fid.write("lastLayer: {} \n".format(lastLayer))
-    return history
+    return modelOutputDir
 
 
 def get_parser():
@@ -290,12 +296,12 @@ def main_driver(XTrainPath, yTrainPath,
         yVal = None
     if not(os.path.isdir(outputPath)):
         os.makedirs(outputPath)
-    trainModel(xTrn, yTrn,
-               XVal, yVal,
-               outputPath,
-               model, modelWeights,
-               aug, d, note, xTest=xTest)
-    with open(os.path.join(outputPath, 'dataInfo.txt'), 'w') as fid:
+    modelOutputDir = trainModel(xTrn, yTrn,
+                     XVal, yVal,
+                     outputPath,
+                     model, modelWeights,
+                     aug, d, note, xTest=xTest)
+    with open(os.path.join(modelOutputDir, 'dataInfo.txt'), 'w') as fid:
         fid.write("XTrainPath: {} \n".format(XTrainPath))
         fid.write("XValPath: {} \n".format(XValPath))
         fid.write("XTestPath: {} \n".format(str(XTestPath)))

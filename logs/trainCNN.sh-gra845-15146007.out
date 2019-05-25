@@ -1,0 +1,116 @@
+
+Due to MODULEPATH changes, the following have been reloaded:
+  1) openmpi/2.1.1
+
+Python 3.5.4
+2019-05-24 13:36:55.216440: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1432] Found device 0 with properties: 
+name: Tesla P100-PCIE-12GB major: 6 minor: 0 memoryClockRate(GHz): 1.3285
+pciBusID: 0000:04:00.0
+totalMemory: 11.91GiB freeMemory: 11.63GiB
+2019-05-24 13:36:55.216595: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1511] Adding visible gpu devices: 0
+2019-05-24 13:36:56.341672: I tensorflow/core/common_runtime/gpu/gpu_device.cc:982] Device interconnect StreamExecutor with strength 1 edge matrix:
+2019-05-24 13:36:56.341829: I tensorflow/core/common_runtime/gpu/gpu_device.cc:988]      0 
+2019-05-24 13:36:56.341878: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1001] 0:   N 
+2019-05-24 13:36:56.342285: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1115] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 11251 MB memory) -> physical GPU (device: 0, name: Tesla P100-PCIE-12GB, pci bus id: 0000:04:00.0, compute capability: 6.0)
+2019-05-24 13:36:56.342910: I tensorflow/core/common_runtime/process_util.cc:69] Creating new thread pool with default inter op setting: 2. Tune using inter_op_parallelism_threads for best performance.
+trn path: ../PreprocessedData/preprocessedForCNN/224x224/imgData_(224, 224, 3)_train_n1000.npy
+data augmentation: False
+debugging mode: ON
+test
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+input_1 (InputLayer)         (None, 224, 224, 3)       0         
+_________________________________________________________________
+block1_conv1 (Conv2D)        (None, 224, 224, 64)      1792      
+_________________________________________________________________
+block1_conv2 (Conv2D)        (None, 224, 224, 64)      36928     
+_________________________________________________________________
+block1_pool (MaxPooling2D)   (None, 112, 112, 64)      0         
+_________________________________________________________________
+block2_conv1 (Conv2D)        (None, 112, 112, 128)     73856     
+_________________________________________________________________
+block2_conv2 (Conv2D)        (None, 112, 112, 128)     147584    
+_________________________________________________________________
+block2_pool (MaxPooling2D)   (None, 56, 56, 128)       0         
+_________________________________________________________________
+block3_conv1 (Conv2D)        (None, 56, 56, 256)       295168    
+_________________________________________________________________
+block3_conv2 (Conv2D)        (None, 56, 56, 256)       590080    
+_________________________________________________________________
+block3_conv3 (Conv2D)        (None, 56, 56, 256)       590080    
+_________________________________________________________________
+block3_pool (MaxPooling2D)   (None, 28, 28, 256)       0         
+_________________________________________________________________
+block4_conv1 (Conv2D)        (None, 28, 28, 512)       1180160   
+_________________________________________________________________
+block4_conv2 (Conv2D)        (None, 28, 28, 512)       2359808   
+_________________________________________________________________
+block4_conv3 (Conv2D)        (None, 28, 28, 512)       2359808   
+_________________________________________________________________
+block4_pool (MaxPooling2D)   (None, 14, 14, 512)       0         
+_________________________________________________________________
+block5_conv1 (Conv2D)        (None, 14, 14, 512)       2359808   
+_________________________________________________________________
+block5_conv2 (Conv2D)        (None, 14, 14, 512)       2359808   
+_________________________________________________________________
+block5_conv3 (Conv2D)        (None, 14, 14, 512)       2359808   
+_________________________________________________________________
+block5_pool (MaxPooling2D)   (None, 7, 7, 512)         0         
+_________________________________________________________________
+flatten_1 (Flatten)          (None, 25088)             0         
+_________________________________________________________________
+dense_1 (Dense)              (None, 4096)              102764544 
+_________________________________________________________________
+dense_2 (Dense)              (None, 4096)              16781312  
+_________________________________________________________________
+dense_3 (Dense)              (None, 4)                 16388     
+=================================================================
+Total params: 134,276,932
+Trainable params: 119,562,244
+Non-trainable params: 14,714,688
+_________________________________________________________________
+None
+Train on 20 samples, validate on 20 samples
+Epoch 1/3
+
+ 2/20 [==>...........................] - ETA: 38s - loss: 1.5845 - acc: 0.0000e+00 - categorical_crossentropy: 1.5845
+ 4/20 [=====>........................] - ETA: 17s - loss: 2.9740 - acc: 0.0000e+00 - categorical_crossentropy: 2.9740
+ 6/20 [========>.....................] - ETA: 10s - loss: 3.4456 - acc: 0.1667 - categorical_crossentropy: 3.4456    
+ 8/20 [===========>..................] - ETA: 6s - loss: 2.6070 - acc: 0.3750 - categorical_crossentropy: 2.6070 
+10/20 [==============>...............] - ETA: 4s - loss: 2.2480 - acc: 0.4000 - categorical_crossentropy: 2.2480
+12/20 [=================>............] - ETA: 3s - loss: 2.0740 - acc: 0.4167 - categorical_crossentropy: 2.0740
+14/20 [====================>.........] - ETA: 1s - loss: 2.8481 - acc: 0.3571 - categorical_crossentropy: 2.8481
+16/20 [=======================>......] - ETA: 1s - loss: 2.5967 - acc: 0.3750 - categorical_crossentropy: 2.5967
+18/20 [==========================>...] - ETA: 0s - loss: 2.8483 - acc: 0.3889 - categorical_crossentropy: 2.8483
+20/20 [==============================] - 5s 256ms/step - loss: 2.8675 - acc: 0.4000 - categorical_crossentropy: 2.8675 - val_loss: 2.8893 - val_acc: 0.2000 - val_categorical_crossentropy: 2.8893
+Epoch 2/3
+
+ 2/20 [==>...........................] - ETA: 0s - loss: 1.3094 - acc: 0.0000e+00 - categorical_crossentropy: 1.3094
+ 4/20 [=====>........................] - ETA: 0s - loss: 1.4480 - acc: 0.0000e+00 - categorical_crossentropy: 1.4480
+ 6/20 [========>.....................] - ETA: 0s - loss: 2.1085 - acc: 0.0000e+00 - categorical_crossentropy: 2.1085
+ 8/20 [===========>..................] - ETA: 0s - loss: 2.1816 - acc: 0.0000e+00 - categorical_crossentropy: 2.1816
+10/20 [==============>...............] - ETA: 0s - loss: 1.8198 - acc: 0.2000 - categorical_crossentropy: 1.8198    
+12/20 [=================>............] - ETA: 0s - loss: 1.8031 - acc: 0.2500 - categorical_crossentropy: 1.8031
+14/20 [====================>.........] - ETA: 0s - loss: 1.5517 - acc: 0.3571 - categorical_crossentropy: 1.5517
+16/20 [=======================>......] - ETA: 0s - loss: 1.5593 - acc: 0.3750 - categorical_crossentropy: 1.5593
+18/20 [==========================>...] - ETA: 0s - loss: 1.7115 - acc: 0.3889 - categorical_crossentropy: 1.7115
+20/20 [==============================] - 1s 37ms/step - loss: 1.8524 - acc: 0.4000 - categorical_crossentropy: 1.8524 - val_loss: 3.7669 - val_acc: 0.2000 - val_categorical_crossentropy: 3.7669
+Epoch 3/3
+
+ 2/20 [==>...........................] - ETA: 0s - loss: 0.6993 - acc: 0.5000 - categorical_crossentropy: 0.6993
+ 4/20 [=====>........................] - ETA: 0s - loss: 0.4486 - acc: 0.7500 - categorical_crossentropy: 0.4486
+ 6/20 [========>.....................] - ETA: 0s - loss: 0.6521 - acc: 0.6667 - categorical_crossentropy: 0.6521
+ 8/20 [===========>..................] - ETA: 0s - loss: 0.4945 - acc: 0.7500 - categorical_crossentropy: 0.4945
+10/20 [==============>...............] - ETA: 0s - loss: 0.4700 - acc: 0.8000 - categorical_crossentropy: 0.4700
+12/20 [=================>............] - ETA: 0s - loss: 0.5674 - acc: 0.7500 - categorical_crossentropy: 0.5674
+14/20 [====================>.........] - ETA: 0s - loss: 0.5319 - acc: 0.7857 - categorical_crossentropy: 0.5319
+16/20 [=======================>......] - ETA: 0s - loss: 0.5850 - acc: 0.7500 - categorical_crossentropy: 0.5850
+18/20 [==========================>...] - ETA: 0s - loss: 0.5810 - acc: 0.7778 - categorical_crossentropy: 0.5810
+20/20 [==============================] - 1s 37ms/step - loss: 0.6049 - acc: 0.8000 - categorical_crossentropy: 0.6049 - val_loss: 1.7086 - val_acc: 0.3000 - val_categorical_crossentropy: 1.7086
+training time: 0.003145536382993062 h
+running model pred on test set
+
+20/20 [==============================] - 1s 38ms/step
+Using TensorFlow backend.
+Done!
