@@ -2,6 +2,17 @@ python preprocessImgs.py -i "D:\Projects\OCT-Image-Classification\RawData\OCT201
 
 scp -r PreprocessedData\preprocessedForCNN amourav@graham.computecanada.ca:home/amourav/project/amourav/Python/temp/
 
+scp -r amourav@graham.computecanada.ca:/home/amourav/project/amourav/Python/OCT-Image-Classification/modelOutput/subsample modelOutput
+
+
+
+scp -r amourav@graham.computecanada.ca:/home/amourav/project/amourav/Python/OCT-Image-Classification/Evaluation/model variance/ Evaluation/
+
+
+scp -r amourav@graham.computecanada.ca:/home/amourav/project/amourav/Python/OCT-Image-Classification/modelOutput/subsample_* modelOutput
+
+
+
 
 python preprocessForCNN.py -i "D:\Projects\OCT-Image-Classification\PreprocessedData\individual images" -o "D:\Projects\OCT-Image-Classification\PreprocessedData\preprocessedForCNN" -subdir "all" -n 1000
 
