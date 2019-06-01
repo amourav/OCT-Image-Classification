@@ -8,11 +8,16 @@ from keras.applications.inception_v3 import InceptionV3
 from keras.applications.vgg16 import VGG16
 from keras.applications.resnet50 import ResNet50
 from keras.applications.xception import Xception
+from keras.applications.vgg16 import preprocess_input as preprocess_input_vgg16
+from keras.applications.resnet50 import preprocess_input as preprocess_input_ResNet50
+from keras.applications.inception_v3 import preprocess_input as preprocess_input_inception_v3
+from keras.applications.vgg16 import preprocess_input as preprocess_input_xception
 from keras.layers import GlobalAveragePooling2D
 from keras.layers import Dense, Flatten
 from keras.models import Model, Input
 from keras.optimizers import Adam
 from keras.utils import to_categorical
+import keras.backend as K
 from keras.backend import set_image_data_format
 from keras.callbacks import ModelCheckpoint
 from keras.preprocessing.image import ImageDataGenerator
@@ -34,10 +39,12 @@ def getModel(modelName,
     :return: model: Keras CNN Model.
     """
     input_tensor = Input(shape=inputShape)
+    K.set_learning_phase(False)
     if modelName == 'InceptionV3':
         base_model = InceptionV3(weights=weights,
                                  include_top=False,
                                  input_tensor=input_tensor)
+        K.set_learning_phase(True)
         lastLayer = None
         x = base_model.output
         x = GlobalAveragePooling2D()(x)
@@ -45,7 +52,7 @@ def getModel(modelName,
         base_model = VGG16(weights=weights,
                            include_top=False,
                            input_tensor=input_tensor)
-
+        K.set_learning_phase(True)
         #lastLayer = 4096
         x = base_model.output
         x = Flatten()(x)
@@ -55,6 +62,7 @@ def getModel(modelName,
         base_model = ResNet50(weights=weights,
                               include_top=False,
                               input_tensor=input_tensor)
+        K.set_learning_phase(True)
         #lastLayer = 2048
         x = base_model.output
         x = GlobalAveragePooling2D()(x)
@@ -63,6 +71,7 @@ def getModel(modelName,
         base_model = Xception(weights=weights,
                               include_top=False,
                               input_tensor=input_tensor)
+        K.set_learning_phase(True)
         x = base_model.output
         x = GlobalAveragePooling2D()(x)
     else:
@@ -93,6 +102,20 @@ def getModel(modelName,
     return model
 
 
+def getPreprocess(modelName):
+    if modelName == 'InceptionV3':
+        preprocessInput = preprocess_input_inception_v3
+    elif modelName == 'VGG16':
+        preprocessInput = preprocess_input_vgg16
+    elif modelName == 'ResNet50':
+        preprocessInput = preprocess_input_ResNet50
+    elif modelName == 'Xception':
+        preprocessInput = preprocess_input_xception
+    else:
+        raise Exception('model name not recognized')
+    return preprocessInput
+
+
 def trainModel(xTrn, yTrn,
                XVal, yVal,
                outputPath,
@@ -117,6 +140,7 @@ def trainModel(xTrn, yTrn,
     :return: None
     """
     print(modelName)
+    preprocessInput = getPreprocess(modelName)
     if d:
         nEpochs = 3
         batchSize = 2
@@ -126,7 +150,7 @@ def trainModel(xTrn, yTrn,
             XVal, yVal = XVal[0:nDebug], yVal[0:nDebug]
         if xTest is not None:
             xTest = xTest[0:nDebug]
-    
+
     now = datetime.datetime.now()
     today = str(now.date()) + \
                 '_' + str(now.hour) + \
@@ -145,8 +169,10 @@ def trainModel(xTrn, yTrn,
                                    today + '_' + note)
     if not(os.path.isdir(modelOutputDir)):
         os.mkdir(modelOutputDir)
+    xTrn = preprocessInput(xTrn)
     yTrn = to_categorical(yTrn)
     if not(XVal is None) and not(yVal is None):
+        XVal = preprocessInput(XVal)
         yVal = to_categorical(yVal)
         valData = (XVal, yVal)
     else:
@@ -196,13 +222,17 @@ def trainModel(xTrn, yTrn,
     hist = history.history
     histDf = pd.DataFrame(hist)
     histDf.to_csv(historyPath)
+
+    # Run inference on test set if provided
     if xTest is not None:
+        xTest = preprocessInput(xTest)
         print('running model pred on test set')
         yTestPred = model.predict(xTest,
                                   batch_size=20,
                                   verbose=1)
         yTestPredPath = os.path.join(modelOutputDir, 'yTestPred.npy')
         np.save(yTestPredPath, yTestPred)
+
     model.save(os.path.join(modelOutputDir, '{}_final.hdf5'.format(modelName)))
     with open(os.path.join(modelOutputDir, 'trnInfo.txt'), 'w') as fid:
         fid.write("model: {} \n".format(modelName))
