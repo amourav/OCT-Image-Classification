@@ -39,12 +39,12 @@ def getModel(modelName,
     :return: model: Keras CNN Model.
     """
     input_tensor = Input(shape=inputShape)
-    K.set_learning_phase(False)
+    #K.set_learning_phase(False)
     if modelName == 'InceptionV3':
         base_model = InceptionV3(weights=weights,
                                  include_top=False,
                                  input_tensor=input_tensor)
-        K.set_learning_phase(True)
+        #K.set_learning_phase(True)
         lastLayer = None
         x = base_model.output
         x = GlobalAveragePooling2D()(x)
@@ -52,7 +52,7 @@ def getModel(modelName,
         base_model = VGG16(weights=weights,
                            include_top=False,
                            input_tensor=input_tensor)
-        K.set_learning_phase(True)
+        #K.set_learning_phase(True)
         #lastLayer = 4096
         x = base_model.output
         x = Flatten()(x)
@@ -62,7 +62,7 @@ def getModel(modelName,
         base_model = ResNet50(weights=weights,
                               include_top=False,
                               input_tensor=input_tensor)
-        K.set_learning_phase(True)
+        #K.set_learning_phase(True)
         #lastLayer = 2048
         x = base_model.output
         x = GlobalAveragePooling2D()(x)
@@ -71,7 +71,7 @@ def getModel(modelName,
         base_model = Xception(weights=weights,
                               include_top=False,
                               input_tensor=input_tensor)
-        K.set_learning_phase(True)
+        #K.set_learning_phase(True)
         x = base_model.output
         x = GlobalAveragePooling2D()(x)
     else:
@@ -92,8 +92,15 @@ def getModel(modelName,
     model = Model(inputs=base_model.input, outputs=predictions)
     # first: train only the top layers (which were randomly initialized)
     # i.e. freeze all convolutional InceptionV3 layers
+    #for layer in base_model.layers:
+    #    layer.trainable = False
     for layer in base_model.layers:
-        layer.trainable = False
+        if hasattr(layer, 'moving_mean') and hasattr(layer, 'moving_variance'):
+            layer.trainable = True
+            K.eval(K.update(layer.moving_mean, K.zeros_like(layer.moving_mean)))
+            K.eval(K.update(layer.moving_variance, K.zeros_like(layer.moving_variance)))
+        else:
+            layer.trainable = False
     adam = Adam(lr=0.0001)
     # compile the model (should be done *after* setting layers to non-trainable)
     loss = 'categorical_crossentropy'
