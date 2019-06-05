@@ -4,6 +4,7 @@ import traceback
 import sys
 from PIL import Image
 import numpy as np
+import pandas as pd
 import skimage
 
 
@@ -47,6 +48,7 @@ def preprocessDir(dataPath,
     diseaseDirs = [d for d in diseaseDirs if
                    os.path.isdir(os.path.join(targetDataPath, d))]
     imgStack, targetList = [], []
+    imgNames = []
     for imgType in diseaseDirs:
         classLbl = imgTypeDict[imgType]
         nClass = int(nTrain / len(diseaseDirs))
@@ -64,13 +66,16 @@ def preprocessDir(dataPath,
             imgArr = skimage.transform.resize(imgArr, newSize)
             imgStack.append(imgArr)
             targetList.append(classLbl)
+        imgNames += [n.split('.')[0] for n in imgFiles]
     imgStack = np.stack(imgStack, axis=0)
     targetList = np.asarray(targetList)
+    targetDF = pd.DataFrame(index=imgNames)
+    targetDF[subdir] = targetList
     # shuffle
-    idxList = np.arange(len(targetList))
-    np.random.shuffle(idxList)
-    imgStack = imgStack[idxList]
-    targetList = targetList[idxList]
+    #idxList = np.arange(len(targetList))
+    #np.random.shuffle(idxList)
+    #imgStack = imgStack[idxList]
+    #targetList = targetList[idxList]
     # sample images for training
     infoTag = "{}_{}".format(str(newSize), subdir)
     if subdir == 'train':
@@ -81,6 +86,7 @@ def preprocessDir(dataPath,
     targetListOutPath = os.path.join(outputPath, "targetData_{}.npy".format(infoTag))
     np.save(imgStackOutPath, imgStack)
     np.save(targetListOutPath, targetList)
+    targetDF.to_csv(os.path.join(outputPath, "targetData_{}.csv".format(infoTag)))
 
 
 def get_parser():
