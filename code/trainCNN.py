@@ -96,6 +96,7 @@ def getModel(modelName,
     #    layer.trainable = False
     for layer in base_model.layers:
         if hasattr(layer, 'moving_mean') and hasattr(layer, 'moving_variance'):
+            print('BN layer: trainable')
             layer.trainable = True
             K.eval(K.update(layer.moving_mean, K.zeros_like(layer.moving_mean)))
             K.eval(K.update(layer.moving_variance, K.zeros_like(layer.moving_variance)))

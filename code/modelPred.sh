@@ -13,7 +13,12 @@ python --version
 
 xPath="../PreprocessedData/preprocessedForCNN/299x299/imgData_(299, 299, 3)_test.npy"
 yPath="../PreprocessedData/preprocessedForCNN/299x299/targetData_(299, 299, 3)_test.npy"
-mPath="../modelOutput/compareModels2/VGG16_dataAug_False2019-06-02_14_14_default/VGG16.hdf5"
+mPath="../modelOutput/compareModels2/VGG16_dataAug_False2019-06-04_23_47_default/VGG16.hdf5"
 note="_testSet_"
+
+echo "$xPath"
+echo "$yPath"
+echo "$mPath"
+echo "$note"
 
 python ./modelPred.py -x "$xPath" -y "$yPath" -m "$mPath" -n "$note"

@@ -111,6 +111,7 @@ if __name__ == "__main__":
     try:
         args = parser.parse_args()
         main_driver(args.XTestPath,
+                    args.yTestPath,
                     args.modelPath,
                     args.note)
         print('Done!')
