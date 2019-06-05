@@ -11,13 +11,13 @@ source activate
 python --version
 
 
-xtrnPath="../PreprocessedData/preprocessedForCNN/224x224/imgData_(224, 224, 3)_train_n1000.npy"
-xvalPath="../PreprocessedData/preprocessedForCNN/224x224/imgData_(224, 224, 3)_val.npy"
-ytrnPath="../PreprocessedData/preprocessedForCNN/224x224/targetData_(224, 224, 3)_train.npy"
-yvalPath="../PreprocessedData/preprocessedForCNN/224x224/targetData_(224, 224, 3)_val.npy"
-xtestPath="../PreprocessedData/preprocessedForCNN/224x224/imgData_(224, 224, 3)_test.npy"
+xtrnPath="../PreprocessedData/preprocessedForCNN/299x299/imgData_(299, 299, 3)_train_n1000.npy"
+xvalPath="../PreprocessedData/preprocessedForCNN/299x299/imgData_(299, 299, 3)_val.npy"
+ytrnPath="../PreprocessedData/preprocessedForCNN/299x299/targetData_(299, 299, 3)_train.npy"
+yvalPath="../PreprocessedData/preprocessedForCNN/299x299/targetData_(299, 299, 3)_val.npy"
+xtestPath="../PreprocessedData/preprocessedForCNN/299x299/imgData_(299, 299, 3)_test.npy"
 model="VGG16"
-note="default_224"
+note="default_299_noprep"
 #weights="../pretrainedModelWeights/Xception/xception_weights_tf_dim_ordering_tf_kernels_notop.h5"
 output="../modelOutput/compareModels2"
 aug=0

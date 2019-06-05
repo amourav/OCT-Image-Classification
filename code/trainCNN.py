@@ -114,7 +114,8 @@ def getPreprocess(modelName):
     if modelName == 'InceptionV3':
         preprocessInput = preprocess_input_inception_v3
     elif modelName == 'VGG16':
-        preprocessInput = preprocess_input_vgg16
+        #preprocessInput = preprocess_input_vgg16
+        preprocessInput = None
     elif modelName == 'ResNet50':
         preprocessInput = preprocess_input_ResNet50
     elif modelName == 'Xception':
@@ -177,10 +178,12 @@ def trainModel(xTrn, yTrn,
                                    today + '_' + note)
     if not(os.path.isdir(modelOutputDir)):
         os.mkdir(modelOutputDir)
-    xTrn = preprocessInput(xTrn)
+    if preprocessInput is not None:
+        xTrn = preprocessInput(xTrn)
     yTrn = to_categorical(yTrn)
     if not(XVal is None) and not(yVal is None):
-        XVal = preprocessInput(XVal)
+        if preprocessInput is not None:
+            XVal = preprocessInput(XVal)
         yVal = to_categorical(yVal)
         valData = (XVal, yVal)
     else:
@@ -233,7 +236,8 @@ def trainModel(xTrn, yTrn,
 
     # Run inference on test set if provided
     if xTest is not None:
-        xTest = preprocessInput(xTest)
+        if preprocessInput is not None:
+            xTest = preprocessInput(xTest)
         print('running model pred on test set')
         yTestPred = model.predict(xTest,
                                   batch_size=20,
