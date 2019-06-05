@@ -21,7 +21,7 @@ def getPreprocess(modelName):
     if modelName == 'InceptionV3':
         preprocessInput = preprocess_input_inception_v3
     elif modelName == 'VGG16':
-        preprocessInput = preprocess_input_vgg16
+        preprocessInput = None #preprocess_input_vgg16
     elif modelName == 'ResNet50':
         preprocessInput = preprocess_input_ResNet50
     elif modelName == 'Xception':
@@ -60,7 +60,8 @@ def main_driver(XTestPath,
     assert(os.path.isfile(modelPath))
     if yTestPath is not None:
         assert(os.path.isfile(yTestPath))
-        yTest = np.load(yTestPath)
+        yTest = pd.read_csv(yTestPath, index_col=0)
+        yTestArr = yTest.values
     XTest = np.load(XTestPath)
     outputPath = os.path.dirname(modelPath)
     models = ['InceptionV3', 'VGG16', 'ResNet50', 'Xception']
@@ -72,12 +73,19 @@ def main_driver(XTestPath,
     assert(sum(idxList)==1)
     modelName = models[np.argmax(idxList)]
     preprocessInput = getPreprocess(modelName)
-    XTest = preprocessInput(XTest)
+    if preprocessInput is not None:
+        XTest = preprocessInput(XTest)
     model = load_model(modelPath)
     yTestPred = model.predict(XTest,
                               batch_size=32,
                               verbose=1)
     yTestPredPath = os.path.join(outputPath, 'yPred_{}.npy'.format(note))
+    modelPredDF = pd.DataFrame(index=yTest.index)
+    for yLbl in np.unique(yTest):
+        modelPredDF[modelName + "_{}".format(yLbl)] = yTestPred[:, yLbl]
+    modelPredDF['yTrueTest'] = yTest
+    modelPredDF.to_csv(os.path.join(outputPath,
+                                    'yPredDf_{}.csv'.format(note)))
     np.save(yTestPredPath, yTestPred)
     if yTest is not None:
         classMap = {
