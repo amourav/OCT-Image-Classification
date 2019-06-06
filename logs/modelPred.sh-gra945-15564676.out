@@ -1,0 +1,10 @@
+
+Due to MODULEPATH changes, the following have been reloaded:
+  1) openmpi/2.1.1
+
+Python 3.5.4
+Using TensorFlow backend.
+Traceback (most recent call last):
+  File "./modelPred.py", line 115, in <module>
+    args.note)
+TypeError: main_driver() missing 1 required positional argument: 'note'

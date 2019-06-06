@@ -1,0 +1,14 @@
+
+Due to MODULEPATH changes, the following have been reloaded:
+  1) openmpi/2.1.1
+
+Python 3.5.4
+../PreprocessedData/preprocessedForCNN/299x299/imgData_(299, 299, 3)_test.npy
+../PreprocessedData/preprocessedForCNN/299x299/targetData_(299, 299, 3)_test.npy
+../modelOutput/compareModels2/VGG16_dataAug_False2019-06-04_23_47_default/VGG16.hdf5
+_testSet_
+Using TensorFlow backend.
+Traceback (most recent call last):
+  File "./modelPred.py", line 115, in <module>
+    args.note)
+TypeError: main_driver() missing 1 required positional argument: 'note'
