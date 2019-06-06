@@ -64,8 +64,8 @@ def main_driver(XTestPath,
         yTestArr = yTest.values
     XTest = np.load(XTestPath)
     outputPath = os.path.dirname(modelPath)
+    
     models = ['InceptionV3', 'VGG16', 'ResNet50', 'Xception']
-
     idxList = []
     for model in models:
         i = model in modelPath
@@ -75,6 +75,7 @@ def main_driver(XTestPath,
     preprocessInput = getPreprocess(modelName)
     if preprocessInput is not None:
         XTest = preprocessInput(XTest)
+    
     model = load_model(modelPath)
     yTestPred = model.predict(XTest,
                               batch_size=32,
