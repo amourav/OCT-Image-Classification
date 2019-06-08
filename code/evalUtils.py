@@ -36,7 +36,7 @@ def reportBinaryScores(yTrueUrgent, yPredProbUrgent, v=0):
         print("\t specificity {0:.3g}".format(tnr))
         print("\t positive likelihood ratio {0:.3g}".format(plr))
         print("\t negative likelihood ratio {0:.3g}".format(nlr))
-        print("\n")
+
     return acc, tpr, tnr, plr, nlr
 
 def plotModelHist(modelHistory,
