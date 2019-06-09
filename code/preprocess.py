@@ -20,9 +20,10 @@ def normImg(img):
 
 def preprocessDir(dataPath,
                   outputPath,
-                  subdir,
+                  dataset,
                   nTrain,
-                  newSize):
+                  newSize,
+                  ):
     """
     Preprocess directory of .jpeg images.
     Each image is normalized and resized to desired resolution
@@ -30,7 +31,7 @@ def preprocessDir(dataPath,
     keras model fit
     :param dataPath (str): base dir of raw data
     :param outputPath (str):
-    :param subdir (str):
+    :param dataset (str):
     :param debug_ (int/bool):
     :param newSize (tuple): resolution of final img
     :return:
@@ -42,8 +43,8 @@ def preprocessDir(dataPath,
         "CNV": 2,
         "DME": 3,
     }
-    print(subdir)
-    targetDataPath = os.path.join(dataPath, subdir)
+    print('Preprocessing:', dataset)
+    targetDataPath = dataPath
     diseaseDirs = os.listdir(targetDataPath)
     diseaseDirs = [d for d in diseaseDirs if
                    os.path.isdir(os.path.join(targetDataPath, d))]
@@ -58,7 +59,7 @@ def preprocessDir(dataPath,
             continue
         imgFiles = os.listdir(imgFilesPath)
         imgFiles = [f for f in imgFiles if f.endswith('.jpeg')]
-        if subdir == 'train':
+        if dataset == 'train':
             imgFiles = np.random.choice(imgFiles, nClass)
         for imgFname in imgFiles:
             imgPath = os.path.join(imgFilesPath, imgFname)
@@ -70,17 +71,11 @@ def preprocessDir(dataPath,
     imgStack = np.stack(imgStack, axis=0)
     targetList = np.asarray(targetList)
     targetDF = pd.DataFrame(index=imgNames)
-    targetDF[subdir] = targetList
-    # shuffle
-    #idxList = np.arange(len(targetList))
-    #np.random.shuffle(idxList)
-    #imgStack = imgStack[idxList]
-    #targetList = targetList[idxList]
-    # sample images for training
-    infoTag = "{}_{}".format(str(newSize), subdir)
-    if subdir == 'train':
+    targetDF[dataset] = targetList
+    infoTag = "{}_{}".format(str(newSize), dataset)
+    if dataset == 'train':
         imgStackOutPath = os.path.join(outputPath, "imgData_{}_n{}.npy".format(infoTag,
-                                                                              nTrain))
+                                                                               nTrain))
     else:
         imgStackOutPath = os.path.join(outputPath, "imgData_{}.npy".format(infoTag))
     targetListOutPath = os.path.join(outputPath, "targetData_{}.npy".format(infoTag))
@@ -136,11 +131,11 @@ def main_driver(dataPath, outputPath, subdir,
     print(outputPath)
     if subdir == 'all':
         for subdir in ['test', 'train', 'val']:
-            preprocessDir(dataPath, outputPath,
-                          subdir, nTrain, newSize)
+            preprocessDir(os.path.join(dataPath, subdir),
+                          outputPath, subdir, nTrain, newSize)
     else:
-        preprocessDir(dataPath, outputPath,
-                      subdir, nTrain, newSize)
+        preprocessDir(os.path.join(dataPath, subdir),
+                      outputPath, subdir, nTrain, newSize)
 
 
 if __name__ == "__main__":

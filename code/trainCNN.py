@@ -8,7 +8,6 @@ from keras.applications.inception_v3 import InceptionV3
 from keras.applications.vgg16 import VGG16
 from keras.applications.resnet50 import ResNet50
 from keras.applications.xception import Xception
-from keras.applications.vgg16 import preprocess_input as preprocess_input_vgg16
 from keras.applications.resnet50 import preprocess_input as preprocess_input_ResNet50
 from keras.applications.inception_v3 import preprocess_input as preprocess_input_inception_v3
 from keras.applications.vgg16 import preprocess_input as preprocess_input_xception
@@ -19,7 +18,7 @@ from keras.optimizers import Adam
 from keras.utils import to_categorical
 import keras.backend as K
 from keras.backend import set_image_data_format
-from keras.callbacks import ModelCheckpoint
+from keras.callbacks import ModelCheckpoint, EarlyStopping
 from keras.preprocessing.image import ImageDataGenerator
 import datetime
 import time
@@ -114,7 +113,6 @@ def getPreprocess(modelName):
     if modelName == 'InceptionV3':
         preprocessInput = preprocess_input_inception_v3
     elif modelName == 'VGG16':
-        #preprocessInput = preprocess_input_vgg16
         preprocessInput = None
     elif modelName == 'ResNet50':
         preprocessInput = preprocess_input_ResNet50
@@ -132,7 +130,7 @@ def trainModel(xTrn, yTrn,
                modelWeights,
                aug, d, note,
                xTest = None,
-               nEpochs=250,
+               nEpochs=300,
                batchSize=30,
                lastLayer=4096):
     """
@@ -149,7 +147,6 @@ def trainModel(xTrn, yTrn,
     :return: None
     """
     print(modelName)
-    preprocessInput = getPreprocess(modelName)
     if d:
         nEpochs = 3
         batchSize = 2
@@ -174,13 +171,18 @@ def trainModel(xTrn, yTrn,
     print(model.summary())
     modelOutputDir = os.path.join(outputPath,
                                    modelName + '_' +
-                                   "dataAug_" + str(aug) +
                                    today + '_' + note)
     if not(os.path.isdir(modelOutputDir)):
         os.mkdir(modelOutputDir)
+
+    #normalize data to network's specifications
+    preprocessInput = getPreprocess(modelName)
     if preprocessInput is not None:
         xTrn = preprocessInput(xTrn)
     yTrn = to_categorical(yTrn)
+
+    #Set Validation Data
+    valSplit = 0.0
     if not(XVal is None) and not(yVal is None):
         if preprocessInput is not None:
             XVal = preprocessInput(XVal)
@@ -188,15 +190,23 @@ def trainModel(xTrn, yTrn,
         valData = (XVal, yVal)
     else:
         valData = None
+        valSplit = 0.1
 
     # Set Callbacks
     modelOutPath = os.path.join(modelOutputDir, '{}.hdf5'.format(modelName))
     modelCheckpoint = ModelCheckpoint(modelOutPath, monitor='val_loss',
                                       save_best_only=True,
                                       mode='auto', period=1)
-    callbacks = [modelCheckpoint]
+
+    earlyStop = EarlyStopping(monitor='val_loss',
+                              min_delta=0,
+                              patience=50,
+                              verbose=1,
+                              restore_best_weights=True)
+
+    callbacks = [modelCheckpoint, earlyStop]
     t0 = time.time()
-    if not(aug):
+    if not aug:
         history = model.fit(x=xTrn,
                             y=yTrn,
                             batch_size=batchSize,
@@ -204,23 +214,23 @@ def trainModel(xTrn, yTrn,
                             verbose=1,
                             callbacks=callbacks,
                             validation_data=valData,
+                            validation_split=valSplit,
                             shuffle=True)
     else:
         print('fitting image generator')
-        datagen = ImageDataGenerator(
-            featurewise_center=False,
-            featurewise_std_normalization=False,
-            samplewise_center=True,
-            samplewise_std_normalization=True,
-            rotation_range=15,
-            width_shift_range=0.1,
-            height_shift_range=0,
-            zoom_range=0.1,  
-            brightness_range=(0.90, 1.1),
-            shear_range=15,
-            fill_mode='nearest',
-            vertical_flip=False,
-            horizontal_flip=True)
+        datagen = ImageDataGenerator(featurewise_center=False,
+                                     featurewise_std_normalization=False,
+                                     samplewise_center=True,
+                                     samplewise_std_normalization=True,
+                                     rotation_range=15,
+                                     width_shift_range=0.1,
+                                     height_shift_range=0,
+                                     zoom_range=0.1,
+                                     brightness_range=(0.90, 1.1),
+                                     shear_range=15,
+                                     fill_mode='nearest',
+                                     vertical_flip=False,
+                                     horizontal_flip=True)
         history = model.fit_generator(datagen.flow(xTrn, yTrn,
                                                    batch_size=batchSize),
                                       steps_per_epoch=len(xTrn) / batchSize,
@@ -245,7 +255,8 @@ def trainModel(xTrn, yTrn,
         yTestPredPath = os.path.join(modelOutputDir, 'yTestPred.npy')
         np.save(yTestPredPath, yTestPred)
 
-    model.save(os.path.join(modelOutputDir, '{}_final.hdf5'.format(modelName)))
+    #model.save_weights(os.path.join(modelOutputDir,
+    #                                '{}_weights.hdf5'.format(modelName)))
     with open(os.path.join(modelOutputDir, 'trnInfo.txt'), 'w') as fid:
         fid.write("model: {} \n".format(modelName))
         fid.write("x shape: {} \n".format(xShape))
