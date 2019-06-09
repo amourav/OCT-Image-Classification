@@ -49,7 +49,6 @@ def preprocessDir(dataPath,
     diseaseDirs = [d for d in diseaseDirs if
                    os.path.isdir(os.path.join(targetDataPath, d))]
     imgStack, targetList = [], []
-    imgNames = []
     for imgType in diseaseDirs:
         classLbl = imgTypeDict[imgType]
         nClass = int(nTrain / len(diseaseDirs))
@@ -65,9 +64,10 @@ def preprocessDir(dataPath,
             imgPath = os.path.join(imgFilesPath, imgFname)
             imgArr = np.array(Image.open(imgPath))
             imgArr = skimage.transform.resize(imgArr, newSize)
+            #imgArr = normImg(imgArr) #!!
             imgStack.append(imgArr)
             targetList.append(classLbl)
-        imgNames += [n.split('.')[0] for n in imgFiles]
+        imgNames = [n.split('.')[0] for n in imgFiles]
     imgStack = np.stack(imgStack, axis=0)
     targetList = np.asarray(targetList)
     targetDF = pd.DataFrame(index=imgNames)

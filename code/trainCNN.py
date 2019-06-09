@@ -146,6 +146,7 @@ def trainModel(xTrn, yTrn,
     :param batchSize (int): Number of images to use in each training batch.
     :return: None
     """
+    set_image_data_format('channels_last')
     print(modelName)
     if d:
         nEpochs = 3
@@ -331,7 +332,6 @@ def main_driver(XTrainPath, yTrainPath,
     d = bool(d)
     if d:
         print('debugging mode: ON')
-    set_image_data_format('channels_last')
     assert(os.path.isfile(XTrainPath))
     assert(os.path.isfile(yTrainPath))
     if XTestPath is not None:

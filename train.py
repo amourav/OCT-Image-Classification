@@ -67,6 +67,7 @@ def main(xTrnPath, xValPath,
     """############################################################################
                         1. Load Data
     ############################################################################"""
+    print('loading data')
     trnTag = "{}_{}".format(str(newSize), 'train')
     trnDataPath = join(outputPath, "imgData_{}_n{}.npy".format(trnTag, nTrain))
     trnTargetPath = join(outputPath, "targetData_{}.npy".format(trnTag))
@@ -86,7 +87,6 @@ def main(xTrnPath, xValPath,
     """############################################################################
                         1. Train CNN
     ############################################################################"""
-
     modelOutputPath = "./modelOutput/{}".format(modelName)
     if not os.path.isdir(modelOutputPath):
         os.makedirs(modelOutputPath)
