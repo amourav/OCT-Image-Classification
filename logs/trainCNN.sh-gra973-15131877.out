@@ -1,3 +1,0 @@
-/var/spool/slurmd/job15131877/slurm_script: /cvmfs/soft.computecanada.ca/nix/var/nix/profiles/16.09/lmod/lmod/libexec/lmod: No such file or directory
-/var/spool/slurmd/job15131877/slurm_script: /home/amourav/tensorflow/bin/python: /cvmfs/soft.computecanada.ca/nix/var/nix/profiles/16.09/lib/ld-linux-x86-64.so.2: bad ELF interpreter: No such file or directory
-/var/spool/slurmd/job15131877/slurm_script: /home/amourav/tensorflow/bin/python: /cvmfs/soft.computecanada.ca/nix/var/nix/profiles/16.09/lib/ld-linux-x86-64.so.2: bad ELF interpreter: No such file or directory

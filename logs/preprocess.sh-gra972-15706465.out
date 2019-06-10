@@ -1,0 +1,21 @@
+
+Due to MODULEPATH changes, the following have been reloaded:
+  1) openmpi/2.1.1
+
+Python 3.5.4
+Traceback (most recent call last):
+  File "./preprocess.py", line 154, in <module>
+    args.d)
+  File "./preprocess.py", line 130, in main_driver
+    assert(os.path.isdir(dataPath))
+AssertionError
+/scratch/amourav/Python/OCT-Image-Classification/code
+r../RawData/
+Traceback (most recent call last):
+  File "./preprocess.py", line 154, in <module>
+    args.d)
+  File "./preprocess.py", line 130, in main_driver
+    assert(os.path.isdir(dataPath))
+AssertionError
+/scratch/amourav/Python/OCT-Image-Classification/code
+r../RawData/

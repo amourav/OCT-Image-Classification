@@ -1,0 +1,62 @@
+
+Due to MODULEPATH changes, the following have been reloaded:
+  1) openmpi/2.1.1
+
+Python 3.5.4
+../PreprocessedData/preprocessedForCNN/224 x 224/imgData_(224, 224, 3)_test.npy
+../PreprocessedData/preprocessedForCNN/224 x 224/targetData_(224, 224, 3)_test.csv
+../modelOutput/compareModels3/VGG16_2019-06-09_18_40_default_noprep/VGG16.hdf5
+_testSet_
+2019-06-09 19:26:19.022023: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1432] Found device 0 with properties: 
+name: Tesla P100-PCIE-12GB major: 6 minor: 0 memoryClockRate(GHz): 1.3285
+pciBusID: 0000:83:00.0
+totalMemory: 11.91GiB freeMemory: 11.63GiB
+2019-06-09 19:26:19.022201: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1511] Adding visible gpu devices: 0
+2019-06-09 19:26:19.399013: I tensorflow/core/common_runtime/gpu/gpu_device.cc:982] Device interconnect StreamExecutor with strength 1 edge matrix:
+2019-06-09 19:26:19.399157: I tensorflow/core/common_runtime/gpu/gpu_device.cc:988]      0 
+2019-06-09 19:26:19.399201: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1001] 0:   N 
+2019-06-09 19:26:19.399561: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1115] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 11251 MB memory) -> physical GPU (device: 0, name: Tesla P100-PCIE-12GB, pci bus id: 0000:83:00.0, compute capability: 6.0)
+2019-06-09 19:26:19.400110: I tensorflow/core/common_runtime/process_util.cc:69] Creating new thread pool with default inter op setting: 2. Tune using inter_op_parallelism_threads for best performance.
+trn path: ../PreprocessedData/preprocessedForCNN/224 x 224/imgData_(224, 224, 3)_test.npy
+
+ 32/968 [..............................] - ETA: 1:06
+ 64/968 [>.............................] - ETA: 33s 
+ 96/968 [=>............................] - ETA: 22s
+128/968 [==>...........................] - ETA: 17s
+160/968 [===>..........................] - ETA: 13s
+192/968 [====>.........................] - ETA: 11s
+224/968 [=====>........................] - ETA: 9s 
+256/968 [======>.......................] - ETA: 8s
+288/968 [=======>......................] - ETA: 7s
+320/968 [========>.....................] - ETA: 6s
+352/968 [=========>....................] - ETA: 5s
+384/968 [==========>...................] - ETA: 5s
+416/968 [===========>..................] - ETA: 4s
+448/968 [============>.................] - ETA: 4s
+480/968 [=============>................] - ETA: 3s
+512/968 [==============>...............] - ETA: 3s
+544/968 [===============>..............] - ETA: 3s
+576/968 [================>.............] - ETA: 2s
+608/968 [=================>............] - ETA: 2s
+640/968 [==================>...........] - ETA: 2s
+672/968 [===================>..........] - ETA: 1s
+704/968 [====================>.........] - ETA: 1s
+736/968 [=====================>........] - ETA: 1s
+768/968 [======================>.......] - ETA: 1s
+800/968 [=======================>......] - ETA: 1s
+832/968 [========================>.....] - ETA: 0s
+864/968 [=========================>....] - ETA: 0s
+896/968 [==========================>...] - ETA: 0s
+928/968 [===========================>..] - ETA: 0s
+960/968 [============================>.] - ETA: 0s
+968/968 [==============================] - 6s 6ms/step
+Using TensorFlow backend.
+	 accuracy: 0.908
+
+	 binary (urgent vs non-urgent)
+	 accuracy: 0.938
+	 sensitivity 0.944
+	 specificity 0.932
+	 positive likelihood ratio 13.8
+	 negative likelihood ratio 0.0599
+Done!

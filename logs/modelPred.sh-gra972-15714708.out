@@ -1,0 +1,13 @@
+
+Due to MODULEPATH changes, the following have been reloaded:
+  1) openmpi/2.1.1
+
+Python 3.5.4
+../PreprocessedData/preprocessedForCNN/299x299/imgData_(299, 299, 3)_train_n1000.npy
+../PreprocessedData/preprocessedForCNN/299x299/targetData_(299, 299, 3)_train.npy
+../modelOutput/compareModels2/VGG16_dataAug_False2019-06-05_15_46_default_224_noprep/VGG16.hdf5
+_trainSet_
+  File "./modelPred.py", line 105
+    XTest preprocessInputVGG16(XTest, newSize=(224, 224, 3))
+                             ^
+SyntaxError: invalid syntax

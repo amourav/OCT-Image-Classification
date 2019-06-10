@@ -201,7 +201,7 @@ def trainModel(xTrn, yTrn,
 
     earlyStop = EarlyStopping(monitor='val_loss',
                               min_delta=0,
-                              patience=50,
+                              patience=150,
                               verbose=1,
                               restore_best_weights=True)
 
@@ -309,6 +309,17 @@ def get_parser():
     return module_parser
 
 
+def loadTargetData(yPath):
+    if yPath.endswith('.npy'):
+        yArr = np.load(yPath)
+    elif yPath.endswith('.csv'):
+        yArr = pd.read_csv(yPath, 
+                           index_col=0)
+        yArr = yArr.values
+    else:
+        raise Exception('unknown file type: {}'.format(yPath))
+    return yArr
+
 def main_driver(XTrainPath, yTrainPath,
                 XValPath, yValPath,
                 XTestPath,
@@ -337,13 +348,13 @@ def main_driver(XTrainPath, yTrainPath,
     if XTestPath is not None:
         assert(os.path.isfile(XTestPath))
         xTest = np.load(XTestPath)
-    xTrn = np.load(XTrainPath)
-    yTrn = np.load(yTrainPath)
 
+    xTrn = np.load(XTrainPath)
+    yTrn = loadTargetData(yTrainPath)
 
     if os.path.isfile(XValPath) and os.path.isfile(yValPath):
         XVal = np.load(XValPath)
-        yVal = np.load(yValPath)
+        yVal = loadTargetData(yValPath)
     else:
         XVal = None
         yVal = None

@@ -22,6 +22,7 @@ def preprocessImgs(xPath, newSize):
         imgPath = os.path.join(xPath, imgFname)
         imgArr = np.array(Image.open(imgPath))
         imgArr = skimage.transform.resize(imgArr, newSize)
+        imgArr = imgArr/imgArr.max()
         #imgArr = normImg(imgArr)
         imgStack.append(imgArr)
     imgStack = np.stack(imgStack, axis=0)
@@ -53,10 +54,10 @@ def main(xPath, outPath, xRes, yRes, modelPath):
                         0. Preprocess Data
     ############################################################################"""
     imgTypeDict = {
-        "NORMAL": 0,
-        "DRUSEN": 1,
-        "CNV": 2,
-        "DME": 3,
+        0: "NORMAL",
+        1: "DRUSEN",
+        2: "CNV",
+        3: "DME",
     }
     newSize = (xRes, yRes, 3)
     imgData, imgNames = preprocessImgs(xPath, newSize)
@@ -82,7 +83,10 @@ def main(xPath, outPath, xRes, yRes, modelPath):
                           batch_size=1,
                           verbose=1)
 
-    cols = [modelName + "_{}_{}".format(l, i) for (l, i) in imgTypeDict.items()]
+    cols = []
+    for i in range(yPred.shape[1]):
+        cols.append(modelName + "_{}_{}".format(imgTypeDict[i], i))
+    #cols = [modelName + "_{}_{}".format(l, i) for (l, i) in imgTypeDict.items()]
     yPredDf = pd.DataFrame(yPred,
                            columns=cols,
                            index=imgNames)

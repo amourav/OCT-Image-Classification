@@ -65,6 +65,7 @@ def preprocessDir(dataPath,
             imgPath = os.path.join(imgFilesPath, imgFname)
             imgArr = np.array(Image.open(imgPath))
             imgArr = skimage.transform.resize(imgArr, newSize)
+            imgArr = imgArr/imgArr.max()
             #imgArr = normImg(imgArr) #!!
             imgStack.append(imgArr)
             targetList.append(classLbl)

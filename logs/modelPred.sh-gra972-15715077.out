@@ -1,0 +1,67 @@
+
+Due to MODULEPATH changes, the following have been reloaded:
+  1) openmpi/2.1.1
+
+Python 3.5.4
+../PreprocessedData/preprocessedForCNN/299x299/imgData_(299, 299, 3)_train_n1000.npy
+../PreprocessedData/preprocessedForCNN/299x299/targetData_(299, 299, 3)_train.npy
+../modelOutput/compareModels2/VGG16_dataAug_False2019-06-05_15_46_default_224_noprep/VGG16.hdf5
+_trainSet_
+2019-06-09 21:43:50.363140: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1432] Found device 0 with properties: 
+name: Tesla P100-PCIE-12GB major: 6 minor: 0 memoryClockRate(GHz): 1.3285
+pciBusID: 0000:83:00.0
+totalMemory: 11.91GiB freeMemory: 11.63GiB
+2019-06-09 21:43:50.363321: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1511] Adding visible gpu devices: 0
+2019-06-09 21:43:50.787190: I tensorflow/core/common_runtime/gpu/gpu_device.cc:982] Device interconnect StreamExecutor with strength 1 edge matrix:
+2019-06-09 21:43:50.787372: I tensorflow/core/common_runtime/gpu/gpu_device.cc:988]      0 
+2019-06-09 21:43:50.787428: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1001] 0:   N 
+2019-06-09 21:43:50.787851: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1115] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 11251 MB memory) -> physical GPU (device: 0, name: Tesla P100-PCIE-12GB, pci bus id: 0000:83:00.0, compute capability: 6.0)
+2019-06-09 21:43:50.788370: I tensorflow/core/common_runtime/process_util.cc:69] Creating new thread pool with default inter op setting: 2. Tune using inter_op_parallelism_threads for best performance.
+trn path: ../PreprocessedData/preprocessedForCNN/299x299/imgData_(299, 299, 3)_train_n1000.npy
+
+  32/1000 [..............................] - ETA: 1:09
+  64/1000 [>.............................] - ETA: 35s 
+  96/1000 [=>............................] - ETA: 23s
+ 128/1000 [==>...........................] - ETA: 18s
+ 160/1000 [===>..........................] - ETA: 14s
+ 192/1000 [====>.........................] - ETA: 12s
+ 224/1000 [=====>........................] - ETA: 10s
+ 256/1000 [======>.......................] - ETA: 8s 
+ 288/1000 [=======>......................] - ETA: 7s
+ 320/1000 [========>.....................] - ETA: 7s
+ 352/1000 [=========>....................] - ETA: 6s
+ 384/1000 [==========>...................] - ETA: 5s
+ 416/1000 [===========>..................] - ETA: 5s
+ 448/1000 [============>.................] - ETA: 4s
+ 480/1000 [=============>................] - ETA: 4s
+ 512/1000 [==============>...............] - ETA: 3s
+ 544/1000 [===============>..............] - ETA: 3s
+ 576/1000 [================>.............] - ETA: 3s
+ 608/1000 [=================>............] - ETA: 2s
+ 640/1000 [==================>...........] - ETA: 2s
+ 672/1000 [===================>..........] - ETA: 2s
+ 704/1000 [====================>.........] - ETA: 1s
+ 736/1000 [=====================>........] - ETA: 1s
+ 768/1000 [======================>.......] - ETA: 1s
+ 800/1000 [=======================>......] - ETA: 1s
+ 832/1000 [=======================>......] - ETA: 1s
+ 864/1000 [========================>.....] - ETA: 0s
+ 896/1000 [=========================>....] - ETA: 0s
+ 928/1000 [==========================>...] - ETA: 0s
+ 960/1000 [===========================>..] - ETA: 0s
+ 992/1000 [============================>.] - ETA: 0s
+1000/1000 [==============================] - 6s 6ms/step
+Using TensorFlow backend.
+/home/amourav/tensorflow/lib/python3.5/site-packages/skimage/transform/_warps.py:105: UserWarning: The default mode, 'constant', will be changed to 'reflect' in skimage 0.15.
+  warn("The default mode, 'constant', will be changed to 'reflect' in "
+/home/amourav/tensorflow/lib/python3.5/site-packages/skimage/transform/_warps.py:110: UserWarning: Anti-aliasing will be enabled by default in skimage 0.15 to avoid aliasing artifacts when down-sampling images.
+  warn("Anti-aliasing will be enabled by default in skimage 0.15 to "
+	 accuracy: 0.768
+
+	 binary (urgent vs non-urgent)
+	 accuracy: 0.841
+	 sensitivity 0.896
+	 specificity 0.786
+	 positive likelihood ratio 4.19
+	 negative likelihood ratio 0.132
+Done!

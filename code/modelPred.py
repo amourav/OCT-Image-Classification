@@ -14,7 +14,21 @@ from keras.backend import set_image_data_format
 from keras.models import load_model
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import roc_curve, auc
+import skimage
 from evalUtils import UrgentVRoutne, reportBinaryScores
+
+
+def preprocessInputVGG16(X, newSize=(224, 224, 3)):
+    xShape = X.shape
+    if not( (xShape[1], xShape[2]) == (newSize[0], newSize[1]) ):
+        xResized = []
+        for xi in X:
+            xiR = skimage.transform.resize(xi, newSize)
+            xResized.append(xiR)
+        xResized = np.stack(xResized, axis=0)
+        return xResized
+    else:
+        return X
 
 
 def getPreprocess(modelName):
@@ -29,6 +43,18 @@ def getPreprocess(modelName):
     else:
         raise Exception('model name not recognized')
     return preprocessInput
+
+
+def loadTargetData(yPath):
+    if yPath.endswith('.npy'):
+        yArr = np.load(yPath)
+    elif yPath.endswith('.csv'):
+        yArr = pd.read_csv(yPath, 
+                           index_col=0)
+        yArr = yArr.values
+    else:
+        raise Exception('unknown file type: {}'.format(yPath))
+    return yArr
 
 
 def get_parser():
@@ -60,8 +86,7 @@ def main_driver(XTestPath,
     assert(os.path.isfile(modelPath))
     if yTestPath is not None:
         assert(os.path.isfile(yTestPath))
-        yTest = pd.read_csv(yTestPath, index_col=0)
-        yTestArr = yTest.values
+        yTest = loadTargetData(yTestPath)
     XTest = np.load(XTestPath)
     outputPath = os.path.dirname(modelPath)
     
@@ -76,12 +101,19 @@ def main_driver(XTestPath,
     if preprocessInput is not None:
         XTest = preprocessInput(XTest)
     
+    #Always rezie to 224 x 224 for VGG
+    if modelName == "VGG16":
+        XTest = preprocessInputVGG16(XTest, newSize=(224, 224, 3))
+    
     model = load_model(modelPath)
     yTestPred = model.predict(XTest,
                               batch_size=32,
                               verbose=1)
     yTestPredPath = os.path.join(outputPath, 'yPred_{}.npy'.format(note))
-    modelPredDF = pd.DataFrame(index=yTest.index)
+    if type(yTest) is pd.DataFrame:
+        modelPredDF = pd.DataFrame(index=yTest.index)
+    else:
+        modelPredDF = pd.DataFrame()
     for yLbl in np.unique(yTest):
         modelPredDF[modelName + "_{}".format(yLbl)] = yTestPred[:, yLbl]
     modelPredDF['yTrueTest'] = yTest

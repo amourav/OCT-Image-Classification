@@ -1,0 +1,84 @@
+
+Due to MODULEPATH changes, the following have been reloaded:
+  1) openmpi/2.1.1
+
+Python 3.5.4
+2019-06-09 13:09:50.608084: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1432] Found device 0 with properties: 
+name: Tesla P100-PCIE-12GB major: 6 minor: 0 memoryClockRate(GHz): 1.3285
+pciBusID: 0000:83:00.0
+totalMemory: 11.91GiB freeMemory: 11.63GiB
+2019-06-09 13:09:50.608236: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1511] Adding visible gpu devices: 0
+2019-06-09 13:09:50.974077: I tensorflow/core/common_runtime/gpu/gpu_device.cc:982] Device interconnect StreamExecutor with strength 1 edge matrix:
+2019-06-09 13:09:50.974214: I tensorflow/core/common_runtime/gpu/gpu_device.cc:988]      0 
+2019-06-09 13:09:50.974257: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1001] 0:   N 
+2019-06-09 13:09:50.974616: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1115] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 11251 MB memory) -> physical GPU (device: 0, name: Tesla P100-PCIE-12GB, pci bus id: 0000:83:00.0, compute capability: 6.0)
+2019-06-09 13:09:50.975052: I tensorflow/core/common_runtime/process_util.cc:69] Creating new thread pool with default inter op setting: 2. Tune using inter_op_parallelism_threads for best performance.
+
+  1/242 [..............................] - ETA: 10:37
+  5/242 [..............................] - ETA: 2:08 
+  9/242 [>.............................] - ETA: 1:11
+ 13/242 [>.............................] - ETA: 49s 
+ 17/242 [=>............................] - ETA: 38s
+ 21/242 [=>............................] - ETA: 31s
+ 25/242 [==>...........................] - ETA: 26s
+ 29/242 [==>...........................] - ETA: 22s
+ 33/242 [===>..........................] - ETA: 19s
+ 37/242 [===>..........................] - ETA: 17s
+ 41/242 [====>.........................] - ETA: 16s
+ 45/242 [====>.........................] - ETA: 14s
+ 49/242 [=====>........................] - ETA: 13s
+ 53/242 [=====>........................] - ETA: 12s
+ 57/242 [======>.......................] - ETA: 11s
+ 61/242 [======>.......................] - ETA: 10s
+ 65/242 [=======>......................] - ETA: 9s 
+ 69/242 [=======>......................] - ETA: 9s
+ 73/242 [========>.....................] - ETA: 8s
+ 77/242 [========>.....................] - ETA: 8s
+ 81/242 [=========>....................] - ETA: 7s
+ 85/242 [=========>....................] - ETA: 7s
+ 89/242 [==========>...................] - ETA: 6s
+ 93/242 [==========>...................] - ETA: 6s
+ 97/242 [===========>..................] - ETA: 6s
+101/242 [===========>..................] - ETA: 5s
+105/242 [============>.................] - ETA: 5s
+109/242 [============>.................] - ETA: 5s
+113/242 [=============>................] - ETA: 5s
+117/242 [=============>................] - ETA: 4s
+121/242 [==============>...............] - ETA: 4s
+125/242 [==============>...............] - ETA: 4s
+129/242 [==============>...............] - ETA: 4s
+133/242 [===============>..............] - ETA: 3s
+137/242 [===============>..............] - ETA: 3s
+141/242 [================>.............] - ETA: 3s
+145/242 [================>.............] - ETA: 3s
+149/242 [=================>............] - ETA: 3s
+153/242 [=================>............] - ETA: 2s
+157/242 [==================>...........] - ETA: 2s
+161/242 [==================>...........] - ETA: 2s
+165/242 [===================>..........] - ETA: 2s
+169/242 [===================>..........] - ETA: 2s
+173/242 [====================>.........] - ETA: 2s
+177/242 [====================>.........] - ETA: 1s
+181/242 [=====================>........] - ETA: 1s
+185/242 [=====================>........] - ETA: 1s
+189/242 [======================>.......] - ETA: 1s
+193/242 [======================>.......] - ETA: 1s
+197/242 [=======================>......] - ETA: 1s
+201/242 [=======================>......] - ETA: 1s
+205/242 [========================>.....] - ETA: 1s
+209/242 [========================>.....] - ETA: 0s
+213/242 [=========================>....] - ETA: 0s
+217/242 [=========================>....] - ETA: 0s
+221/242 [==========================>...] - ETA: 0s
+225/242 [==========================>...] - ETA: 0s
+229/242 [===========================>..] - ETA: 0s
+233/242 [===========================>..] - ETA: 0s
+237/242 [============================>.] - ETA: 0s
+241/242 [============================>.] - ETA: 0s
+242/242 [==============================] - 6s 27ms/step
+Using TensorFlow backend.
+/home/amourav/tensorflow/lib/python3.5/site-packages/skimage/transform/_warps.py:105: UserWarning: The default mode, 'constant', will be changed to 'reflect' in skimage 0.15.
+  warn("The default mode, 'constant', will be changed to 'reflect' in "
+/home/amourav/tensorflow/lib/python3.5/site-packages/skimage/transform/_warps.py:110: UserWarning: Anti-aliasing will be enabled by default in skimage 0.15 to avoid aliasing artifacts when down-sampling images.
+  warn("Anti-aliasing will be enabled by default in skimage 0.15 to "
+predict.py ... done!
