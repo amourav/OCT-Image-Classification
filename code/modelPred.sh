@@ -11,10 +11,10 @@ source activate
 python --version
 
 
-xPath="../PreprocessedData/preprocessedForCNN/299x299/imgData_(299, 299, 3)_train_n1000.npy"
-yPath="../PreprocessedData/preprocessedForCNN/299x299/targetData_(299, 299, 3)_train.npy"
-mPath="../modelOutput/compareModels2/VGG16_dataAug_False2019-06-05_15_46_default_224_noprep/VGG16.hdf5"
-note="_trainSet_"
+xPath="../PreprocessedData/preprocessedForCNN/299 x 299/imgData_(299, 299, 3)_test.npy"
+yPath="../PreprocessedData/preprocessedForCNN/299 x 299/targetData_(299, 299, 3)_test.csv"
+mPath="../modelOutput/Xception/Xception_2019-06-09_22_38_/Xception.hdf5"
+note="_testSet_"
 
 echo "$xPath"
 echo "$yPath"
