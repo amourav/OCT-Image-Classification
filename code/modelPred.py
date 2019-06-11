@@ -4,57 +4,17 @@ import traceback
 import sys
 import numpy as np
 import pandas as pd
-from keras.applications.vgg16 import preprocess_input as preprocess_input_vgg16
 from keras.applications.resnet50 import preprocess_input as preprocess_input_ResNet50
 from keras.applications.inception_v3 import preprocess_input as preprocess_input_inception_v3
 from keras.applications.vgg16 import preprocess_input as preprocess_input_xception
 from keras.utils import to_categorical
-import keras.backend as K
 from keras.backend import set_image_data_format
 from keras.models import load_model
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import roc_curve, auc
 import skimage
 from evalUtils import UrgentVRoutne, reportBinaryScores
-
-
-def preprocessInputVGG16(X, newSize=(224, 224, 3)):
-    xShape = X.shape
-    if not( (xShape[1], xShape[2]) == (newSize[0], newSize[1]) ):
-        xResized = []
-        for xi in X:
-            xiR = skimage.transform.resize(xi, newSize)
-            xResized.append(xiR)
-        xResized = np.stack(xResized, axis=0)
-        return xResized
-    else:
-        return X
-
-
-def getPreprocess(modelName):
-    if modelName == 'InceptionV3':
-        preprocessInput = preprocess_input_inception_v3
-    elif modelName == 'VGG16':
-        preprocessInput = None #preprocess_input_vgg16
-    elif modelName == 'ResNet50':
-        preprocessInput = preprocess_input_ResNet50
-    elif modelName == 'Xception':
-        preprocessInput = preprocess_input_xception
-    else:
-        raise Exception('model name not recognized')
-    return preprocessInput
-
-
-def loadTargetData(yPath):
-    if yPath.endswith('.npy'):
-        yArr = np.load(yPath)
-    elif yPath.endswith('.csv'):
-        yArr = pd.read_csv(yPath, 
-                           index_col=0)
-        yArr = yArr.values
-    else:
-        raise Exception('unknown file type: {}'.format(yPath))
-    return yArr
+from trainCNN import loadTargetData, getPreprocess
 
 
 def get_parser():
@@ -79,17 +39,31 @@ def main_driver(XTestPath,
                 yTestPath,
                 modelPath,
                 note):
-
+    """
+    run inference on new data
+    :param XTestPath: path to preprocessed image data npy array (str)
+    :param yTestPath: path to image labels file [npy arr .npy or pd dataframe .csv]
+    :param modelPath: path to hdf5 containing trained CNN (str)
+    :param note: additional note for output (str)
+    :return: None
+    """
     print('trn path:', XTestPath)
     set_image_data_format('channels_last')
+
+    """############################################################################
+                        0. Load Data
+    ############################################################################"""
     assert(os.path.isfile(XTestPath))
     assert(os.path.isfile(modelPath))
     if yTestPath is not None:
         assert(os.path.isfile(yTestPath))
-        yTest = loadTargetData(yTestPath)
+        yTest, yIdx = loadTargetData(yTestPath)
     XTest = np.load(XTestPath)
     outputPath = os.path.dirname(modelPath)
-    
+
+    """############################################################################
+                        1. Preprocess Data
+    ############################################################################"""
     models = ['InceptionV3', 'VGG16', 'ResNet50', 'Xception']
     idxList = []
     for model in models:
@@ -98,28 +72,28 @@ def main_driver(XTestPath,
     assert(sum(idxList)==1)
     modelName = models[np.argmax(idxList)]
     preprocessInput = getPreprocess(modelName)
-    if preprocessInput is not None:
-        XTest = preprocessInput(XTest)
-    
-    #Always rezie to 224 x 224 for VGG
-    if modelName == "VGG16":
-        XTest = preprocessInputVGG16(XTest, newSize=(224, 224, 3))
-    
+    XTest = preprocessInput(XTest)
+
+    """############################################################################
+                        2. Load Model and Run Inference
+    ############################################################################"""
     model = load_model(modelPath)
     yTestPred = model.predict(XTest,
                               batch_size=32,
                               verbose=1)
+
     yTestPredPath = os.path.join(outputPath, 'yPred_{}.npy'.format(note))
-    if type(yTest) is pd.DataFrame:
-        modelPredDF = pd.DataFrame(index=yTest.index)
-    else:
-        modelPredDF = pd.DataFrame()
+    modelPredDF = pd.DataFrame(index=yIdx)
     for yLbl in np.unique(yTest):
         modelPredDF[modelName + "_{}".format(yLbl)] = yTestPred[:, yLbl]
     modelPredDF['yTrueTest'] = yTest
     modelPredDF.to_csv(os.path.join(outputPath,
                                     'yPredDf_{}.csv'.format(note)))
     np.save(yTestPredPath, yTestPred)
+
+    """############################################################################
+                        1. Evaluate Inference (optional)
+    ############################################################################"""
     if yTest is not None:
         classMap = {
             "NORMAL": 0,

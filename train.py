@@ -7,6 +7,8 @@ from os.path import join
 import traceback
 import sys
 import numpy as np
+from numpy.random import seed
+from tensorflow import set_random_seed
 sys.path.append('./code')
 from preprocess import preprocessDir
 from trainCNN import trainModel
@@ -29,9 +31,9 @@ def get_parser():
                                help="path to model weights")
     module_parser.add_argument("-n", dest="nTrain", type=int, default=1000,
                                help='n: number of images for training')
-    module_parser.add_argument("-Rx", dest="xRes", type=int, default=299,
+    module_parser.add_argument("-Rx", dest="xRes", type=int, default=224,
                                help='x resulution for final img')
-    module_parser.add_argument("-Ry", dest="yRes", type=int, default=299,
+    module_parser.add_argument("-Ry", dest="yRes", type=int, default=224,
                                help='y resolution of final image')
     module_parser.add_argument("-d", dest="d", type=int,
                                default=0, help='debug mode')
@@ -41,10 +43,27 @@ def get_parser():
 def main(xTrnPath, xValPath,
          modelName, modelWeights,
          nTrain, xRes, yRes, d):
+    """
+    main function calling each element of the pipeline
+    :param xTrnPath: path to directory with images to be used for training (str)
+    :param xValPath: path to directory with images to be used for validation (str) [optional]
+    :param modelName: architecture name (str)
+    :param modelWeights: path to pre-trained network weights
+    :param nTrain: number of images to take for training
+    :param xRes: desired image width for preprocessing [may be changed for model] (int)
+    :param yRes: desired image height for preprocessing [may be changed for model] (int)
+    :param d: debugging mode [limit dataset size and training iterations] (int/bool)
+    1=On, 0=Off
+    :return: None
+    """
 
     """############################################################################
                         0. Preprocess Data
     ############################################################################"""
+    # set random seed for numpy and tensorflow
+    seed(0)
+    set_random_seed(0)
+
     if d == 1:
         print('debug mode: ON')
         nTrain = 10

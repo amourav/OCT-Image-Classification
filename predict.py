@@ -10,11 +10,16 @@ from keras.models import load_model
 import skimage
 from PIL import Image
 sys.path.append('./code')
-from preprocess import normImg
 from trainCNN import getPreprocess
 
 
 def preprocessImgs(xPath, newSize):
+    """
+    preprocess images in the directory and return data
+    :param xPath: path to image directory containing .jpeg files (str)
+    :param newSize: desired shape of each image array (tuple - [xRes, yRes, channels])
+    :return: preprocessed image array (nImages, xRes, yRes, channels), list of image names
+    """
     imgFiles = os.listdir(xPath)
     imgFiles = [f for f in imgFiles if f.endswith('.jpeg')]
     imgStack = []
@@ -23,10 +28,9 @@ def preprocessImgs(xPath, newSize):
         imgArr = np.array(Image.open(imgPath))
         imgArr = skimage.transform.resize(imgArr, newSize)
         imgArr = imgArr/imgArr.max()
-        #imgArr = normImg(imgArr)
         imgStack.append(imgArr)
     imgStack = np.stack(imgStack, axis=0)
-    imgNames = [n.split('.')[0] for n in imgFiles]
+    imgNames = [n.split('.')[0] for n in imgFiles]  # include text before .jpeg file ending
     return imgStack, imgNames
 
 
@@ -49,6 +53,15 @@ def get_parser():
 
 
 def main(xPath, outPath, xRes, yRes, modelPath):
+    """
+    takes a directory of new images and runs inference with the trained CNN
+    :param xPath: path to directory of new images
+    :param outPath: path to directory for predictions
+    :param xRes: desired image width for preprocessing [may be changed for model] (int)
+    :param yRes: desired image height for preprocessing [may be changed for model] (int)
+    :param modelPath: path to .hdf5 file of trained CNN
+    :return: None
+    """
 
     """############################################################################
                         0. Preprocess Data
@@ -63,6 +76,8 @@ def main(xPath, outPath, xRes, yRes, modelPath):
     imgData, imgNames = preprocessImgs(xPath, newSize)
 
     models = ['InceptionV3', 'VGG16', 'ResNet50', 'Xception']
+    # chose which preprocessing method to use by detecting the
+    # model name in modelPath
     idxList = []
     for model in models:
         i = model in modelPath
@@ -78,15 +93,13 @@ def main(xPath, outPath, xRes, yRes, modelPath):
     ############################################################################"""
     set_image_data_format('channels_last')
     model = load_model(modelPath)
-
     yPred = model.predict(imgData,
                           batch_size=1,
                           verbose=1)
-
+    # save predictions to csv
     cols = []
     for i in range(yPred.shape[1]):
         cols.append(modelName + "_{}_{}".format(imgTypeDict[i], i))
-    #cols = [modelName + "_{}_{}".format(l, i) for (l, i) in imgTypeDict.items()]
     yPredDf = pd.DataFrame(yPred,
                            columns=cols,
                            index=imgNames)
@@ -103,7 +116,6 @@ if __name__ == "__main__":
              args.yRes,
              args.modelPath)
         print('predict.py ... done!')
-
     except ArgumentError as arg_exception:
         traceback.print_exc()
     except Exception as exception:

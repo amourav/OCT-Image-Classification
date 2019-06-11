@@ -8,16 +8,6 @@ import pandas as pd
 import skimage
 
 
-def normImg(img):
-    """
-    normalize image intensity to zero mean and unit variance
-    :param img(2d npy array): input image
-    :return: normImg (2d npy array)
-    """
-    normImg = (img - np.mean(img)) / np.std(img)
-    return normImg
-
-
 def preprocessDir(dataPath,
                   outputPath,
                   dataset,
@@ -34,7 +24,7 @@ def preprocessDir(dataPath,
     :param dataset (str):
     :param debug_ (int/bool):
     :param newSize (tuple): resolution of final img
-    :return:
+    :return: None
     """
 
     imgTypeDict = {
@@ -66,7 +56,6 @@ def preprocessDir(dataPath,
             imgArr = np.array(Image.open(imgPath))
             imgArr = skimage.transform.resize(imgArr, newSize)
             imgArr = imgArr/imgArr.max()
-            #imgArr = normImg(imgArr) #!!
             imgStack.append(imgArr)
             targetList.append(classLbl)
         imgNames += [n.split('.')[0] for n in imgFiles]
@@ -74,6 +63,7 @@ def preprocessDir(dataPath,
     targetList = np.asarray(targetList)
     targetDF = pd.DataFrame(index=imgNames)
     targetDF[dataset] = targetList
+    # Save preprocessed data
     infoTag = "{}_{}".format(str(newSize), dataset)
     if dataset == 'train':
         imgStackOutPath = os.path.join(outputPath, "imgData_{}_n{}.npy".format(infoTag,
@@ -113,12 +103,14 @@ def get_parser():
 def main_driver(dataPath, outputPath, subdir,
                 nTrain, xRes, yRes, d):
     """
-    Initialize output directory and call preprocessDir
-
-    :param dataPath (str): path to input directory of raw images
-    :param outputPath (str): path to output directory
-    :param subdir (str): preprocess either the train / test / val / all three subdirectories
-    :param d (int): d = 1 to test code ()
+    preprocess data for training CNN
+    :param dataPath: base path to data directory (str)
+    :param outputPath: path to output directory (str)
+    :param subdir: input data sub directory. train, test, or val (str)
+    :param nTrain: number of samples to use for training (int)
+    :param xRes: desired image width for preprocessing [may be changed for model] (int)
+    :param yRes: desired image height for preprocessing [may be changed for model] (int)
+    :param d: debugging mode [limit dataset size and training iterations] (int)
     :return: None
     """
     if d == 1:

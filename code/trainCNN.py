@@ -20,39 +20,40 @@ import keras.backend as K
 from keras.backend import set_image_data_format
 from keras.callbacks import ModelCheckpoint, EarlyStopping
 from keras.preprocessing.image import ImageDataGenerator
+from tensorflow import set_random_seed
+from numpy.random import seed
 import datetime
 import time
-import pickle
+import skimage
 
 
 def getModel(modelName,
              inputShape,
              nClasses=4,
-             lastLayer=1024,
              weights='imagenet'):
     """
-    model getter
-    :param modelName (str): Name of CNN model to train. Either [InceptionV3 or VGG16]
-    :param inputShape (tuple-(Xres, YRes, nChannels)): Input shape for CNN model.
-    :param nClasses (int): NUmber of unique output classes.
-    :return: model: Keras CNN Model.
+    get keras model
+    :param modelName: Name of CNN model to train (str)
+    Either [InceptionV3, VGG16, Xception, or ResNet50]
+    :param inputShape: Input shape for CNN model [Xres, YRes, nChannels] (tuple)
+    :param nClasses:  NUmber of unique output classes (int)
+    :param weights: path to pretrained model weights or
+    string 'imagenet' to automatically download weights (str)
+    :return: keras model
     """
+
     input_tensor = Input(shape=inputShape)
-    #K.set_learning_phase(False)
     if modelName == 'InceptionV3':
         base_model = InceptionV3(weights=weights,
                                  include_top=False,
                                  input_tensor=input_tensor)
-        #K.set_learning_phase(True)
-        lastLayer = None
         x = base_model.output
         x = GlobalAveragePooling2D()(x)
     elif modelName == 'VGG16':
+        lastLayer = 4096  # number of nodes
         base_model = VGG16(weights=weights,
                            include_top=False,
                            input_tensor=input_tensor)
-        #K.set_learning_phase(True)
-        #lastLayer = 4096
         x = base_model.output
         x = Flatten()(x)
         x = Dense(lastLayer, activation='relu')(x)
@@ -61,41 +62,23 @@ def getModel(modelName,
         base_model = ResNet50(weights=weights,
                               include_top=False,
                               input_tensor=input_tensor)
-        #K.set_learning_phase(True)
-        #lastLayer = 2048
         x = base_model.output
         x = GlobalAveragePooling2D()(x)
-        #x = Dense(lastLayer, activation='relu')(x)
     elif modelName == 'Xception':
         base_model = Xception(weights=weights,
                               include_top=False,
                               input_tensor=input_tensor)
-        #K.set_learning_phase(True)
         x = base_model.output
         x = GlobalAveragePooling2D()(x)
     else:
         raise Exception('model name not recognized')
-    # add a global spatial average pooling layer
 
-    """
-    x = base_model.output
-    #x = GlobalAveragePooling2D()(x)
-    x = Flatten()(x)
-    # let's add a fully-connected layer
-    x = Dense(lastLayer, activation='relu')(x)
-    x = Dense(lastLayer, activation='relu')(x)
-    # and a logistic layer
-    """
     predictions = Dense(nClasses, activation='softmax')(x)
     # this is the model we will train
     model = Model(inputs=base_model.input, outputs=predictions)
     # first: train only the top layers (which were randomly initialized)
-    # i.e. freeze all convolutional InceptionV3 layers
-    #for layer in base_model.layers:
-    #    layer.trainable = False
     for layer in base_model.layers:
         if hasattr(layer, 'moving_mean') and hasattr(layer, 'moving_variance'):
-            print('BN layer: trainable')
             layer.trainable = True
             K.eval(K.update(layer.moving_mean, K.zeros_like(layer.moving_mean)))
             K.eval(K.update(layer.moving_variance, K.zeros_like(layer.moving_variance)))
@@ -109,11 +92,35 @@ def getModel(modelName,
     return model
 
 
+def preprocessInputVGG16(X, newSize=(224, 224, 3)):
+    """
+    preprocess image data for VGG16 by resizing
+    :param X: image data array [nSamples, xRes, yRes, channels] (np array)
+    :param newSize: new resolution of each sample [xResNew, yResNew, nChannels] (tuple)
+    :return: resized image array stack [nSamples, xResNew, yResNew, nChannels] (np array)
+    """
+    xShape = X.shape
+    if not((xShape[1], xShape[2]) == (newSize[0], newSize[1])):
+        xResized = []
+        for xi in X:
+            xiR = skimage.transform.resize(xi, newSize)
+            xResized.append(xiR)
+        xResized = np.stack(xResized, axis=0)
+        return xResized
+    else:
+        return X
+
+
 def getPreprocess(modelName):
+    """
+    retrieve the model specific keras preprocessing function
+    :param modelName: name of pretrained model (str)
+    :return: preprocessing function
+    """
     if modelName == 'InceptionV3':
         preprocessInput = preprocess_input_inception_v3
     elif modelName == 'VGG16':
-        preprocessInput = None
+        preprocessInput = preprocessInputVGG16
     elif modelName == 'ResNet50':
         preprocessInput = preprocess_input_ResNet50
     elif modelName == 'Xception':
@@ -131,23 +138,33 @@ def trainModel(xTrn, yTrn,
                aug, d, note,
                xTest = None,
                nEpochs=300,
-               batchSize=30,
-               lastLayer=4096):
+               batchSize=30):
     """
-    Train CNN Model
-    :param xTrn (npy array): Input training image data (nTrain, Xres, Yres, nChannels=3)
-    :param yTrn (npy array): Target training image classes (nTrain, )
-    :param XVal (npy array): Input val image data (nTrain, Xres, Yres, nChannels=3)
-    :param yVal (npy array): Target val image classes (nTrain, )
-    :param outputPath (str): Path to output dir.
-    :param modelName (str): Name of pretrained Keras model.
-    :param d (bool):
-    :param nEpochs (int): Number of epochs to train model.
-    :param batchSize (int): Number of images to use in each training batch.
-    :return: None
+    train CNN
+    :param xTrn: training data image stack [n_train, xRes, yRes, channels=3] (npy array)
+    :param yTrn: training image labels [nSamples] (npy array)
+    :param XVal: validation data image stack [n_train, xRes, yRes, channels=3] (npy array)
+    If set to XVal=None, validation data will be selected from xTrn
+    :param yVal:
+    If set to yVal=None, validation data will be selected from yTrn
+    :param outputPath: output path for training output (str)
+    :param modelName: Name of CNN model to train (str)
+    one of - [InceptionV3, VGG16, Xception, or ResNet50]
+    :param modelWeights: path to pretrained model weights (str)
+    or set to imagenet to download the pretrained model weights
+    :param aug: enable data augmentation (1=On, 0=Off) (int/bool)
+    :param d: d: debugging mode [limit dataset size and training iterations] (int/bool)
+    1=On, 0=Off
+    :param note: add to the end of output directory (str)
+    :param xTest: test data image stack [n_train, xRes, yRes, channels=3] (npy array)
+    this is optional
+    :param nEpochs: number of training epochs (int)
+    :param batchSize: batch size (int)
+    :return: modelOutputDir: path to model output directory (str)
     """
     set_image_data_format('channels_last')
     print(modelName)
+    # reduce dataset, epochs, and batch size for debugging mode
     if d:
         nEpochs = 3
         batchSize = 2
@@ -166,8 +183,7 @@ def trainModel(xTrn, yTrn,
     xShape = (xShape[1], xShape[2], xShape[3])
     model = getModel(modelName=modelName, 
                      inputShape=xShape,
-                     weights=modelWeights,
-                     lastLayer=lastLayer)
+                     weights=modelWeights)
     print(note)
     print(model.summary())
     modelOutputDir = os.path.join(outputPath,
@@ -176,17 +192,15 @@ def trainModel(xTrn, yTrn,
     if not(os.path.isdir(modelOutputDir)):
         os.mkdir(modelOutputDir)
 
-    #normalize data to network's specifications
+    #normalize data to the specific network's specifications
     preprocessInput = getPreprocess(modelName)
-    if preprocessInput is not None:
-        xTrn = preprocessInput(xTrn)
+    xTrn = preprocessInput(xTrn)
     yTrn = to_categorical(yTrn)
 
     #Set Validation Data
     valSplit = 0.0
     if not(XVal is None) and not(yVal is None):
-        if preprocessInput is not None:
-            XVal = preprocessInput(XVal)
+        XVal = preprocessInput(XVal)
         yVal = to_categorical(yVal)
         valData = (XVal, yVal)
     else:
@@ -206,6 +220,8 @@ def trainModel(xTrn, yTrn,
                               restore_best_weights=True)
 
     callbacks = [modelCheckpoint, earlyStop]
+
+    # train model
     t0 = time.time()
     if not aug:
         history = model.fit(x=xTrn,
@@ -232,6 +248,7 @@ def trainModel(xTrn, yTrn,
                                      fill_mode='nearest',
                                      vertical_flip=False,
                                      horizontal_flip=True)
+
         history = model.fit_generator(datagen.flow(xTrn, yTrn,
                                                    batch_size=batchSize),
                                       steps_per_epoch=len(xTrn) / batchSize,
@@ -240,6 +257,8 @@ def trainModel(xTrn, yTrn,
                                       verbose=1)
     dt = (time.time() - t0)/3600
     print("training time: {} h".format(dt))
+
+    # save output
     historyPath = os.path.join(modelOutputDir, '{}_History.csv'.format(modelName))
     hist = history.history
     histDf = pd.DataFrame(hist)
@@ -247,8 +266,7 @@ def trainModel(xTrn, yTrn,
 
     # Run inference on test set if provided
     if xTest is not None:
-        if preprocessInput is not None:
-            xTest = preprocessInput(xTest)
+        xTest = preprocessInput(xTest)
         print('running model pred on test set')
         yTestPred = model.predict(xTest,
                                   batch_size=20,
@@ -256,14 +274,11 @@ def trainModel(xTrn, yTrn,
         yTestPredPath = os.path.join(modelOutputDir, 'yTestPred.npy')
         np.save(yTestPredPath, yTestPred)
 
-    #model.save_weights(os.path.join(modelOutputDir,
-    #                                '{}_weights.hdf5'.format(modelName)))
     with open(os.path.join(modelOutputDir, 'trnInfo.txt'), 'w') as fid:
         fid.write("model: {} \n".format(modelName))
         fid.write("x shape: {} \n".format(xShape))
         fid.write("nEpochs: {} \n".format(nEpochs))
         fid.write("batchSize: {} \n".format(batchSize))
-        fid.write("lastLayer: {} \n".format(lastLayer))
     return modelOutputDir
 
 
@@ -310,15 +325,23 @@ def get_parser():
 
 
 def loadTargetData(yPath):
+    """
+    load target data labels
+    :param yPath: path to image labels file (str)
+    :return: numpy assay of image labels (npy arr), index for images ()
+    """
     if yPath.endswith('.npy'):
         yArr = np.load(yPath)
+        idx = np.arange(len(yArr))
     elif yPath.endswith('.csv'):
-        yArr = pd.read_csv(yPath, 
+        yArr = pd.read_csv(yPath,
                            index_col=0)
+        idx = yArr.index
         yArr = yArr.values
     else:
         raise Exception('unknown file type: {}'.format(yPath))
-    return yArr
+    return yArr, idx
+
 
 def main_driver(XTrainPath, yTrainPath,
                 XValPath, yValPath,
@@ -328,7 +351,7 @@ def main_driver(XTrainPath, yTrainPath,
                 aug, d, note):
     """
     Load Training and Validation data and call trainModel.
-    :param XTrainPath (str): path to training image data
+    :param XTrainPath (str): path to preprocessed training image data
     :param yTrainPath (str): path to training target classes
     :param XValPath (str): path to val image data
     :param yValPath (str): path to val target classes
@@ -337,6 +360,11 @@ def main_driver(XTrainPath, yTrainPath,
     :param d (str): set d=1 to debug.
     :return: None
     """
+
+    # set random seed for numpy and tensorflow
+    seed(0)
+    set_random_seed(0)
+
     print('trn path:', XTrainPath)
     aug = bool(aug)
     print("data augmentation: {}".format(aug))
@@ -348,23 +376,30 @@ def main_driver(XTrainPath, yTrainPath,
     if XTestPath is not None:
         assert(os.path.isfile(XTestPath))
         xTest = np.load(XTestPath)
-
+    """############################################################################
+                        0. Load Data
+    ############################################################################"""
     xTrn = np.load(XTrainPath)
-    yTrn = loadTargetData(yTrainPath)
+    yTrn, idx = loadTargetData(yTrainPath)
 
     if os.path.isfile(XValPath) and os.path.isfile(yValPath):
         XVal = np.load(XValPath)
-        yVal = loadTargetData(yValPath)
+        yVal, idx = loadTargetData(yValPath)
     else:
         XVal = None
         yVal = None
     if not(os.path.isdir(outputPath)):
         os.makedirs(outputPath)
+    """############################################################################
+                        1. train CNN and save training info
+    ############################################################################"""
     modelOutputDir = trainModel(xTrn, yTrn,
                      XVal, yVal,
                      outputPath,
                      model, modelWeights,
                      aug, d, note, xTest=xTest)
+
+    #save training info
     with open(os.path.join(modelOutputDir, 'dataInfo.txt'), 'w') as fid:
         fid.write("XTrainPath: {} \n".format(XTrainPath))
         fid.write("XValPath: {} \n".format(XValPath))

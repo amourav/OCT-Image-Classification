@@ -2,6 +2,8 @@
 RawData/*
 PreprocessedData/*
 modelOutput/*
+.idea/*
+.logs/*
 
 # exceptions
 !RawData/.gitkeep
