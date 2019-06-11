@@ -48,7 +48,7 @@ def get_parser():
     return module_parser
 
 
-def main(xPath, outPath, xRes, yRes, modelPath):
+def main(xPath, outPath, modelPath):
     """
     takes a directory of new images and runs inference with the trained CNN
     :param xPath: path to directory of new images
