@@ -31,10 +31,6 @@ def get_parser():
                                help="path to model weights")
     module_parser.add_argument("-n", dest="nTrain", type=int, default=1000,
                                help='n: number of images for training')
-    module_parser.add_argument("-Rx", dest="xRes", type=int, default=224,
-                               help='x resulution for final img')
-    module_parser.add_argument("-Ry", dest="yRes", type=int, default=224,
-                               help='y resolution of final image')
     module_parser.add_argument("-d", dest="d", type=int,
                                default=0, help='debug mode')
     return module_parser
@@ -42,7 +38,7 @@ def get_parser():
 
 def main(xTrnPath, xValPath,
          modelName, modelWeights,
-         nTrain, xRes, yRes, d):
+         nTrain, d):
     """
     main function calling each element of the pipeline
     :param xTrnPath: path to directory with images to be used for training (str)
@@ -71,14 +67,16 @@ def main(xTrnPath, xValPath,
     assert(os.path.isdir(xTrnPath))
     if xValPath is not None:
         assert(os.path.isdir(xValPath))
+    if modelName == "VGG16" or modelName == "ResNet50":
+        xRes, yRes = 224, 224
+    elif modelName == "Xception" or modelName == "InceptionV3":
+        xRes, yRes = 299, 299
     newSize = (int(xRes), int(yRes), 3)
     outputPath = "./PreprocessedData/{}".format(str(newSize))
     if not os.path.isdir(outputPath):
         os.makedirs(outputPath)
-
     preprocessDir(xTrnPath, outputPath,
                   'train', nTrain, newSize)
-
     if xValPath is not None:
         preprocessDir(xValPath, outputPath,
                       'val', nTrain, newSize)
@@ -131,8 +129,6 @@ if __name__ == "__main__":
              args.modelName,
              args.modelWeights,
              args.nTrain,
-             args.xRes,
-             args.yRes,
              args.d)
         print('train.py ... done!')
     except ArgumentError as arg_exception:

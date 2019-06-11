@@ -42,10 +42,6 @@ def get_parser():
                                help="input image directory")
     module_parser.add_argument("-o", dest="outPath", type=str,
                                help="output dir path")
-    module_parser.add_argument("-Rx", dest="xRes", type=int, default=299,
-                               help='x resulution for img')
-    module_parser.add_argument("-Ry", dest="yRes", type=int, default=299,
-                               help='y resolution for image')
     module_parser.add_argument("-m", dest="modelPath",
                                type=str,
                                help="path to keras model .hdf5 file")
@@ -72,8 +68,6 @@ def main(xPath, outPath, xRes, yRes, modelPath):
         2: "CNV",
         3: "DME",
     }
-    newSize = (xRes, yRes, 3)
-    imgData, imgNames = preprocessImgs(xPath, newSize)
 
     models = ['InceptionV3', 'VGG16', 'ResNet50', 'Xception']
     # chose which preprocessing method to use by detecting the
@@ -85,6 +79,14 @@ def main(xPath, outPath, xRes, yRes, modelPath):
     assert(sum(idxList)==1)
     modelName = models[np.argmax(idxList)]
     preprocessInput = getPreprocess(modelName)
+
+    if modelName == "VGG16" or modelName == "ResNet50":
+        xRes, yRes = 224, 224
+    elif modelName == "Xception" or modelName == "InceptionV3":
+        xRes, yRes = 299, 299
+    newSize = (xRes, yRes, 3)
+    imgData, imgNames = preprocessImgs(xPath, newSize)
+
     if preprocessInput is not None:
         imgData = preprocessInput(imgData)
 
@@ -112,8 +114,6 @@ if __name__ == "__main__":
         args = parser.parse_args()
         main(args.xPath,
              args.outPath,
-             args.xRes,
-             args.yRes,
              args.modelPath)
         print('predict.py ... done!')
     except ArgumentError as arg_exception:
