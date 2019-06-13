@@ -1,0 +1,12 @@
+
+Due to MODULEPATH changes, the following have been reloaded:
+  1) openmpi/2.1.1
+
+Python 3.5.4
+Using TensorFlow backend.
+Traceback (most recent call last):
+  File "./predict.py", line 117, in <module>
+    args.modelPath)
+  File "./predict.py", line 79, in main
+    assert(sum(idxList)==1)
+AssertionError
