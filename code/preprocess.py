@@ -55,7 +55,7 @@ def preprocessDir(dataPath,
             imgPath = os.path.join(imgFilesPath, imgFname)
             imgArr = np.array(Image.open(imgPath))
             imgArr = skimage.transform.resize(imgArr, newSize)
-            imgArr = imgArr/imgArr.max()
+            #imgArr = imgArr/imgArr.max()
             imgStack.append(imgArr)
             targetList.append(classLbl)
         imgNames += [n.split('.')[0] for n in imgFiles]
