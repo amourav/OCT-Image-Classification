@@ -4,15 +4,11 @@ import traceback
 import sys
 import numpy as np
 import pandas as pd
-from keras.applications.resnet50 import preprocess_input as preprocess_input_ResNet50
-from keras.applications.inception_v3 import preprocess_input as preprocess_input_inception_v3
-from keras.applications.vgg16 import preprocess_input as preprocess_input_xception
 from keras.utils import to_categorical
 from keras.backend import set_image_data_format
 from keras.models import load_model
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import roc_curve, auc
-import skimage
 from evalUtils import UrgentVRoutne, reportBinaryScores
 from trainCNN import loadTargetData, getPreprocess
 
