@@ -11,15 +11,15 @@ source activate
 python --version
 
 
-xtrnPath="../PreprocessedData/preprocessedForCNN/299 x 299/imgData_(299, 299, 3)_train_n1000.npy"
-xvalPath="../PreprocessedData/preprocessedForCNN/299 x 299/imgData_(299, 299, 3)_val.npy"
-ytrnPath="../PreprocessedData/preprocessedForCNN/299 x 299/targetData_(299, 299, 3)_train.csv"
-yvalPath="../PreprocessedData/preprocessedForCNN/299 x 299/targetData_(299, 299, 3)_val.csv"
-xtestPath="../PreprocessedData/preprocessedForCNN/299 x 299/imgData_(299, 299, 3)_test.npy"
-model="Xception"
-note="default_299_noprep"
-weights="../pretrainedModelWeights/Xception/xception_weights_tf_dim_ordering_tf_kernels_notop.h5"
-output="../modelOutput/compareModels3"
+xtrnPath="../PreprocessedData/preprocessedForCNN/224 x 224/imgData_(224, 224, 3)_train_n1000.npy"
+xvalPath="../PreprocessedData/preprocessedForCNN/224 x 224/imgData_(224, 224, 3)_val.npy"
+ytrnPath="../PreprocessedData/preprocessedForCNN/224 x 224/targetData_(224, 224, 3)_train.csv"
+yvalPath="../PreprocessedData/preprocessedForCNN/224 x 224/targetData_(224, 224, 3)_val.csv"
+xtestPath="../PreprocessedData/preprocessedForCNN/224 x 224/imgData_(224, 224, 3)_test.npy"
+model="VGG16"
+note="default_224_noprep"
+#weights="../pretrainedModelWeights/Xception/xception_weights_tf_dim_ordering_tf_kernels_notop.h5"
+output="../modelOutput/compareModels4"
 aug=0
 debug=0
-python ./trainCNN.py -xtrn "$xtrnPath" -xval "$xvalPath" -ytrn "$ytrnPath" -yval "$yvalPath" -o "$output" -m "$model" -aug "$aug" -xtest "$xtestPath" -d "$debug" -n "$note" -xtest "$xtestPath" -w "$weights"
+python ./trainCNN.py -xtrn "$xtrnPath" -xval "$xvalPath" -ytrn "$ytrnPath" -yval "$yvalPath" -o "$output" -m "$model" -aug "$aug" -xtest "$xtestPath" -d "$debug" -n "$note" -xtest "$xtestPath" #-w "$weights"

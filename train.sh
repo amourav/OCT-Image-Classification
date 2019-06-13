@@ -13,6 +13,7 @@ python --version
 
 trnPath="./RawData/train"
 valPath="./RawData/val"
+model="VGG16"
 debug=0
 
-python ./train.py -iTrn "$trnPath" -iVal "$valPath" -d "$debug"
+python ./train.py -iTrn "$trnPath" -iVal "$valPath" -m "$model" -d "$debug"
