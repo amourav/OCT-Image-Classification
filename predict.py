@@ -27,7 +27,7 @@ def preprocessImgs(xPath, newSize):
         imgPath = os.path.join(xPath, imgFname)
         imgArr = np.array(Image.open(imgPath))
         imgArr = skimage.transform.resize(imgArr, newSize)
-        #imgArr = (imgArr - imgArr.min())/imgArr.max()
+        imgArr = (imgArr - imgArr.min())/imgArr.max()
         imgStack.append(imgArr)
     imgStack = np.stack(imgStack, axis=0)
     imgNames = [n.split('.')[0] for n in imgFiles]  # include text before .jpeg file ending

@@ -50,7 +50,6 @@ def preprocessDir(dataPath,
         imgFiles = os.listdir(imgFilesPath)
         imgFiles = [f for f in imgFiles if f.endswith('.jpeg')]
         if dataset == 'train':
-            #imgFiles = np.random.choice(imgFiles, nClass, replace=False)
             imgFiles = imgFiles[0:nClass]
         for imgFname in imgFiles:
             imgPath = os.path.join(imgFilesPath, imgFname)
