@@ -12,6 +12,6 @@ source activate
 python --version
 
 yTruePath="./PreprocessedData/preprocessedForCNN/299 x 299/targetData_(299, 299, 3)_test.csv"
-yPredPath="./modelOutput/VGG16/VGG16_2019-06-11_22_47_/VGG16_predictions.csv"
+yPredPath="./modelOutput/VGG16/VGG16_2019-06-13_18_28_/VGG16_predictions.csv"
 
 python ./evaluate.py -yTrue "$yTruePath" -yPred "$yPredPath"

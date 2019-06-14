@@ -11,9 +11,9 @@ source activate
 python --version
 
 
-xPath="../PreprocessedData/preprocessedForCNN/299 x 299/imgData_(299, 299, 3)_test.npy"
-yPath="../PreprocessedData/preprocessedForCNN/299 x 299/targetData_(299, 299, 3)_test.csv"
-mPath="../modelOutput/Xception/Xception_2019-06-09_22_38_/Xception.hdf5"
+xPath="../PreprocessedData/preprocessedForCNN/224 x 224 n/imgData_(224, 224, 3)_test.npy"
+yPath="../PreprocessedData/preprocessedForCNN/224 x 224 n/targetData_(224, 224, 3)_test.csv"
+mPath="../modelOutput/compareModels4/VGG16_2019-06-13_21_37_default_224_norm/VGG16.hdf5"
 note="_testSet_"
 
 echo "$xPath"

@@ -4,6 +4,7 @@ import os
 from os.path import join
 import traceback
 import pandas as pd
+import numpy as np
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import roc_curve, auc
 from keras.utils import to_categorical

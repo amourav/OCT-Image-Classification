@@ -11,9 +11,9 @@ source activate
 python --version
 
 
-trnPath="./RawData/train"
-valPath="./RawData/val"
-model="VGG16"
+trnPath="./RawData/OCT2017/train"
+valPath="./RawData/OCT2017/val"
+model="ResNet50"
 debug=0
 
 python ./train.py -iTrn "$trnPath" -iVal "$valPath" -m "$model" -d "$debug"
