@@ -47,8 +47,6 @@ def main(xTrnPath, xValPath,
     :param modelName: architecture name (str)
     :param modelWeights: path to pre-trained network weights
     :param nTrain: number of images to take for training
-    :param xRes: desired image width for preprocessing [may be changed for model] (int)
-    :param yRes: desired image height for preprocessing [may be changed for model] (int)
     :param d: debugging mode [limit dataset size and training iterations] (int/bool)
     1=On, 0=Off
     :return: None
@@ -68,9 +66,9 @@ def main(xTrnPath, xValPath,
     assert(os.path.isdir(xTrnPath))
     if xValPath is not None:
         assert(os.path.isdir(xValPath))
-    if modelName == "VGG16" or modelName == "ResNet50":
+    if modelName == "VGG16":
         xRes, yRes = 224, 224
-    elif modelName == "Xception" or modelName == "InceptionV3":
+    elif modelName in ["Xception", "InceptionV3", "ResNet50"]:
         xRes, yRes = 299, 299
     newSize = (int(xRes), int(yRes), 3)
     outputDataPath = "./PreprocessedData/{}".format(str(newSize))
