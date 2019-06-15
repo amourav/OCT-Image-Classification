@@ -33,6 +33,7 @@ def preprocessDir(dataPath,
         "CNV": 2,
         "DME": 3,
     }
+
     print('Preprocessing:', dataset)
     targetDataPath = dataPath
     diseaseDirs = os.listdir(targetDataPath)

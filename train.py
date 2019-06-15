@@ -9,6 +9,7 @@ import sys
 import numpy as np
 from numpy.random import seed
 from tensorflow import set_random_seed
+import datetime
 sys.path.append('./code')
 from preprocess import preprocessDir
 from trainCNN import trainModel
@@ -72,13 +73,13 @@ def main(xTrnPath, xValPath,
     elif modelName == "Xception" or modelName == "InceptionV3":
         xRes, yRes = 299, 299
     newSize = (int(xRes), int(yRes), 3)
-    outputPath = "./PreprocessedData/{}".format(str(newSize))
-    if not os.path.isdir(outputPath):
-        os.makedirs(outputPath)
-    preprocessDir(xTrnPath, outputPath,
+    outputDataPath = "./PreprocessedData/{}".format(str(newSize))
+    if not os.path.isdir(outputDataPath):
+        os.makedirs(outputDataPath)
+    preprocessDir(xTrnPath, outputDataPath,
                   'train', nTrain, newSize)
     if xValPath is not None:
-        preprocessDir(xValPath, outputPath,
+        preprocessDir(xValPath, outputDataPath,
                       'val', nTrain, newSize)
 
     """############################################################################
@@ -86,15 +87,15 @@ def main(xTrnPath, xValPath,
     ############################################################################"""
     print('loading data')
     trnTag = "{}_{}".format(str(newSize), 'train')
-    trnDataPath = join(outputPath, "imgData_{}_n{}.npy".format(trnTag, nTrain))
-    trnTargetPath = join(outputPath, "targetData_{}.npy".format(trnTag))
+    trnDataPath = join(outputDataPath, "imgData_{}_n{}.npy".format(trnTag, nTrain))
+    trnTargetPath = join(outputDataPath, "targetData_{}.npy".format(trnTag))
     xTrn = np.load(trnDataPath)
     yTrn = np.load(trnTargetPath)
 
     if xValPath is not None:
         valTag = "{}_{}".format(str(newSize), 'val')
-        valDataPath = join(outputPath, "imgData_{}.npy".format(valTag))
-        valTargetPath = join(outputPath, "targetData_{}.npy".format(valTag))
+        valDataPath = join(outputDataPath, "imgData_{}.npy".format(valTag))
+        valTargetPath = join(outputDataPath, "targetData_{}.npy".format(valTag))
         XVal = np.load(valDataPath)
         yVal = np.load(valTargetPath)
     else:
@@ -104,17 +105,22 @@ def main(xTrnPath, xValPath,
     """############################################################################
                         1. Train CNN
     ############################################################################"""
-    modelOutputPath = "./modelOutput/{}".format(modelName)
-    if not os.path.isdir(modelOutputPath):
-        os.makedirs(modelOutputPath)
+    now = datetime.datetime.now()
+    today = str(now.date()) + \
+                '_' + str(now.hour) + \
+                '_' + str(now.minute)
+    outputModelPath = "./modelOutput/{}".format(modelName)
+    outputModelPath = outputModelPath + '_' + today
+    if not os.path.isdir(outputModelPath):
+        os.makedirs(outputModelPath)
 
-    modelOutputDir = trainModel(xTrn, yTrn,
-                                XVal, yVal,
-                                modelOutputPath,
-                                modelName, modelWeights,
-                                aug=0, d=d, note="", xTest=None)
+    trainModel(xTrn, yTrn,
+               XVal, yVal,
+               outputModelPath,
+               modelName, modelWeights,
+               aug=0, d=d, note="", xTest=None)
 
-    with open(os.path.join(modelOutputDir, 'dataInfo.txt'), 'w') as fid:
+    with open(os.path.join(outputModelPath, 'dataInfo.txt'), 'w') as fid:
         fid.write("XTrainPath: {} \n".format(trnDataPath))
         fid.write("XValPath: {} \n".format(valDataPath))
 

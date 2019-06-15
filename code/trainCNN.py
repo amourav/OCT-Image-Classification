@@ -132,7 +132,7 @@ def getPreprocess(modelName):
 
 def trainModel(xTrn, yTrn,
                XVal, yVal,
-               outputPath,
+               modelOutputDir,
                modelName,
                modelWeights,
                aug, d, note,
@@ -162,8 +162,12 @@ def trainModel(xTrn, yTrn,
     :param batchSize: batch size (int)
     :return: modelOutputDir: path to model output directory (str)
     """
+    # set random seed for numpy and tensorflow
+    seed(0)
+    set_random_seed(0)
     set_image_data_format('channels_last')
     print(modelName)
+
     # reduce dataset, epochs, and batch size for debugging mode
     if d:
         nEpochs = 3
@@ -175,29 +179,18 @@ def trainModel(xTrn, yTrn,
         if xTest is not None:
             xTest = xTest[0:nDebug]
 
-    now = datetime.datetime.now()
-    today = str(now.date()) + \
-                '_' + str(now.hour) + \
-                '_' + str(now.minute)
     xShape = xTrn.shape
     xShape = (xShape[1], xShape[2], xShape[3])
     model = getModel(modelName=modelName, 
                      inputShape=xShape,
                      weights=modelWeights)
-    print(note)
     print(model.summary())
-    modelOutputDir = os.path.join(outputPath,
-                                   modelName + '_' +
-                                   today + '_' + note)
-    if not(os.path.isdir(modelOutputDir)):
-        os.mkdir(modelOutputDir)
-
-    #normalize data to the specific network's specifications
+    # normalize data to the specific network's specifications
     preprocessInput = getPreprocess(modelName)
     xTrn = preprocessInput(xTrn)
     yTrn = to_categorical(yTrn)
 
-    #Set Validation Data
+    # Set Validation Data
     valSplit = 0.0
     if not(XVal is None) and not(yVal is None):
         XVal = preprocessInput(XVal)
@@ -212,13 +205,11 @@ def trainModel(xTrn, yTrn,
     modelCheckpoint = ModelCheckpoint(modelOutPath, monitor='val_loss',
                                       save_best_only=True,
                                       mode='auto', period=1)
-
     earlyStop = EarlyStopping(monitor='val_loss',
                               min_delta=0,
                               patience=150,
                               verbose=1,
                               restore_best_weights=True)
-
     callbacks = [modelCheckpoint, earlyStop]
 
     # train model
@@ -279,7 +270,25 @@ def trainModel(xTrn, yTrn,
         fid.write("x shape: {} \n".format(xShape))
         fid.write("nEpochs: {} \n".format(nEpochs))
         fid.write("batchSize: {} \n".format(batchSize))
-    return modelOutputDir
+
+
+def loadTargetData(yPath):
+    """
+    load target data labels
+    :param yPath: path to image labels file (str)
+    :return: numpy assay of image labels (npy arr), index for images ()
+    """
+    if yPath.endswith('.npy'):
+        yArr = np.load(yPath)
+        idx = np.arange(len(yArr))
+    elif yPath.endswith('.csv'):
+        yArr = pd.read_csv(yPath,
+                           index_col=0)
+        idx = yArr.index
+        yArr = yArr.values
+    else:
+        raise Exception('unknown file type: {}'.format(yPath))
+    return yArr, idx
 
 
 def get_parser():
@@ -324,25 +333,6 @@ def get_parser():
     return module_parser
 
 
-def loadTargetData(yPath):
-    """
-    load target data labels
-    :param yPath: path to image labels file (str)
-    :return: numpy assay of image labels (npy arr), index for images ()
-    """
-    if yPath.endswith('.npy'):
-        yArr = np.load(yPath)
-        idx = np.arange(len(yArr))
-    elif yPath.endswith('.csv'):
-        yArr = pd.read_csv(yPath,
-                           index_col=0)
-        idx = yArr.index
-        yArr = yArr.values
-    else:
-        raise Exception('unknown file type: {}'.format(yPath))
-    return yArr, idx
-
-
 def main_driver(XTrainPath, yTrainPath,
                 XValPath, yValPath,
                 XTestPath,
@@ -360,10 +350,6 @@ def main_driver(XTrainPath, yTrainPath,
     :param d (str): set d=1 to debug.
     :return: None
     """
-
-    # set random seed for numpy and tensorflow
-    seed(0)
-    set_random_seed(0)
 
     print('trn path:', XTrainPath)
     aug = bool(aug)
@@ -388,16 +374,28 @@ def main_driver(XTrainPath, yTrainPath,
     else:
         XVal = None
         yVal = None
-    if not(os.path.isdir(outputPath)):
-        os.makedirs(outputPath)
+
+    print(note)
+    now = datetime.datetime.now()
+    today = str(now.date()) + \
+                '_' + str(now.hour) + \
+                '_' + str(now.minute)
+    modelOutputDir = os.path.join(outputPath,
+                                  model + '_' +
+                                  today + '_' + note)
+    if not(os.path.isdir(modelOutputDir)):
+        os.makedirs(modelOutputDir)
     """############################################################################
                         1. train CNN and save training info
     ############################################################################"""
-    modelOutputDir = trainModel(xTrn, yTrn,
-                     XVal, yVal,
-                     outputPath,
-                     model, modelWeights,
-                     aug, d, note, xTest=xTest)
+    trainModel(xTrn, yTrn,
+               XVal, yVal,
+               outputPath,
+               model,
+               modelWeights,
+               aug, d,
+               note,
+               xTest=xTest)
 
     #save training info
     with open(os.path.join(modelOutputDir, 'dataInfo.txt'), 'w') as fid:
