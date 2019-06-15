@@ -13,6 +13,21 @@ sys.path.append('./code')
 from trainCNN import getPreprocess
 
 
+def meanPrediction(modelPredDF, yVals=[0, 1, 2, 3]):
+    """
+    output the mean probability predicted by each model
+    :param modelPredDF: dataframe containing the predictions
+    from all models for each class (pd Dataframe)
+    :param yVals: possible output classes
+    :return: mean probability for each class
+    """
+    meanPred = pd.DataFrame(index=modelPredDF.index)
+    for yi in np.unique(yVals):
+        mean = modelPredDF.filter(regex='_{}'.format(yi)).mean(axis=1)
+        meanPred['mean_{}'.format(yi)] = mean
+    return meanPred
+
+
 def preprocessImgs(xPath, newSize):
     """
     preprocess images in the directory and return data
@@ -44,11 +59,11 @@ def get_parser():
                                help="output dir path")
     module_parser.add_argument("-m", dest="modelPath",
                                type=str,
-                               help="path to keras model .hdf5 file")
+                               help="path to model directory")
     return module_parser
 
 
-def main(xPath, outPath, modelPath):
+def main(xPath, outPath, metaPath):
     """
     takes a directory of new images and runs inference with the trained CNN
     :param xPath: path to directory of new images
@@ -62,50 +77,64 @@ def main(xPath, outPath, modelPath):
     """############################################################################
                         0. Preprocess Data
     ############################################################################"""
+    set_image_data_format('channels_last')
     imgTypeDict = {
         0: "NORMAL",
         1: "DRUSEN",
         2: "CNV",
         3: "DME",
     }
-    set_image_data_format('channels_last')
-
-    models = ['InceptionV3', 'VGG16', 'ResNet50', 'Xception']
+    modelDirs = os.listdir(metaPath)
+    modelDirs = [d for d in modelDirs if os.path.isdir(join(metaPath, modelDirs))]
+    modelPredDict = {}
     # chose which preprocessing method to use by detecting the
     # model name in modelPath
-    idxList = []
-    for model in models:
-        i = model in modelPath
-        idxList.append(i)
-    assert(sum(idxList)==1)
-    modelName = models[np.argmax(idxList)]
-    preprocessInput = getPreprocess(modelName)
-
-    if modelName == "VGG16" or modelName == "ResNet50":
-        xRes, yRes = 224, 224
-    elif modelName == "Xception" or modelName == "InceptionV3":
-        xRes, yRes = 299, 299
-    newSize = (xRes, yRes, 3)
-    imgData, imgNames = preprocessImgs(xPath, newSize)
-
-    if preprocessInput is not None:
+    models = ['InceptionV3', 'VGG16', 'ResNet50', 'Xception']
+    for modelName in models:
+        preprocessInput = getPreprocess(modelName)
+        if modelName == "VGG16":
+            res = 224
+        else:
+            res = 299
+        newSize = (res, res, 3)
+        imgData, imgNames = preprocessImgs(xPath, newSize)
         imgData = preprocessInput(imgData)
 
-    """############################################################################
-                        0. load model & predict
-    ############################################################################"""
-    model = load_model(modelPath)
-    yPred = model.predict(imgData,
-                          batch_size=1,
-                          verbose=1)
-    # save predictions to csv
-    cols = []
-    for i in range(yPred.shape[1]):
-        cols.append(modelName + "_{}_{}".format(imgTypeDict[i], i))
-    yPredDf = pd.DataFrame(yPred,
-                           columns=cols,
-                           index=imgNames)
-    yPredDf.to_csv(join(outPath, "{}_predictions.csv".format(modelName)))
+        """############################################################################
+                            0. load model & predict
+        ############################################################################"""
+        # find path to individual model
+        for modelDir in modelDirs:
+            if modelName in modelDir:
+                break
+        modelDirPath = join(metaPath,
+                            modelDir,)
+        modelPath = join(modelDirPath,
+                         modelName+".hdf5")
+        model = load_model(modelPath)
+        yPred = model.predict(imgData,
+                              batch_size=1,
+                              verbose=1)
+
+        # save intermediate predictions to csv
+        cols = []
+        for i in range(yPred.shape[1]):
+            cols.append(modelName + "_{}_{}".format(imgTypeDict[i], i))
+        yPredDf = pd.DataFrame(yPred,
+                               columns=cols,
+                               index=imgNames)
+        yPredDf.to_csv(join(modelDirPath,
+                            "{}_predictions.csv".format(modelName)))
+        modelPredDict[modelName] = yPredDf
+
+    # merge predictions into a single dataframe
+    modelPredDF = pd.DataFrame(index=yPredDf.index)
+    for modelName in models:
+        modelPredDF = pd.merge(modelPredDF,
+                               modelPredDict[modelName],
+                               left_index=True,
+                               right_index=True)
+    modelPredDF.to_csv(join())
 
 
 if __name__ == "__main__":
@@ -115,7 +144,7 @@ if __name__ == "__main__":
         main(args.xPath,
              args.outPath,
              args.modelPath)
-        print('predict.py ... done!')
+        print('predMeta.py ... done!')
     except ArgumentError as arg_exception:
         traceback.print_exc()
     except Exception as exception:

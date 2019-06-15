@@ -42,18 +42,20 @@ def main(xTrnPath, xValPath,
     1=On, 0=Off
     :return: None
     """
-
-    """############################################################################
-                        0. Preprocess Data
-    ############################################################################"""
     # set random seed for numpy and tensorflow
     seed(0)
     set_random_seed(0)
+    now = datetime.datetime.now()
+    today = str(now.date())
 
     if d == 1:
         print('debug mode: ON')
         nTrain = 10
+    print("n train: {}".format(nTrain))
 
+    """############################################################################
+                        0. Preprocess Data
+    ############################################################################"""
     assert(os.path.isdir(xTrnPath))
     if xValPath is not None:
         assert(os.path.isdir(xValPath))
@@ -98,19 +100,15 @@ def main(xTrnPath, xValPath,
             yVal = None
 
         # TRAIN CNN
-        now = datetime.datetime.now()
-        today = str(now.date()) + \
-                    '_' + str(now.hour)
         outputModelPath = "./modelOutput/metaClf_{}/{}".format(today,
                                                                modelName)
-        outputModelPath = outputModelPath + '_' + today
         if not os.path.isdir(outputModelPath):
             os.makedirs(outputModelPath)
 
         trainModel(xTrn, yTrn,
                    XVal, yVal,
                    outputModelPath,
-                   modelName, modelWeights,
+                   modelName, 'imagenet',
                    aug=0, d=d, note="", xTest=None)
 
         with open(os.path.join(outputModelPath, 'dataInfo.txt'), 'w') as fid:
@@ -126,7 +124,7 @@ if __name__ == "__main__":
              args.xValPath,
              args.nTrain,
              args.d)
-        print('train.py ... done!')
+        print('trnMeta.py ... done!')
     except ArgumentError as arg_exception:
         traceback.print_exc()
     except Exception as exception:
