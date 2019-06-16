@@ -25,6 +25,7 @@ def meanPrediction(modelPredDF, yVals=[0, 1, 2, 3]):
     for yi in np.unique(yVals):
         mean = modelPredDF.filter(regex='_{}'.format(yi)).mean(axis=1)
         meanPred['mean_{}'.format(yi)] = mean
+    meanPred = meanPred.div(meanPred.sum(axis=1), axis=0)
     return meanPred
 
 
@@ -128,13 +129,19 @@ def main(xPath, outPath, metaPath):
         modelPredDict[modelName] = yPredDf
 
     # merge predictions into a single dataframe
-    modelPredDF = pd.DataFrame(index=yPredDf.index)
+    modelPredDF = pd.DataFrame(index=imgNames)
     for modelName in models:
         modelPredDF = pd.merge(modelPredDF,
                                modelPredDict[modelName],
                                left_index=True,
                                right_index=True)
-    modelPredDF.to_csv(join())
+    # calculate average probability for each class
+    meanPredDF = meanPrediction(modelPredDF)
+    # save dataframes to csv
+    modelPredDF.to_csv(join(outPath,
+                            "modelPredictions.csv"))
+    meanPredDF.to_csv(join(outPath,
+                            "metaClfPred_meanProba.csv"))
 
 
 if __name__ == "__main__":
