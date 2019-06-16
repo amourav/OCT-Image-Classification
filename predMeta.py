@@ -86,7 +86,7 @@ def main(xPath, outPath, metaPath):
         3: "DME",
     }
     modelDirs = os.listdir(metaPath)
-    modelDirs = [d for d in modelDirs if os.path.isdir(join(metaPath, modelDirs))]
+    modelDirs = [d for d in modelDirs if os.path.isdir(join(metaPath, d))]
     modelPredDict = {}
     # chose which preprocessing method to use by detecting the
     # model name in modelPath

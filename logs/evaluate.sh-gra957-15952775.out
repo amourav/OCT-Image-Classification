@@ -1,0 +1,14 @@
+
+Due to MODULEPATH changes, the following have been reloaded:
+  1) openmpi/2.1.1
+
+Python 3.5.4
+Using TensorFlow backend.
+	 accuracy: 0.904
+	 binary (urgent vs non-urgent)
+	 accuracy: 0.941
+	 sensitivity 0.952
+	 specificity 0.93
+	 positive likelihood ratio 13.6
+	 negative likelihood ratio 0.0511
+evaluate.py ... done!
