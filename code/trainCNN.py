@@ -203,7 +203,7 @@ def trainModel(xTrn, yTrn,
     # Set Callbacks
     modelOutPath = os.path.join(modelOutputDir, '{}.hdf5'.format(modelName))
     modelCheckpoint = ModelCheckpoint(modelOutPath, monitor='val_loss',
-                                      save_best_only=True,
+                                      save_best_only=True, #save_weights_only=True,
                                       mode='auto', period=1)
     earlyStop = EarlyStopping(monitor='val_loss',
                               min_delta=0,
@@ -254,6 +254,9 @@ def trainModel(xTrn, yTrn,
     hist = history.history
     histDf = pd.DataFrame(hist)
     histDf.to_csv(historyPath)
+
+    #jsonPath = os.path.join(modelOutputDir, '{}_History.csv'.format(modelName))
+    model.to_json()
 
     # Run inference on test set if provided
     if xTest is not None:
