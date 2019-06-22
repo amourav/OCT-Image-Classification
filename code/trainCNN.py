@@ -203,7 +203,8 @@ def trainModel(xTrn, yTrn,
     # Set Callbacks
     modelOutPath = os.path.join(modelOutputDir, '{}.hdf5'.format(modelName))
     modelCheckpoint = ModelCheckpoint(modelOutPath, monitor='val_loss',
-                                      save_best_only=True, #save_weights_only=True,
+                                      save_best_only=True,
+                                      save_weights_only=True,
                                       mode='auto', period=1)
     earlyStop = EarlyStopping(monitor='val_loss',
                               min_delta=0,
@@ -255,8 +256,17 @@ def trainModel(xTrn, yTrn,
     histDf = pd.DataFrame(hist)
     histDf.to_csv(historyPath)
 
-    #jsonPath = os.path.join(modelOutputDir, '{}_History.csv'.format(modelName))
-    model.to_json()
+    # save model architecture to json
+    jsonPath = os.path.join(modelOutputDir, '{}_architecture.json'.format(modelName))
+    modelJson = model.to_json()
+    with open(jsonPath, "w") as json_file:
+        json_file.write(modelJson)
+
+    # save model architecture to yaml
+    yamlPath = os.path.join(modelOutputDir, '{}_architecture.yaml'.format(modelName))
+    model_yaml = model.to_yaml()
+    with open(yamlPath, "w") as yaml_file:
+        yaml_file.write(model_yaml)
 
     # Run inference on test set if provided
     if xTest is not None:
