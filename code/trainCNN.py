@@ -262,11 +262,13 @@ def trainModel(xTrn, yTrn,
     with open(jsonPath, "w") as json_file:
         json_file.write(modelJson)
 
+    '''
     # save model architecture to yaml
     yamlPath = os.path.join(modelOutputDir, '{}_architecture.yaml'.format(modelName))
     model_yaml = model.to_yaml()
     with open(yamlPath, "w") as yaml_file:
         yaml_file.write(model_yaml)
+    '''
 
     # Run inference on test set if provided
     if xTest is not None:

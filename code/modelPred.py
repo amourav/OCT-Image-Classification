@@ -1,12 +1,13 @@
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter, ArgumentError
 import os
+from os.path import join
 import traceback
 import sys
 import numpy as np
 import pandas as pd
 from keras.utils import to_categorical
 from keras.backend import set_image_data_format
-from keras.models import load_model
+from keras.models import model_from_json
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import roc_curve, auc
 from evalUtils import UrgentVRoutne, reportBinaryScores
@@ -73,11 +74,21 @@ def main_driver(XTestPath,
     """############################################################################
                         2. Load Model and Run Inference
     ############################################################################"""
-    model = load_model(modelPath)
+    # load json and create model
+    print('load json')
+    jsonPath = join(os.path.dirname(modelPath),
+                    '{}_architecture.json'.format(modelName))
+    jsonFile = open(jsonPath, 'r')
+    loadedModelJson = jsonFile.read()
+    jsonFile.close()
+    model = model_from_json(loadedModelJson)
+    # load weights into new model
+    model.load_weights(modelPath)
+    print("Loaded json model from disk")
+
     yTestPred = model.predict(XTest,
                               batch_size=32,
                               verbose=1)
-
     yTestPredPath = os.path.join(outputPath, 'yPred_{}.npy'.format(note))
     modelPredDF = pd.DataFrame(index=yIdx)
     for yLbl in np.unique(yTest):
@@ -116,6 +127,7 @@ def main_driver(XTestPath,
             fid.write("tpr: {} \n".format(tpr))
             fid.write("tnr: {} \n".format(tnr))
             fid.write("aucUrgent: {} \n".format(aucUrgent))
+
 
 if __name__ == "__main__":
     parser = get_parser()

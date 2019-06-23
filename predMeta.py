@@ -6,7 +6,7 @@ import sys
 import numpy as np
 import pandas as pd
 from keras.backend import set_image_data_format
-from keras.models import load_model
+from keras.models import model_from_json
 import skimage
 from PIL import Image
 sys.path.append('./code')
@@ -58,7 +58,7 @@ def get_parser():
                                help="input image directory")
     module_parser.add_argument("-o", dest="outPath", type=str,
                                help="output dir path")
-    module_parser.add_argument("-m", dest="modelPath",
+    module_parser.add_argument("-m", dest="metaPath",
                                type=str,
                                help="path to model directory")
     return module_parser
@@ -67,11 +67,9 @@ def get_parser():
 def main(xPath, outPath, metaPath):
     """
     takes a directory of new images and runs inference with the trained CNN
-    :param xPath: path to directory of new images
-    :param outPath: path to directory for predictions
-    :param xRes: desired image width for preprocessing [may be changed for model] (int)
-    :param yRes: desired image height for preprocessing [may be changed for model] (int)
-    :param modelPath: path to .hdf5 file of trained CNN
+    :param xPath: path to directory of new images (str)
+    :param outPath: path to directory for predictions (str)
+    :param metaPath: path to metaClf directory (str)
     :return: None
     """
 
@@ -89,7 +87,6 @@ def main(xPath, outPath, metaPath):
     modelDirs = [d for d in modelDirs if os.path.isdir(join(metaPath, d))]
     modelPredDict = {}
     # chose which preprocessing method to use by detecting the
-    # model name in modelPath
     models = ['InceptionV3', 'VGG16', 'ResNet50', 'Xception']
     for modelName in models:
         preprocessInput = getPreprocess(modelName)
@@ -108,11 +105,24 @@ def main(xPath, outPath, metaPath):
         for modelDir in modelDirs:
             if modelName in modelDir:
                 break
+
         modelDirPath = join(metaPath,
                             modelDir,)
-        modelPath = join(modelDirPath,
-                         modelName+".hdf5")
-        model = load_model(modelPath)
+        modelWeightsPath = join(modelDirPath,
+                                modelName + ".hdf5")
+
+        # load json and create model
+        print('load json')
+        jsonPath = join(os.path.dirname(modelWeightsPath),
+                        '{}_architecture.json'.format(modelName))
+        jsonFile = open(jsonPath, 'r')
+        loadedModelJson = jsonFile.read()
+        jsonFile.close()
+        model = model_from_json(loadedModelJson)
+        # load weights into new model
+        model.load_weights(modelWeightsPath)
+        print("Loaded json model from disk")
+
         yPred = model.predict(imgData,
                               batch_size=1,
                               verbose=1)
@@ -150,7 +160,7 @@ if __name__ == "__main__":
         args = parser.parse_args()
         main(args.xPath,
              args.outPath,
-             args.modelPath)
+             args.metaPath)
         print('predMeta.py ... done!')
     except ArgumentError as arg_exception:
         traceback.print_exc()

@@ -6,7 +6,7 @@ import sys
 import numpy as np
 import pandas as pd
 from keras.backend import set_image_data_format
-from keras.models import load_model
+from keras.models import model_from_json
 import skimage
 from PIL import Image
 sys.path.append('./code')
@@ -55,7 +55,7 @@ def main(xPath, outPath, modelPath):
     :param outPath: path to directory for predictions
     :param xRes: desired image width for preprocessing [may be changed for model] (int)
     :param yRes: desired image height for preprocessing [may be changed for model] (int)
-    :param modelPath: path to .hdf5 file of trained CNN
+    :param modelPath: path to .hdf5 file of trained CNN weights
     :return: None
     """
 
@@ -94,7 +94,19 @@ def main(xPath, outPath, modelPath):
     """############################################################################
                         0. load model & predict
     ############################################################################"""
-    model = load_model(modelPath)
+    # load json and create model
+    print('load json')
+    jsonPath = join(os.path.dirname(modelPath),
+                    '{}_architecture.json'.format(modelName))
+    jsonFile = open(jsonPath, 'r')
+    loadedModelJson = jsonFile.read()
+    jsonFile.close()
+    model = model_from_json(loadedModelJson)
+    # load weights into new model
+    model.load_weights(modelPath)
+    print("Loaded json model from disk")
+    model.summary()
+
     yPred = model.predict(imgData,
                           batch_size=1,
                           verbose=1)
