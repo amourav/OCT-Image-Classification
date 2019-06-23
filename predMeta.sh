@@ -13,9 +13,7 @@ python --version
 
 
 input="./RawData/testDir"
-output="./modelOutput/metaClf_2019-06-15"
-model="./modelOutput/metaClf_2019-06-15"
-#"/scratch/amourav/Python/OCT-Image-Classification/modelOutput/metaClf_2019-06-15/"
-#RX=224
-#RY=224
-python ./predMeta.py -i "$input" -o "$output" -m "$model" #-Rx "$RX" -Ry "$RY"
+output="./modelOutput/metaClf_2019-06-22"
+model="./modelOutput/metaClf_2019-06-22"
+
+python ./predMeta.py -i "$input" -o "$output" -m "$model"

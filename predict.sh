@@ -13,9 +13,7 @@ python --version
 
 
 input="./RawData/testDir"
-output="./modelOutput/VGG16/VGG16_2019-06-13_18_28_"
-model="./modelOutput/VGG16/VGG16_2019-06-13_18_28_/VGG16.hdf5"
-#"/scratch/amourav/Python/OCT-Image-Classification/modelOutput/compareModels4/VGG16_2019-06-13_18_30_default_224_noprep/VGG16.hdf5"
-#RX=224
-#RY=224
-python ./predict.py -i "$input" -o "$output" -m "$model" #-Rx "$RX" -Ry "$RY"
+output="./modelOutput/test1"
+model="./modelOutput/metaClf_2019-06-22/Xception/Xception.hdf5"
+#"/scratch/amourav/Python/OCT-Image-Classification/modelOutput/metaClf_2019-06-22/Xception/Xception.hdf5"
+python ./predict.py -i "$input" -o "$output" -m "$model"

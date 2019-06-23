@@ -12,6 +12,6 @@ source activate
 python --version
 
 yTruePath="./PreprocessedData/preprocessedForCNN/299 x 299/targetData_(299, 299, 3)_test.csv"
-yPredPath="./modelOutput/metaClf_2019-06-15/InceptionV3/InceptionV3_predictions.csv"
-
+yPredPath="./modelOutput/test1/Xception_predictions.csv"
+# "/scratch/amourav/Python/OCT-Image-Classification/modelOutput/test1/Xception_predictions.csv"
 python ./evaluate.py -yTrue "$yTruePath" -yPred "$yPredPath"
