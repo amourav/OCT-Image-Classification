@@ -7,6 +7,7 @@ http://www.cell.com/cell/fulltext/S0092-8674(18)30154-5
 Retinal optical coherence tomography (OCT) is an imaging technique used to capture high-resolution cross sections of the retinas of living patients. Approximately 30 million OCT scans are performed each year, and the analysis and interpretation of these images takes up a significant amount of time (Swanson and Fujimoto, 2017).
 
 ![Image](https://github.com/amourav/OCT-Image-Classification/blob/cleanCode3/pics/2018.Kermany.Identifying%20Medical%20Diagnoses%20and%20Treatable%20Diseases%20by%20Image-Based%20Deep%20Learning_fig2.jpg)
+
 Figure 1. Representative Optical Coherence Tomography Images and the Workflow Diagram [Kermany et. al. 2018] http://www.cell.com/cell/fulltext/S0092-8674(18)30154-5
 
 (A) (Far left) choroidal neovascularization (CNV) with neovascular membrane (white arrowheads) and associated subretinal fluid (arrows). (Middle left) Diabetic macular edema (DME) with retinal-thickening-associated intraretinal fluid (arrows). (Middle right) Multiple drusen (arrowheads) present in early AMD. (Far right) Normal retina with preserved foveal contour and absence of any retinal fluid/edema.
@@ -29,14 +30,17 @@ For additional information: see http://www.cell.com/cell/fulltext/S0092-8674(18)
 
 This project was created to improve on the results reported by [Kermany et. al](https://www.cell.com/cell/fulltext/S0092-8674(18)30154-5) for the OCT image classification system.
 
-The reported method consisted of the (InceptionV3)[https://arxiv.org/abs/1512.00567] network pretrained on the (ImageNet)[http://www.image-net.org/] dataset, then fine tuned on a set of target OCT images. To improve on these results, we trained several networks such as (VGG16)[https://arxiv.org/abs/1409.1556], (ResNet50)[https://arxiv.org/abs/1512.03385], (Xception)[https://arxiv.org/abs/1610.02357] and compared them to this baseline.
+The reported method consisted of the [InceptionV3](https://arxiv.org/abs/1512.00567) network pretrained on the [ImageNet](http://www.image-net.org/) dataset, then fine tuned on a set of target OCT images. To improve on these results, we trained several networks such as [VGG16](https://arxiv.org/abs/1409.1556), [ResNet50](https://arxiv.org/abs/1512.03385), [Xception](https://arxiv.org/abs/1610.02357) and compared them to this baseline.
 
 ![Image](https://github.com/amourav/OCT-Image-Classification/blob/cleanCode3/pics/comparison.png)
+
 Figure 2. Comparison of several ImageNet pretrained CNNs, fine tuned on OCT scans, and evaluated on the test set.
 
 Following we trained a meta classifier that combines the outputs of these several pretrained CNNs for the best possible prediction. 
 
 ![Image](https://github.com/amourav/OCT-Image-Classification/blob/cleanCode3/pics/meta.png)
+
+Figure 3. Performance comparison of different methods of combining outputs of VGG16, ResNet50, InceptionV3, and Xception.
 
 Our comparison identified averaging probabilities across all models as a simple yet accurate technique which improved above the performance of any individual model.
 
