@@ -19,11 +19,30 @@ def preprocessDir(dataPath,
     Each image is normalized and resized to desired resolution
     Final data is a numpy stack of image files compatible with
     keras model fit
-    :param dataPath (str): base dir of raw data
-    :param outputPath (str):
-    :param dataset (str):
-    :param debug_ (int/bool):
-    :param newSize (tuple): resolution of final img
+
+    :param dataPath: base dir of raw data (str).
+
+    Directory must be structured as follows
+    -dataPath
+        -NORMAL
+            -img1.jpeg
+            -img2.jpeg
+            ..
+        -DME
+            -img1.jpeg
+            ..
+        -CNV
+            -img1.jpeg
+            ..
+        -DRUSEN
+            -img1.jpeg
+
+    :param outputPath: location for preprocessed data (str)
+    :param dataset: specify dataset for training, testing, or validation (str)
+    one of: train, test, val
+    :param nTrain: This specifies the number of samples used
+    if dataset is set to train (int)
+    :param newSize: resolution of final img (tuple)
     :return: None
     """
 

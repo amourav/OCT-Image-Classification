@@ -37,7 +37,7 @@ def getModel(modelName,
     Either [InceptionV3, VGG16, Xception, or ResNet50]
     :param inputShape: Input shape for CNN model [Xres, YRes, nChannels] (tuple)
     :param nClasses:  NUmber of unique output classes (int)
-    :param weights: path to pretrained model weights or
+    :param weights: path to pretrained model weights or enter
     string 'imagenet' to automatically download weights (str)
     :return: keras model
     """
@@ -74,9 +74,7 @@ def getModel(modelName,
         raise Exception('model name not recognized')
 
     predictions = Dense(nClasses, activation='softmax')(x)
-    # this is the model we will train
     model = Model(inputs=base_model.input, outputs=predictions)
-    # first: train only the top layers (which were randomly initialized)
     for layer in base_model.layers:
         if hasattr(layer, 'moving_mean') and hasattr(layer, 'moving_variance'):
             layer.trainable = True
@@ -85,7 +83,6 @@ def getModel(modelName,
         else:
             layer.trainable = False
     adam = Adam(lr=0.0001)
-    # compile the model (should be done *after* setting layers to non-trainable)
     loss = 'categorical_crossentropy'
     metric = ['accuracy', 'categorical_crossentropy']
     model.compile(optimizer=adam, loss=loss, metrics=metric)
@@ -113,7 +110,7 @@ def preprocessInputVGG16(X, newSize=(224, 224, 3)):
 
 def getPreprocess(modelName):
     """
-    retrieve the model specific keras preprocessing function
+    retrieve the model specific preprocessing function
     :param modelName: name of pretrained model (str)
     :return: preprocessing function
     """
@@ -144,20 +141,19 @@ def trainModel(xTrn, yTrn,
     :param xTrn: training data image stack [n_train, xRes, yRes, channels=3] (npy array)
     :param yTrn: training image labels [nSamples] (npy array)
     :param XVal: validation data image stack [n_train, xRes, yRes, channels=3] (npy array)
-    If set to XVal=None, validation data will be selected from xTrn
-    :param yVal:
-    If set to yVal=None, validation data will be selected from yTrn
+    If set to None, validation data will be selected from xTrn
+    :param yVal: If set to None, validation data will be selected from yTrn
     :param outputPath: output path for training output (str)
     :param modelName: Name of CNN model to train (str)
     one of - [InceptionV3, VGG16, Xception, or ResNet50]
     :param modelWeights: path to pretrained model weights (str)
     or set to imagenet to download the pretrained model weights
     :param aug: enable data augmentation (1=On, 0=Off) (int/bool)
-    :param d: d: debugging mode [limit dataset size and training iterations] (int/bool)
+    :param d: debugging mode [limit dataset size and training iterations] (int/bool)
     1=On, 0=Off
-    :param note: add to the end of output directory (str)
+    :param note: print during model training (str)
     :param xTest: test data image stack [n_train, xRes, yRes, channels=3] (npy array)
-    this is optional
+    [optional]
     :param nEpochs: number of training epochs (int)
     :param batchSize: batch size (int)
     :return: modelOutputDir: path to model output directory (str)
@@ -166,7 +162,7 @@ def trainModel(xTrn, yTrn,
     seed(0)
     set_random_seed(0)
     set_image_data_format('channels_last')
-    print(modelName)
+    print(modelName, note)
 
     # reduce dataset, epochs, and batch size for debugging mode
     if d:
@@ -185,7 +181,7 @@ def trainModel(xTrn, yTrn,
                      inputShape=xShape,
                      weights=modelWeights)
     print(model.summary())
-    # normalize data to the specific network's specifications
+    # normalize data to the network's specifications
     preprocessInput = getPreprocess(modelName)
     xTrn = preprocessInput(xTrn)
     yTrn = to_categorical(yTrn)
@@ -250,7 +246,7 @@ def trainModel(xTrn, yTrn,
     dt = (time.time() - t0)/3600
     print("training time: {} h".format(dt))
 
-    # save output
+    # save history output
     historyPath = os.path.join(modelOutputDir, '{}_History.csv'.format(modelName))
     hist = history.history
     histDf = pd.DataFrame(hist)
@@ -261,14 +257,6 @@ def trainModel(xTrn, yTrn,
     modelJson = model.to_json()
     with open(jsonPath, "w") as json_file:
         json_file.write(modelJson)
-
-    '''
-    # save model architecture to yaml
-    yamlPath = os.path.join(modelOutputDir, '{}_architecture.yaml'.format(modelName))
-    model_yaml = model.to_yaml()
-    with open(yamlPath, "w") as yaml_file:
-        yaml_file.write(model_yaml)
-    '''
 
     # Run inference on test set if provided
     if xTest is not None:
@@ -311,7 +299,7 @@ def get_parser():
     module_parser = ArgumentParser(
         formatter_class=ArgumentDefaultsHelpFormatter)
     module_parser.add_argument("-xtrn", dest="XTrainPath", type=str,
-                               help="X train path ")
+                               help="X train path")
     module_parser.add_argument("-xval", dest="XValPath", type=str,
                                default='',
                                help="X val path")

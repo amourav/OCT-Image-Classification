@@ -24,104 +24,119 @@ def get_parser():
     module_parser.add_argument("-iVal", dest="xValPath",
                                type=str, default=None,
                                help="validation data directory")
-    module_parser.add_argument("-m", dest="modelName",
-                               type=str, default="Xception",
-                               help="model name (default - Xception)")
-    module_parser.add_argument("-w", dest="modelWeights",
-                               type=str, default='imagenet',
-                               help="path to model weights")
     module_parser.add_argument("-n", dest="nTrain", type=int, default=1000,
-                               help='n: number of images for training')
+                               help='number of images for training')
     module_parser.add_argument("-d", dest="d", type=int,
                                default=0, help='debug mode')
     return module_parser
 
 
 def main(xTrnPath, xValPath,
-         modelName, modelWeights,
          nTrain, d):
     """
     main function calling each element of the pipeline
     :param xTrnPath: path to directory with images to be used for training (str)
+    directory must be structured as follows:
+
+    xTrnDir
+        -NORMAL
+            -img1.jpeg
+            -img2.jpeg
+            ..
+        -DME
+            -img1.jpeg
+            ..
+        -CNV
+            -img1.jpeg
+            ..
+        -DRUSEN
+            -img1.jpeg
+            ..
     :param xValPath: path to directory with images to be used for validation (str) [optional]
-    :param modelName: architecture name (str)
-    :param modelWeights: path to pre-trained network weights
-    :param nTrain: number of images to take for training
+            If provided, validation data directory must be structured like the training data directory.
+    :param nTrain: number of images to take for training (int)
     :param d: debugging mode [limit dataset size and training iterations] (int/bool)
     1=On, 0=Off
     :return: None
     """
-
-    """############################################################################
-                        0. Preprocess Data
-    ############################################################################"""
     # set random seed for numpy and tensorflow
     seed(0)
     set_random_seed(0)
+    now = datetime.datetime.now()
+    today = str(now.date())
 
     if d == 1:
         print('debug mode: ON')
         nTrain = 10
+    print("n train: {}".format(nTrain))
 
+    """############################################################################
+                        0. Preprocess Data
+    ############################################################################"""
+    # check if data path is valid
     assert(os.path.isdir(xTrnPath))
     if xValPath is not None:
         assert(os.path.isdir(xValPath))
-    if modelName == "VGG16":
-        xRes, yRes = 224, 224
-    elif modelName in ["Xception", "InceptionV3", "ResNet50"]:
-        xRes, yRes = 299, 299
-    newSize = (int(xRes), int(yRes), 3)
-    outputDataPath = "./PreprocessedData/{}".format(str(newSize))
-    if not os.path.isdir(outputDataPath):
-        os.makedirs(outputDataPath)
-    preprocessDir(xTrnPath, outputDataPath,
-                  'train', nTrain, newSize)
-    if xValPath is not None:
-        preprocessDir(xValPath, outputDataPath,
-                      'val', nTrain, newSize)
+
+    # preprocess data for each type of network
+    dataPathDict = {}
+    for res in [224, 299]:
+        newSize = (res, res, 3)
+        outputDataPath = "./PreprocessedData/{}".format(str(newSize))
+        if not os.path.isdir(outputDataPath):
+            os.makedirs(outputDataPath)
+        preprocessDir(xTrnPath, outputDataPath,
+                      'train', nTrain, newSize)
+        if xValPath is not None:
+            preprocessDir(xValPath, outputDataPath,
+                          'val', nTrain, newSize)
+        dataPathDict[res] = outputDataPath
 
     """############################################################################
-                        1. Load Data
+                        1. Train
     ############################################################################"""
-    print('loading data')
-    trnTag = "{}_{}".format(str(newSize), 'train')
-    trnDataPath = join(outputDataPath, "imgData_{}_n{}.npy".format(trnTag, nTrain))
-    trnTargetPath = join(outputDataPath, "targetData_{}.npy".format(trnTag))
-    xTrn = np.load(trnDataPath)
-    yTrn = np.load(trnTargetPath)
+    models = ['InceptionV3', 'VGG16', 'ResNet50', 'Xception']
+    for modelName in models:
+        if modelName == "VGG16":
+            res = 224
+        else:
+            res = 299
 
-    if xValPath is not None:
-        valTag = "{}_{}".format(str(newSize), 'val')
-        valDataPath = join(outputDataPath, "imgData_{}.npy".format(valTag))
-        valTargetPath = join(outputDataPath, "targetData_{}.npy".format(valTag))
-        XVal = np.load(valDataPath)
-        yVal = np.load(valTargetPath)
-    else:
-        XVal = None
-        yVal = None
+        # load data for each network
+        outputDataPath = dataPathDict[res]
+        print('loading data')
+        trnTag = "{}_{}".format(str((res, res, 3)), 'train')
+        trnDataPath = join(outputDataPath, "imgData_{}_n{}.npy".format(trnTag, nTrain))
+        trnTargetPath = join(outputDataPath, "targetData_{}.npy".format(trnTag))
+        xTrn = np.load(trnDataPath)
+        yTrn = np.load(trnTargetPath)
 
-    """############################################################################
-                        1. Train CNN
-    ############################################################################"""
-    now = datetime.datetime.now()
-    today = str(now.date()) + \
-                '_' + str(now.hour) + \
-                '_' + str(now.minute)
-    outputModelPath = "./modelOutput/{}".format(modelName)
-    outputModelPath = outputModelPath + '_' + today
-    if not os.path.isdir(outputModelPath):
-        os.makedirs(outputModelPath)
+        if xValPath is not None:
+            valTag = "{}_{}".format(str((res, res, 3)), 'val')
+            valDataPath = join(outputDataPath, "imgData_{}.npy".format(valTag))
+            valTargetPath = join(outputDataPath, "targetData_{}.npy".format(valTag))
+            XVal = np.load(valDataPath)
+            yVal = np.load(valTargetPath)
+        else:
+            XVal = None
+            yVal = None
 
-    trainModel(xTrn, yTrn,
-               XVal, yVal,
-               outputModelPath,
-               modelName, modelWeights,
-               aug=0, d=d, note="", xTest=None)
+        # save each CNN in a subdirectory
+        outputModelPath = "./modelOutput/metaClf_{}/{}".format(today,
+                                                               modelName)
+        if not os.path.isdir(outputModelPath):
+            os.makedirs(outputModelPath)
 
-    with open(os.path.join(outputModelPath, 'dataInfo.txt'), 'w') as fid:
-        fid.write("XTrainPath: {} \n".format(trnDataPath))
-        fid.write("XValPath: {} \n".format(valDataPath))
+        trainModel(xTrn, yTrn,
+                   XVal, yVal,
+                   outputModelPath,
+                   modelName, 'imagenet',
+                   aug=0, d=d, note="", xTest=None)
 
+        # save details of training in each CNN directory
+        with open(os.path.join(outputModelPath, 'dataInfo.txt'), 'w') as fid:
+            fid.write("XTrainPath: {} \n".format(trnDataPath))
+            fid.write("XValPath: {} \n".format(valDataPath))
 
 
 if __name__ == "__main__":
@@ -130,11 +145,9 @@ if __name__ == "__main__":
         args = parser.parse_args()
         main(args.xTrnPath,
              args.xValPath,
-             args.modelName,
-             args.modelWeights,
              args.nTrain,
              args.d)
-        print('train.py ... done!')
+        print('trnMeta.py ... done!')
     except ArgumentError as arg_exception:
         traceback.print_exc()
     except Exception as exception:
