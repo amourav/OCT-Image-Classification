@@ -1,6 +1,0 @@
-
-Due to MODULEPATH changes, the following have been reloaded:
-  1) openmpi/2.1.1
-
-Python 3.5.4
-slurmstepd: error: *** JOB 15810394 ON gra949 CANCELLED AT 2019-06-12T23:17:37 ***
