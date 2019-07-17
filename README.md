@@ -30,19 +30,19 @@ For additional information: see http://www.cell.com/cell/fulltext/S0092-8674(18)
 
 This project was created to improve on the results reported by [Kermany et. al](https://www.cell.com/cell/fulltext/S0092-8674(18)30154-5) for the OCT image classification system.
 
-The reported method consisted of the [InceptionV3](https://arxiv.org/abs/1512.00567) network pretrained on the [ImageNet](http://www.image-net.org/) dataset, then fine tuned on a set of target OCT images. To improve on these results, we trained several networks such as [VGG16](https://arxiv.org/abs/1409.1556), [ResNet50](https://arxiv.org/abs/1512.03385), [Xception](https://arxiv.org/abs/1610.02357) and compared them to this baseline.
+The reported method consisted of the [InceptionV3](https://arxiv.org/abs/1512.00567) network pretrained on the [ImageNet](http://www.image-net.org/) dataset, then fine tuned on a set of target OCT images. To improve on these results, we trained several networks such as [VGG16](https://arxiv.org/abs/1409.1556), [ResNet50](https://arxiv.org/abs/1512.03385), [Xception](https://arxiv.org/abs/1610.02357) and compared them to this reported baseline (Fig. 2). Our comparison consisted of training each model on a training set of 1000 images as opposed to the entire dataset in order to more accurately represent real-world avalability of annotated medical image data. Methods were evaluated on a seperete test set of another 1000 images with 250 images in each class. To reflect the potential clinical use of these predictions, labels were binarized into two groups: URGET (CNV, DME) and NON-URGENT (NORMAL, DRUSEN) before evaluation.
 
 ![Image](https://github.com/amourav/OCT-Image-Classification/blob/cleanCode3/pics/comparison.png)
 
 Figure 2. Comparison of several ImageNet pretrained CNNs, fine tuned on OCT scans, and evaluated on the test set.
 
-Following we trained a meta classifier that combines the outputs of these several pretrained CNNs for the best possible prediction. 
+Although we were able to achieve superior performance in both accuracy and AUC, by combining the predictions of several models, we were able to achieve even higher performance (Fig 3).
 
 ![Image](https://github.com/amourav/OCT-Image-Classification/blob/cleanCode3/pics/meta.png)
 
 Figure 3. Performance comparison of different methods of combining outputs of VGG16, ResNet50, InceptionV3, and Xception.
 
-Our comparison identified averaging probabilities across all models as a simple yet accurate technique which improved above the performance of any individual model.
+Our comparison identified averaging probabilities across all models as a simple yet accurate technique which improved above the performance of any individual model. 
 
 ## Installation
 
@@ -62,6 +62,9 @@ From the root project directory run `train.py` with the following arguments:
 
 `-iVal` Path to the val data directory (optional). This is used for stopping the model training at the lowest validation loss. If not provided, a portion (10%) of training data will be used for validation.
 
+'-n' Number of sample to use during training (default=1000).
+
+
 example:
 ```
 python ./train.py -iTrn "./RawData/OCT2017/train" -iVal "./RawData/OCT2017/val"
@@ -74,9 +77,13 @@ This will automatically save the contents of the model to the `modelOutput` dire
 
 To predict the class of a new OCT image, run `predict.py` with the following arguments
 
-`-i` - Path to directory of new oct images. Images must be in the root folder.
-`o` - Path to directory where output will be generated.
-`m` - Path to trained model directory.
+`-i` Path to directory of new oct images. Images must be in the root folder.
+
+
+`-o` Path to directory where output will be generated.
+
+
+`-m` Path to trained model directory.
 
 example:
 ```
