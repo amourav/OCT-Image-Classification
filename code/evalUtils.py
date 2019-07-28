@@ -82,11 +82,11 @@ def oneHotDecoder(y):
 def int2Cat(y, classMap):
     """
     transform target array from integer labels to string labels
-    :param y: target vector, 
+    :param y: target vector
     """
     catList = [] 
     for yi in y:
-        catList.append(classMapR[yi])
+        catList.append(classMap[yi])
     return(np.array(catList))
 
 
