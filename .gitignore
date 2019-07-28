@@ -4,6 +4,7 @@ PreprocessedData/*
 modelOutput/*
 .idea/*
 .logs/*
+*.sh
 
 # exceptions
 !RawData/.gitkeep

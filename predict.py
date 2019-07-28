@@ -13,6 +13,17 @@ sys.path.append('./code')
 from trainCNN import getPreprocess
 
 
+def getBinaryPred(modelPredDF):
+    urgentLabels = ['CNV', 'DME']
+    urgentCols = []
+    predUrgentDF = pd.DataFrame(index=modelPredDF.index)
+    for col in modelPredDF.columns:
+        if (urgentLabels[0] in col) or (urgentLabels[1] in col):
+            urgentCols.append(col)
+    assert(len(urgentCols)==2)
+    predUrgentDF['urgent_proba'] = modelPredDF[urgentCols[0]] + modelPredDF[urgentCols[1]]
+    return predUrgentDF
+
 def meanPrediction(modelPredDF, yVals=[0, 1, 2, 3]):
     """
     output the mean probability predicted for each class
@@ -21,10 +32,16 @@ def meanPrediction(modelPredDF, yVals=[0, 1, 2, 3]):
     :param yVals: possible output classes (list like object)
     :return: mean probability for each class (pandas dataframe)
     """
+    imgTypeDict = {
+        0: "NORMAL",
+        1: "DRUSEN",
+        2: "CNV",
+        3: "DME"}
+
     meanPred = pd.DataFrame(index=modelPredDF.index)
     for yi in np.unique(yVals):
         mean = modelPredDF.filter(regex='_{}'.format(yi)).mean(axis=1)
-        meanPred['mean_{}'.format(yi)] = mean
+        meanPred['proba_{}'.format(imgTypeDict[yi])] = mean
     meanPred = meanPred.div(meanPred.sum(axis=1), axis=0)
     return meanPred
 
@@ -149,12 +166,14 @@ def main(xPath, outPath, metaPath):
                                right_index=True)
     # calculate average probability for each class
     meanPredDF = meanPrediction(modelPredDF)
+    binaryPredDF = getBinaryPred(meanPredDF)
     # save dataframes to csv
     modelPredDF.to_csv(join(outPath,
-                            "modelPredictions.csv"))
+                            "individualModelPredictions.csv"))
     meanPredDF.to_csv(join(outPath,
-                            "metaClfPred_meanProba.csv"))
-
+                            "ensembleClfMeanProba.csv"))
+    binaryPredDF.to_csv(join(outPath,
+                             "urgentProba.csv"))
 
 if __name__ == "__main__":
     parser = get_parser()
