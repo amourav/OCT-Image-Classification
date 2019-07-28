@@ -38,15 +38,19 @@ Although we were able to achieve superior performance on the test set with [Xcep
 Figure 3. Performance comparison of different methods of combining outputs of VGG16, ResNet50, InceptionV3, and Xception.
 
 
-Our comparison found that averaging probabilities across all models as a simple yet accurate technique which improved above the performance of any individual model, as well as the previous published results. This method yielded a 4-class accuracy of 96.4% (in distinguishing CNV, DME,NORMAL, DRUSEN), which is a 3% improvement on what was reported by [Kermany et. al 2018](https://www.cell.com/cell/fulltext/S0092-8674(18)30154-5) on the same test data. For the binary classification task of URGENT vs NON-URGENT the ensemble CNN achieved an accuracy of 97.5%, sensitivity of 98.6%, specificity of 96.5%, and ROC AUC of 99.8%. 
+Our comparison found that averaging probabilities across all models as a simple yet accurate technique which improved above the performance of any individual model, as well as the previous published results. This method yielded a 4-class accuracy of 96.4% (in distinguishing CNV, DME,NORMAL, DRUSEN), which is a 3% improvement on what was reported by [Kermany et. al 2018](https://www.cell.com/cell/fulltext/S0092-8674(18)30154-5) on the same test data. For the binary classification task of URGENT vs NON-URGENT the ensemble CNN achieved an accuracy of 97.5%, sensitivity of 98.6%, specificity of 96.5%, and ROC AUC of 99.8% (Fig. 4). 
+
+![Image](https://github.com/amourav/OCT-Image-Classification/blob/master/readMeImgs/roc.png)
+
+Figure 4. ROC plots for proposed method (ensemble classifier) and InceptionV3 for URGENT vs NON-URGENT OCT image classification. Trained and tested on the same datasets.
 
 
 ## Installation
 
-Download the (Anaconda Distribution)[https://www.anaconda.com/distribution/]
-Create new envornment by entering the command `conda create -n <yourenvname> python=3.6`
-Activate new environment `activate <yourenvname>` (windows) or `source activate <yourenvname>`
-Install the packages in requirements.txt `conda install --file requirements.txt`.
+Download the (Anaconda Distribution)[https://www.anaconda.com/distribution/] <br/>
+Create new envornment by entering the command `conda create -n <yourenvname> python=3.6` <br/>
+Activate new environment `activate <yourenvname>` (windows) or `source activate <yourenvname>` <br/>
+Install the packages in requirements.txt `conda install --file requirements.txt`. <br/>
 
 ## Usage
 
