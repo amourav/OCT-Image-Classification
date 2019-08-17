@@ -169,9 +169,9 @@ def trainModel(xTrn, yTrn,
 
     # reduce dataset, epochs, and batch size for debugging mode
     if d:
-        nEpochs = 3
+        nEpochs = 2
         batchSize = 2
-        nDebug = 20
+        nDebug = 6
         xTrn, yTrn = xTrn[0:nDebug], yTrn[0:nDebug]
         if not (XVal is None) and not (yVal is None):
             XVal, yVal = XVal[0:nDebug], yVal[0:nDebug]

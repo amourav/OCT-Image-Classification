@@ -23,7 +23,7 @@ def getBinaryPred(modelPredDF):
     for col in modelPredDF.columns:
         if (urgentLabels[0] in col) or (urgentLabels[1] in col):
             urgentCols.append(col)
-    assert(len(urgentCols)==2)
+    assert(len(urgentCols) == 2)
     predUrgentDF['urgent_proba'] = modelPredDF[urgentCols[0]] + modelPredDF[urgentCols[1]]
     return predUrgentDF
 

@@ -34,6 +34,83 @@ def get_parser():
     return module_parser
 
 
+def preprocessData(xTrnPath, xValPath, nTrain):
+    assert (os.path.isdir(xTrnPath))
+    if xValPath is not None:
+        assert (os.path.isdir(xValPath))
+
+    # preprocess data for each type of network
+    dataPathDict = {}
+    for res in [224, 299]:
+        newSize = (res, res, 3)
+        outputDataPath = join(".", "PreprocessedData", str(newSize))
+        if not os.path.isdir(outputDataPath):
+            os.makedirs(outputDataPath)
+        preprocessDir(xTrnPath, outputDataPath,
+                      'train', nTrain, newSize)
+        if xValPath is not None:
+            preprocessDir(xValPath, outputDataPath,
+                          'val', nTrain, newSize)
+        dataPathDict[res] = outputDataPath
+    return dataPathDict
+
+def saveInfo(outputModelPath,
+             trnDataPath,
+             valDataPath=None):
+
+    with open(os.path.join(outputModelPath, 'dataInfo.txt'), 'w') as fid:
+        fid.write("XTrainPath: {} \n".format(trnDataPath))
+        if valDataPath is not None:
+            fid.write("XValPath: {} \n".format(valDataPath))
+        else:
+            fid.write("XValPath: {} \n".format(trnDataPath))
+
+
+def trainModels(models, dataPathDict, nTrain, hasVal, d):
+    now = datetime.datetime.now()
+    today = str(now.date())
+    for modelName in models:
+        if modelName == "VGG16":
+            res = 224
+        else:
+            res = 299
+        # load data for each network
+        outputDataPath = dataPathDict[res]
+        print('loading data')
+        trnTag = "{}_{}".format(str((res, res, 3)), 'train')
+        trnDataPath = join(outputDataPath, "imgData_{}_n{}.npy".format(trnTag, nTrain))
+        trnTargetPath = join(outputDataPath, "targetData_{}.npy".format(trnTag))
+        xTrn = np.load(trnDataPath)
+        yTrn = np.load(trnTargetPath)
+
+        if hasVal:
+            valTag = "{}_{}".format(str((res, res, 3)), 'val')
+            valDataPath = join(outputDataPath, "imgData_{}.npy".format(valTag))
+            valTargetPath = join(outputDataPath, "targetData_{}.npy".format(valTag))
+            XVal = np.load(valDataPath)
+            yVal = np.load(valTargetPath)
+        else:
+            valDataPath = None
+            XVal = None
+            yVal = None
+
+        # save each CNN in a subdirectory
+        outputModelPath = "./modelOutput/metaClf_{}/{}".format(today,
+                                                               modelName)
+        if not os.path.isdir(outputModelPath):
+            os.makedirs(outputModelPath)
+        trainModel(xTrn, yTrn,
+                   XVal, yVal,
+                   outputModelPath,
+                   modelName, 'imagenet',
+                   aug=0, d=d, note="", xTest=None)
+        # save details of training in each CNN directory
+        saveInfo(outputModelPath,
+                 trnDataPath,
+                 valDataPath=valDataPath)
+
+
+
 def main(xTrnPath, xValPath,
          nTrain, d):
     """
@@ -65,8 +142,6 @@ def main(xTrnPath, xValPath,
     # set random seed for numpy and tensorflow
     seed(0)
     set_random_seed(0)
-    now = datetime.datetime.now()
-    today = str(now.date())
 
     if d == 1:
         print('debug mode: ON')
@@ -77,75 +152,17 @@ def main(xTrnPath, xValPath,
     print("debug mode: {}".format(bool(d)))
 
     """############################################################################
-                        0. Preprocess Data
+                        Preprocess Data
     ############################################################################"""
     # check if data path is valid
-    assert(os.path.isdir(xTrnPath))
-    if xValPath is not None:
-        assert(os.path.isdir(xValPath))
-
-    # preprocess data for each type of network
-    dataPathDict = {}
-    for res in [224, 299]:
-        newSize = (res, res, 3)
-        outputDataPath = "./PreprocessedData/{}".format(str(newSize))
-        if not os.path.isdir(outputDataPath):
-            os.makedirs(outputDataPath)
-        preprocessDir(xTrnPath, outputDataPath,
-                      'train', nTrain, newSize)
-        if xValPath is not None:
-            preprocessDir(xValPath, outputDataPath,
-                          'val', nTrain, newSize)
-        dataPathDict[res] = outputDataPath
-
+    dataPathDict = preprocessData(xTrnPath, xValPath, nTrain)
     """############################################################################
-                        1. Train
+                        Train
     ############################################################################"""
     models = ['InceptionV3', 'VGG16', 'ResNet50', 'Xception']
-    for modelName in models:
-        if modelName == "VGG16":
-            res = 224
-        else:
-            res = 299
+    hasVal = xValPath is not None
+    trainModels(models, dataPathDict, nTrain, hasVal, d)
 
-        # load data for each network
-        outputDataPath = dataPathDict[res]
-        print('loading data')
-        trnTag = "{}_{}".format(str((res, res, 3)), 'train')
-        trnDataPath = join(outputDataPath, "imgData_{}_n{}.npy".format(trnTag, nTrain))
-        trnTargetPath = join(outputDataPath, "targetData_{}.npy".format(trnTag))
-        xTrn = np.load(trnDataPath)
-        yTrn = np.load(trnTargetPath)
-
-        if xValPath is not None:
-            valTag = "{}_{}".format(str((res, res, 3)), 'val')
-            valDataPath = join(outputDataPath, "imgData_{}.npy".format(valTag))
-            valTargetPath = join(outputDataPath, "targetData_{}.npy".format(valTag))
-            XVal = np.load(valDataPath)
-            yVal = np.load(valTargetPath)
-        else:
-            XVal = None
-            yVal = None
-
-        # save each CNN in a subdirectory
-        outputModelPath = "./modelOutput/metaClf_{}/{}".format(today,
-                                                               modelName)
-        if not os.path.isdir(outputModelPath):
-            os.makedirs(outputModelPath)
-
-        trainModel(xTrn, yTrn,
-                   XVal, yVal,
-                   outputModelPath,
-                   modelName, 'imagenet',
-                   aug=0, d=d, note="", xTest=None)
-
-        # save details of training in each CNN directory
-        with open(os.path.join(outputModelPath, 'dataInfo.txt'), 'w') as fid:
-            fid.write("XTrainPath: {} \n".format(trnDataPath))
-            if xValPath is not None:
-                fid.write("XValPath: {} \n".format(valDataPath))
-            else:
-                fid.write("XValPath: {} \n".format(trnDataPath))
 
 if __name__ == "__main__":
     parser = get_parser()
