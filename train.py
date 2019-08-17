@@ -10,7 +10,7 @@ import numpy as np
 from numpy.random import seed
 from tensorflow import set_random_seed
 import datetime
-sys.path.append('./code')
+sys.path.append('./methods')
 from preprocess import preprocessDir
 from trainCNN import trainModel
 
@@ -68,7 +68,10 @@ def main(xTrnPath, xValPath,
     if d == 1:
         print('debug mode: ON')
         nTrain = 10
+    print("iTrn: {}".format(xTrnPath))
+    print("iVal: {}".format(xValPath))
     print("n train: {}".format(nTrain))
+    print("debug mode: {}".format(bool(d)))
 
     """############################################################################
                         0. Preprocess Data
@@ -136,8 +139,10 @@ def main(xTrnPath, xValPath,
         # save details of training in each CNN directory
         with open(os.path.join(outputModelPath, 'dataInfo.txt'), 'w') as fid:
             fid.write("XTrainPath: {} \n".format(trnDataPath))
-            fid.write("XValPath: {} \n".format(valDataPath))
-
+            if xValPath is not None:
+                fid.write("XValPath: {} \n".format(valDataPath))
+            else:
+                fid.write("XValPath: {} \n".format(trnDataPath))
 
 if __name__ == "__main__":
     parser = get_parser()

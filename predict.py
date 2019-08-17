@@ -9,7 +9,7 @@ from keras.backend import set_image_data_format
 from keras.models import model_from_json
 import skimage
 from PIL import Image
-sys.path.append('./code')
+sys.path.append('./methods')
 from trainCNN import getPreprocess
 
 
