@@ -49,6 +49,33 @@ def meanPrediction(modelPredDF, yVals=[0, 1, 2, 3]):
     return meanPred
 
 
+def loadModel(modelName, metaPath):
+    modelDirs = os.listdir(metaPath)
+    modelDirs = [d for d in modelDirs if os.path.isdir(join(metaPath, d))]
+    # find path to individual model
+    modelDir = None
+    for dir in modelDirs:
+        if modelName in dir:
+            modelDir = dir
+
+    modelDirPath = join(metaPath,
+                        modelDir)
+    modelWeightsPath = join(modelDirPath,
+                            modelName + ".hdf5")
+    # load json and create model
+    print('loading {} json'.format(modelName))
+    jsonPath = join(os.path.dirname(modelWeightsPath),
+                    '{}_architecture.json'.format(modelName))
+    jsonFile = open(jsonPath, 'r')
+    loadedModelJson = jsonFile.read()
+    jsonFile.close()
+    model = model_from_json(loadedModelJson)
+    # load weights into new model
+    model.load_weights(modelWeightsPath)
+    print("Loaded {} json from disk".format(modelName))
+    return model, modelDirPath
+
+
 def preprocessImgs(xPath, newSize):
     """
     preprocess images in the directory and return data
@@ -69,6 +96,38 @@ def preprocessImgs(xPath, newSize):
     imgStack = np.stack(imgStack, axis=0)
     imgNames = [n.split('.')[0] for n in imgFiles]  # include text before .jpeg file ending
     return imgStack, imgNames
+
+
+def saveModelResults(modelName, yPred, imgNames, modelDirPath, imgTypeDict):
+    cols = []
+    for i in range(yPred.shape[1]):
+        cols.append(modelName + "_{}_{}".format(imgTypeDict[i], i))
+    yPredDf = pd.DataFrame(yPred,
+                           columns=cols,
+                           index=imgNames)
+    yPredDf.to_csv(join(modelDirPath,
+                        "{}_predictions.csv".format(modelName)))
+    return yPredDf
+
+
+def savePredictions(modelPredDict, models, imgNames, outPath):
+    # merge predictions into a single dataframe
+    modelPredDF = pd.DataFrame(index=imgNames)
+    for modelName in models:
+        modelPredDF = pd.merge(modelPredDF,
+                               modelPredDict[modelName],
+                               left_index=True,
+                               right_index=True)
+    # calculate average probability for each class
+    meanPredDF = meanPrediction(modelPredDF)
+    binaryPredDF = getBinaryPred(meanPredDF)
+    # save dataframes to csv
+    modelPredDF.to_csv(join(outPath,
+                            "individualModelPredictions.csv"))
+    meanPredDF.to_csv(join(outPath,
+                            "ensembleClfMeanProba.csv"))
+    binaryPredDF.to_csv(join(outPath,
+                             "urgentProba.csv"))
 
 
 def get_parser():
@@ -104,8 +163,7 @@ def main(xPath, outPath, metaPath):
         2: "CNV",
         3: "DME",
     }
-    modelDirs = os.listdir(metaPath)
-    modelDirs = [d for d in modelDirs if os.path.isdir(join(metaPath, d))]
+
     modelPredDict = {}
     # generate predictions for each individual model
     models = ['InceptionV3', 'VGG16', 'ResNet50', 'Xception']
@@ -123,60 +181,19 @@ def main(xPath, outPath, metaPath):
         """############################################################################
                             0. load model & predict
         ############################################################################"""
-        # find path to individual model
-        for modelDir in modelDirs:
-            if modelName in modelDir:
-                break
-
-        modelDirPath = join(metaPath,
-                            modelDir,)
-        modelWeightsPath = join(modelDirPath,
-                                modelName + ".hdf5")
-
-        # load json and create model
-        print('load json')
-        jsonPath = join(os.path.dirname(modelWeightsPath),
-                        '{}_architecture.json'.format(modelName))
-        jsonFile = open(jsonPath, 'r')
-        loadedModelJson = jsonFile.read()
-        jsonFile.close()
-        model = model_from_json(loadedModelJson)
-        # load weights into new model
-        model.load_weights(modelWeightsPath)
-        print("Loaded json model from disk")
-
+        # load model
+        model, modelDirPath = loadModel(modelName, metaPath)
+        # run inference
         yPred = model.predict(imgData,
                               batch_size=1,
                               verbose=1)
-
         # save intermediate predictions to csv
-        cols = []
-        for i in range(yPred.shape[1]):
-            cols.append(modelName + "_{}_{}".format(imgTypeDict[i], i))
-        yPredDf = pd.DataFrame(yPred,
-                               columns=cols,
-                               index=imgNames)
-        yPredDf.to_csv(join(modelDirPath,
-                            "{}_predictions.csv".format(modelName)))
+        yPredDf = saveModelResults(modelName, yPred,
+                                   imgNames, modelDirPath,
+                                   imgTypeDict)
         modelPredDict[modelName] = yPredDf
+    savePredictions(modelPredDict, models, imgNames, outPath)
 
-    # merge predictions into a single dataframe
-    modelPredDF = pd.DataFrame(index=imgNames)
-    for modelName in models:
-        modelPredDF = pd.merge(modelPredDF,
-                               modelPredDict[modelName],
-                               left_index=True,
-                               right_index=True)
-    # calculate average probability for each class
-    meanPredDF = meanPrediction(modelPredDF)
-    binaryPredDF = getBinaryPred(meanPredDF)
-    # save dataframes to csv
-    modelPredDF.to_csv(join(outPath,
-                            "individualModelPredictions.csv"))
-    meanPredDF.to_csv(join(outPath,
-                            "ensembleClfMeanProba.csv"))
-    binaryPredDF.to_csv(join(outPath,
-                             "urgentProba.csv"))
 
 if __name__ == "__main__":
     parser = get_parser()
