@@ -4,10 +4,13 @@
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter, ArgumentError
 import os
 from os.path import join
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 import traceback
 import sys
 import numpy as np
 from numpy.random import seed
+import tensorflow as tf
+tf.logging.set_verbosity(tf.logging.ERROR)
 from tensorflow import set_random_seed
 import datetime
 sys.path.append('./methods')

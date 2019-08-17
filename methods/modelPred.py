@@ -1,10 +1,13 @@
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter, ArgumentError
 import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 from os.path import join
 import traceback
 import sys
 import numpy as np
 import pandas as pd
+import tensorflow as tf
+tf.logging.set_verbosity(tf.logging.ERROR)
 from keras.utils import to_categorical
 from keras.backend import set_image_data_format
 from keras.models import model_from_json

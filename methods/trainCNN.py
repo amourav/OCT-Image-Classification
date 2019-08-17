@@ -1,9 +1,12 @@
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter, ArgumentError
 import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 import traceback
 import sys
 import numpy as np
 import pandas as pd
+import tensorflow as tf
+tf.logging.set_verbosity(tf.logging.ERROR)
 from keras.applications.inception_v3 import InceptionV3
 from keras.applications.vgg16 import VGG16
 from keras.applications.resnet50 import ResNet50
