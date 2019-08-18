@@ -120,9 +120,10 @@ def saveModelResults(modelName, yPred, imgNames, modelDirPath, imgTypeDict):
     :param imgTypeDict: mapping from integer labels to image labels (dict)
     :return: dataframe containing model predictions (pandas DF)
     """
-    cols = []
-    for i in range(yPred.shape[1]):
-        cols.append(modelName + "_{}_{}".format(imgTypeDict[i], i))
+    cols = ["{}_{}_{}".format(modelName, i, l)
+            for (l, i)
+            in imgTypeDict.items()]
+
     yPredDf = pd.DataFrame(yPred,
                            columns=cols,
                            index=imgNames)
@@ -138,7 +139,7 @@ def savePredictions(modelPredDict, models, imgNames, outPath):
     :param models: list of model names (list)
     :param imgNames: list of image filenames (list)
     :param outPath: directory where predictions are saved (str)
-    :return: 
+    :return:
     """
     # merge predictions into a single dataframe
     modelPredDF = pd.DataFrame(index=imgNames)

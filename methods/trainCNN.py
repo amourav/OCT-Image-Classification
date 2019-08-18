@@ -99,15 +99,15 @@ def preprocessInputVGG16(X, newSize=(224, 224, 3)):
     :return: resized image array stack [nSamples, xResNew, yResNew, nChannels] (np array)
     """
     xShape = X.shape
-    if not((xShape[1], xShape[2]) == (newSize[0], newSize[1])):
-        xResized = []
-        for xi in X:
-            xiR = skimage.transform.resize(xi, newSize)
-            xResized.append(xiR)
-        xResized = np.stack(xResized, axis=0)
-        return xResized
-    else:
+    if (xShape[1], xShape[2]) == (newSize[0], newSize[1]):
         return X
+
+    xResized = []
+    for xi in X:
+        xiR = skimage.transform.resize(xi, newSize)
+        xResized.append(xiR)
+    xResized = np.stack(xResized, axis=0)
+    return xResized
 
 
 def getPreprocess(modelName):
