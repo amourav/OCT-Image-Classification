@@ -15,6 +15,7 @@ from sklearn.metrics import accuracy_score
 from sklearn.metrics import roc_curve, auc
 from evalUtils import UrgentVRoutne, reportBinaryScores
 from trainCNN import loadTargetData, getPreprocess
+from preprocess import getClassLabels
 
 
 def get_parser():
@@ -35,6 +36,57 @@ def get_parser():
     return module_parser
 
 
+def predict(XTest, modelName, modelPath):
+    # load json and create model
+    print('load {} json'.format(modelName))
+    jsonPath = join(os.path.dirname(modelPath),
+                    '{}_architecture.json'.format(modelName))
+    jsonFile = open(jsonPath, 'r')
+    loadedModelJson = jsonFile.read()
+    jsonFile.close()
+    model = model_from_json(loadedModelJson)
+    # load weights into new model
+    model.load_weights(modelPath)
+    yTestPred = model.predict(XTest,
+                              batch_size=32,
+                              verbose=1)
+    return yTestPred
+
+
+def savePred(modelName, outputPath, yTest, yTestPred, yIdx, note):
+    yTestPredPath = os.path.join(outputPath, 'yPred_{}.npy'.format(note))
+    modelPredDF = pd.DataFrame(index=yIdx)
+    for yLbl in np.unique(yTest):
+        modelPredDF[modelName + "_{}".format(yLbl)] = yTestPred[:, yLbl]
+    modelPredDF['yTrueTest'] = yTest
+    modelPredDF.to_csv(os.path.join(outputPath,
+                                    'yPredDf_{}.csv'.format(note)))
+    np.save(yTestPredPath, yTestPred)
+
+
+def evalTestSet(yTest, yTestPred, modelName, outputPath, note):
+    classMap = getClassLabels()
+    yTrue1Hot = to_categorical(yTest)
+    yTrueTestUrgent = UrgentVRoutne(yTrue1Hot, classMap).astype(np.int)
+    classAcc = accuracy_score(yTest,
+                              yTestPred.argmax(axis=1))
+    print('\t accuracy: {0:.3g}'.format(classAcc))
+    yTestPredUrgent = UrgentVRoutne(yTestPred, classMap)
+    print('\t binary (urgent vs non-urgent)')
+    scores = reportBinaryScores(yTrueTestUrgent, yTestPredUrgent, v=1)
+    acc, tpr, tnr, plr, nlr = scores
+    fprs, tprs, _ = roc_curve(yTrueTestUrgent, yTestPredUrgent)
+    aucUrgent = auc(fprs, tprs)
+    with open(os.path.join(outputPath, 'eval_{}.txt'.format(note)), 'w') as fid:
+        fid.write("model: {} \n".format(modelName))
+        fid.write("4 classAcc: {} \n".format(classAcc))
+        fid.write("{} \n".format('binary - urgent vs non-urgent'))
+        fid.write("acc: {} \n".format(acc))
+        fid.write("tpr: {} \n".format(tpr))
+        fid.write("tnr: {} \n".format(tnr))
+        fid.write("aucUrgent: {} \n".format(aucUrgent))
+
+
 def main_driver(XTestPath,
                 yTestPath,
                 modelPath,
@@ -53,6 +105,7 @@ def main_driver(XTestPath,
     """############################################################################
                         0. Load Data
     ############################################################################"""
+
     assert(os.path.isfile(XTestPath))
     assert(os.path.isfile(modelPath))
     if yTestPath is not None:
@@ -77,59 +130,14 @@ def main_driver(XTestPath,
     """############################################################################
                         2. Load Model and Run Inference
     ############################################################################"""
-    # load json and create model
-    print('load json')
-    jsonPath = join(os.path.dirname(modelPath),
-                    '{}_architecture.json'.format(modelName))
-    jsonFile = open(jsonPath, 'r')
-    loadedModelJson = jsonFile.read()
-    jsonFile.close()
-    model = model_from_json(loadedModelJson)
-    # load weights into new model
-    model.load_weights(modelPath)
-    print("Loaded json model from disk")
-
-    yTestPred = model.predict(XTest,
-                              batch_size=32,
-                              verbose=1)
-    yTestPredPath = os.path.join(outputPath, 'yPred_{}.npy'.format(note))
-    modelPredDF = pd.DataFrame(index=yIdx)
-    for yLbl in np.unique(yTest):
-        modelPredDF[modelName + "_{}".format(yLbl)] = yTestPred[:, yLbl]
-    modelPredDF['yTrueTest'] = yTest
-    modelPredDF.to_csv(os.path.join(outputPath,
-                                    'yPredDf_{}.csv'.format(note)))
-    np.save(yTestPredPath, yTestPred)
+    yTestPred = predict(XTest, modelName, modelPath)
+    savePred(modelName, outputPath, yTest, yTestPred, yIdx, note)
 
     """############################################################################
                         1. Evaluate Inference (optional)
     ############################################################################"""
     if yTest is not None:
-        classMap = {
-            "NORMAL": 0,
-            "DRUSEN": 1,
-            "CNV": 2,
-            "DME": 3}
-        yTrue1Hot = to_categorical(yTest)
-        yTrueTestUrgent = UrgentVRoutne(yTrue1Hot, classMap).astype(np.int)
-        classAcc = accuracy_score(yTest,
-                                  yTestPred.argmax(axis=1))
-        print('\t accuracy: {0:.3g}'.format(classAcc))
-        yTestPredUrgent = UrgentVRoutne(yTestPred, classMap)
-        print()
-        print('\t binary (urgent vs non-urgent)')
-        scores = reportBinaryScores(yTrueTestUrgent, yTestPredUrgent, v=1)
-        acc, tpr, tnr, plr, nlr = scores
-        fprs, tprs, _ = roc_curve(yTrueTestUrgent, yTestPredUrgent)
-        aucUrgent = auc(fprs, tprs)
-        with open(os.path.join(outputPath, 'eval_{}.txt'.format(note)), 'w') as fid:
-            fid.write("model: {} \n".format(modelName))
-            fid.write("4 classAcc: {} \n".format(classAcc))
-            fid.write("{} \n".format('binary - urgent vs non-urgent'))
-            fid.write("acc: {} \n".format(acc))
-            fid.write("tpr: {} \n".format(tpr))
-            fid.write("tnr: {} \n".format(tnr))
-            fid.write("aucUrgent: {} \n".format(aucUrgent))
+        evalTestSet(yTest, yTestPred, modelName, outputPath, note)
 
 
 if __name__ == "__main__":

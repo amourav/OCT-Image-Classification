@@ -44,7 +44,6 @@ def getModel(modelName,
     string 'imagenet' to automatically download weights (str)
     :return: keras model
     """
-
     input_tensor = Input(shape=inputShape)
     if modelName == 'InceptionV3':
         base_model = InceptionV3(weights=weights,
@@ -130,8 +129,79 @@ def getPreprocess(modelName):
     return preprocessInput
 
 
+def getDebugParams(xTrn, yTrn, xVal, yVal, xTest,
+                   nEpochs = 2, batchSize = 2, nDebug = 6):
+
+    xTrn, yTrn = xTrn[0:nDebug], yTrn[0:nDebug]
+    if not (xVal is None) and not (yVal is None):
+        xVal, yVal = xVal[0:nDebug], yVal[0:nDebug]
+    if xTest is not None:
+        xTest = xTest[0:nDebug]
+    debugParams = (xTrn, yTrn, xVal, yVal,
+                   xTest, nEpochs, batchSize
+    )
+    return debugParams
+
+
+def setValData(preprocessInput, xVal, yVal):
+    valSplit = 0.0
+    if not(xVal is None) and not(yVal is None):
+        xVal = preprocessInput(xVal)
+        yVal = to_categorical(yVal)
+        valData = (xVal, yVal)
+    else:
+        valData = None
+        valSplit = 0.1
+    return valData, valSplit
+
+
+def setCallbacks(modelOutPath):
+    modelCheckpoint = ModelCheckpoint(modelOutPath, monitor='val_loss',
+                                      save_best_only=True,
+                                      save_weights_only=True,
+                                      mode='auto', period=1)
+    earlyStop = EarlyStopping(monitor='val_loss',
+                              min_delta=0,
+                              patience=150,
+                              verbose=1,
+                              restore_best_weights=True)
+    callbacks = [modelCheckpoint, earlyStop]
+    return callbacks
+
+
+def saveModel(modelOutputDir, modelName, history, model):
+    historyPath = os.path.join(modelOutputDir, '{}_History.csv'.format(modelName))
+    hist = history.history
+    histDf = pd.DataFrame(hist)
+    histDf.to_csv(historyPath)
+
+    # save model architecture to json
+    jsonPath = os.path.join(modelOutputDir, '{}_architecture.json'.format(modelName))
+    modelJson = model.to_json()
+    with open(jsonPath, "w") as json_file:
+        json_file.write(modelJson)
+
+
+def modelPred(xTest, preprocessInput, model,
+              modelOutputDir, modelName,
+              xShape, nEpochs, batchSize):
+    xTest = preprocessInput(xTest)
+    print('running model pred on test set')
+    yTestPred = model.predict(xTest,
+                              batch_size=20,
+                              verbose=1)
+    yTestPredPath = os.path.join(modelOutputDir, 'yTestPred.npy')
+    np.save(yTestPredPath, yTestPred)
+
+    with open(os.path.join(modelOutputDir, 'trnInfo.txt'), 'w') as fid:
+        fid.write("model: {} \n".format(modelName))
+        fid.write("x shape: {} \n".format(xShape))
+        fid.write("nEpochs: {} \n".format(nEpochs))
+        fid.write("batchSize: {} \n".format(batchSize))
+
+
 def trainModel(xTrn, yTrn,
-               XVal, yVal,
+               xVal, yVal,
                modelOutputDir,
                modelName,
                modelWeights,
@@ -143,7 +213,7 @@ def trainModel(xTrn, yTrn,
     train CNN
     :param xTrn: training data image stack [n_train, xRes, yRes, channels=3] (npy array)
     :param yTrn: training image labels [nSamples] (npy array)
-    :param XVal: validation data image stack [n_train, xRes, yRes, channels=3] (npy array)
+    :param xVal: validation data image stack [n_train, xRes, yRes, channels=3] (npy array)
     If set to None, validation data will be selected from xTrn
     :param yVal: If set to None, validation data will be selected from yTrn
     :param outputPath: output path for training output (str)
@@ -169,18 +239,13 @@ def trainModel(xTrn, yTrn,
 
     # reduce dataset, epochs, and batch size for debugging mode
     if d:
-        nEpochs = 2
-        batchSize = 2
-        nDebug = 6
-        xTrn, yTrn = xTrn[0:nDebug], yTrn[0:nDebug]
-        if not (XVal is None) and not (yVal is None):
-            XVal, yVal = XVal[0:nDebug], yVal[0:nDebug]
-        if xTest is not None:
-            xTest = xTest[0:nDebug]
+        debugParams = getDebugParams(xTrn, yTrn, xVal, yVal, xTest,
+                                     nEpochs=2, batchSize=2, nDebug=6)
+        xTrn, yTrn, xVal, yVal = debugParams[:4]
+        xTest, nEpochs, batchSize = debugParams[4:]
 
-    xShape = xTrn.shape
-    xShape = (xShape[1], xShape[2], xShape[3])
-    model = getModel(modelName=modelName, 
+    xShape = xTrn.shape[1:4]
+    model = getModel(modelName=modelName,
                      inputShape=xShape,
                      weights=modelWeights)
     print(model.summary())
@@ -190,27 +255,11 @@ def trainModel(xTrn, yTrn,
     yTrn = to_categorical(yTrn)
 
     # Set Validation Data
-    valSplit = 0.0
-    if not(XVal is None) and not(yVal is None):
-        XVal = preprocessInput(XVal)
-        yVal = to_categorical(yVal)
-        valData = (XVal, yVal)
-    else:
-        valData = None
-        valSplit = 0.1
+    valData, valSplit = setValData(preprocessInput, xVal, yVal)
 
     # Set Callbacks
     modelOutPath = os.path.join(modelOutputDir, '{}.hdf5'.format(modelName))
-    modelCheckpoint = ModelCheckpoint(modelOutPath, monitor='val_loss',
-                                      save_best_only=True,
-                                      save_weights_only=True,
-                                      mode='auto', period=1)
-    earlyStop = EarlyStopping(monitor='val_loss',
-                              min_delta=0,
-                              patience=150,
-                              verbose=1,
-                              restore_best_weights=True)
-    callbacks = [modelCheckpoint, earlyStop]
+    callbacks = setCallbacks(modelOutPath)
 
     # train model
     t0 = time.time()
@@ -248,34 +297,14 @@ def trainModel(xTrn, yTrn,
                                       verbose=1)
     dt = (time.time() - t0)/3600
     print("training time: {} h".format(dt))
-
     # save history output
-    historyPath = os.path.join(modelOutputDir, '{}_History.csv'.format(modelName))
-    hist = history.history
-    histDf = pd.DataFrame(hist)
-    histDf.to_csv(historyPath)
-
-    # save model architecture to json
-    jsonPath = os.path.join(modelOutputDir, '{}_architecture.json'.format(modelName))
-    modelJson = model.to_json()
-    with open(jsonPath, "w") as json_file:
-        json_file.write(modelJson)
+    saveModel(modelOutputDir, modelName, history, model)
 
     # Run inference on test set if provided
     if xTest is not None:
-        xTest = preprocessInput(xTest)
-        print('running model pred on test set')
-        yTestPred = model.predict(xTest,
-                                  batch_size=20,
-                                  verbose=1)
-        yTestPredPath = os.path.join(modelOutputDir, 'yTestPred.npy')
-        np.save(yTestPredPath, yTestPred)
-
-    with open(os.path.join(modelOutputDir, 'trnInfo.txt'), 'w') as fid:
-        fid.write("model: {} \n".format(modelName))
-        fid.write("x shape: {} \n".format(xShape))
-        fid.write("nEpochs: {} \n".format(nEpochs))
-        fid.write("batchSize: {} \n".format(batchSize))
+        modelPred(xTest, preprocessInput, model,
+                  modelOutputDir, modelName,
+                  xShape, nEpochs, batchSize)
 
 
 def loadTargetData(yPath):

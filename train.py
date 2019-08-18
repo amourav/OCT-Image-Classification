@@ -35,6 +35,14 @@ def get_parser():
 
 
 def preprocessData(xTrnPath, xValPath, nTrain):
+    """
+    preliminary preprocessing to noralize image size and intensity
+    preprocess for 224x224 and 299x299 resolutions
+    :param xTrnPath: path to training data (str)
+    :param xValPath: path to val data (str or None)
+    :param nTrain: number of training samples (int)
+    :return: dictionary of paths to preprocessed data indexed by resolution (dict)
+    """
     assert (os.path.isdir(xTrnPath))
     if xValPath is not None:
         assert (os.path.isdir(xValPath))
@@ -57,6 +65,13 @@ def preprocessData(xTrnPath, xValPath, nTrain):
 def saveInfo(outputModelPath,
              trnDataPath,
              valDataPath=None):
+    """
+    save training info
+    :param outputModel Path: write path (str)
+    :param trnDataPath: path to training data  (str)
+    :param valDataPath: path to validation data (str)
+    :return: None
+    """
 
     with open(os.path.join(outputModelPath, 'dataInfo.txt'), 'w') as fid:
         fid.write("XTrainPath: {} \n".format(trnDataPath))
@@ -67,6 +82,15 @@ def saveInfo(outputModelPath,
 
 
 def trainModels(models, dataPathDict, nTrain, hasVal, d):
+    """
+    Train each model in models
+    :param models: list of model names (list)
+    :param dataPathDict: dict containing path to data (dict)
+    :param nTrain: number of training samples to use (int)
+    :param hasVal: seperate validatio data present (bool)
+    :param d: debug mode 1=ON, 0=OFF (int/bool)
+    :return: None
+    """
     now = datetime.datetime.now()
     today = str(now.date())
     for modelName in models:

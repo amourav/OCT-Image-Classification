@@ -14,9 +14,15 @@ import skimage
 from PIL import Image
 sys.path.append('./methods')
 from trainCNN import getPreprocess
+from preprocess import getClassLabels
 
 
 def getBinaryPred(modelPredDF):
+    """
+    Get probability of Urgent vs Non-Urgent diagnosis from predicted class label probabilities
+    :param modelPredDF: Dataframe containing multi-class probabilities for each sample
+    :return: Dataframe containing binary probabilities for each sample
+    """
     urgentLabels = ['CNV', 'DME']
     urgentCols = []
     predUrgentDF = pd.DataFrame(index=modelPredDF.index)
@@ -27,6 +33,7 @@ def getBinaryPred(modelPredDF):
     predUrgentDF['urgent_proba'] = modelPredDF[urgentCols[0]] + modelPredDF[urgentCols[1]]
     return predUrgentDF
 
+
 def meanPrediction(modelPredDF, yVals=[0, 1, 2, 3]):
     """
     output the mean probability predicted for each class
@@ -35,11 +42,7 @@ def meanPrediction(modelPredDF, yVals=[0, 1, 2, 3]):
     :param yVals: possible output classes (list like object)
     :return: mean probability for each class (pandas dataframe)
     """
-    imgTypeDict = {
-        0: "NORMAL",
-        1: "DRUSEN",
-        2: "CNV",
-        3: "DME"}
+    imgTypeDict = getClassLabels(intKey=True)
 
     meanPred = pd.DataFrame(index=modelPredDF.index)
     for yi in np.unique(yVals):
@@ -50,8 +53,16 @@ def meanPrediction(modelPredDF, yVals=[0, 1, 2, 3]):
 
 
 def loadModel(modelName, metaPath):
+    """
+    load keras model from json and model weights
+    :param modelName: name of model (str)
+    :param metaPath: path of directory containing
+    all models of the ensemble classifier (str)
+    :return: keras model, directory containing model files
+    """
     modelDirs = os.listdir(metaPath)
     modelDirs = [d for d in modelDirs if os.path.isdir(join(metaPath, d))]
+
     # find path to individual model
     modelDir = None
     for dir in modelDirs:
@@ -70,6 +81,7 @@ def loadModel(modelName, metaPath):
     loadedModelJson = jsonFile.read()
     jsonFile.close()
     model = model_from_json(loadedModelJson)
+
     # load weights into new model
     model.load_weights(modelWeightsPath)
     print("Loaded {} json from disk".format(modelName))
@@ -99,6 +111,15 @@ def preprocessImgs(xPath, newSize):
 
 
 def saveModelResults(modelName, yPred, imgNames, modelDirPath, imgTypeDict):
+    """
+    save predictions of individual models
+    :param modelName: name of model (e.g. VGG16) (str)
+    :param yPred: model predictions (npy array)
+    :param imgNames: list of image filenames (list)
+    :param modelDirPath: path to the directory containing the model (str)
+    :param imgTypeDict: mapping from integer labels to image labels (dict)
+    :return: dataframe containing model predictions (pandas DF)
+    """
     cols = []
     for i in range(yPred.shape[1]):
         cols.append(modelName + "_{}_{}".format(imgTypeDict[i], i))
@@ -111,6 +132,14 @@ def saveModelResults(modelName, yPred, imgNames, modelDirPath, imgTypeDict):
 
 
 def savePredictions(modelPredDict, models, imgNames, outPath):
+    """
+    save the predictions of the ensemble classifier
+    :param modelPredDict: dictionary containing the predictions of each model (dict)
+    :param models: list of model names (list)
+    :param imgNames: list of image filenames (list)
+    :param outPath: directory where predictions are saved (str)
+    :return: 
+    """
     # merge predictions into a single dataframe
     modelPredDF = pd.DataFrame(index=imgNames)
     for modelName in models:
@@ -118,9 +147,11 @@ def savePredictions(modelPredDict, models, imgNames, outPath):
                                modelPredDict[modelName],
                                left_index=True,
                                right_index=True)
+
     # calculate average probability for each class
     meanPredDF = meanPrediction(modelPredDF)
     binaryPredDF = getBinaryPred(meanPredDF)
+
     # save dataframes to csv
     modelPredDF.to_csv(join(outPath,
                             "individualModelPredictions.csv"))

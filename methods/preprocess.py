@@ -8,6 +8,43 @@ import pandas as pd
 import skimage
 
 
+def getClassLabels(intKey=False):
+    imgTypeDict = {
+        "NORMAL": 0,
+        "DRUSEN": 1,
+        "CNV": 2,
+        "DME": 3,
+    }
+    if intKey:
+        imgTypeDict = {i: l for (l, i) in imgTypeDict.items()}
+    return imgTypeDict
+
+
+def saveData(outputPath, imgStack, targetList,
+             newSize, dataset, nTrain, imgNames):
+
+    # save as np array
+    imgStack = np.stack(imgStack, axis=0)
+    targetList = np.asarray(targetList)
+    targetDF = pd.DataFrame(index=imgNames)
+    targetDF[dataset] = targetList
+
+    infoTag = "{}_{}".format(str(newSize), dataset)
+    if dataset == 'train':
+        imgStackOutPath = os.path.join(outputPath,
+                                       "imgData_{}_n{}.npy".format(infoTag,
+                                                                    nTrain))
+    else:
+        imgStackOutPath = os.path.join(outputPath,
+                                       "imgData_{}.npy".format(infoTag))
+    targetListOutPath = os.path.join(outputPath,
+                                     "targetData_{}.npy".format(infoTag))
+    np.save(imgStackOutPath, imgStack)
+    np.save(targetListOutPath, targetList)
+    targetDF.to_csv(os.path.join(outputPath,
+                                 "targetData_{}.csv".format(infoTag)))
+
+
 def preprocessDir(dataPath,
                   outputPath,
                   dataset,
@@ -45,13 +82,7 @@ def preprocessDir(dataPath,
     :param newSize: resolution of final img (tuple)
     :return: None
     """
-
-    imgTypeDict = {
-        "NORMAL": 0,
-        "DRUSEN": 1,
-        "CNV": 2,
-        "DME": 3,
-    }
+    imgTypeDict = getClassLabels()
 
     print('Preprocessing:', dataset)
     targetDataPath = dataPath
@@ -79,21 +110,9 @@ def preprocessDir(dataPath,
             imgStack.append(imgArr)
             targetList.append(classLbl)
         imgNames += [n.split('.')[0] for n in imgFiles]
-    imgStack = np.stack(imgStack, axis=0)
-    targetList = np.asarray(targetList)
-    targetDF = pd.DataFrame(index=imgNames)
-    targetDF[dataset] = targetList
     # Save preprocessed data
-    infoTag = "{}_{}".format(str(newSize), dataset)
-    if dataset == 'train':
-        imgStackOutPath = os.path.join(outputPath, "imgData_{}_n{}.npy".format(infoTag,
-                                                                               nTrain))
-    else:
-        imgStackOutPath = os.path.join(outputPath, "imgData_{}.npy".format(infoTag))
-    targetListOutPath = os.path.join(outputPath, "targetData_{}.npy".format(infoTag))
-    np.save(imgStackOutPath, imgStack)
-    np.save(targetListOutPath, targetList)
-    targetDF.to_csv(os.path.join(outputPath, "targetData_{}.csv".format(infoTag)))
+    saveData(outputPath, imgStack, targetList,
+             newSize, dataset, nTrain, imgNames)
 
 
 def get_parser():

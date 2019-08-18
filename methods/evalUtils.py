@@ -39,6 +39,7 @@ def reportBinaryScores(yTrueUrgent, yPredProbUrgent, v=0):
 
     return acc, tpr, tnr, plr, nlr
 
+
 def plotModelHist(modelHistory,
                   lossName='categorical cross entropy',
                   metricName='acc',
@@ -78,6 +79,7 @@ def oneHotDecoder(y):
     """
     y = y.argmax(axis=1)
     return y
+
 
 def int2Cat(y, classMap):
     """
@@ -206,8 +208,8 @@ def getConfusionMatrix(yTrue, yPred, classMap, title='', plot=True):
     tnr = tn/(tn + fp)
     fpr = fp/(fp + tn)
     fnr = fn/(fn + tp)
-    plr = tpr/fpr #positive likelihood ratio
-    nlr = fnr/tnr # negative likelihood ratio
+    plr = tpr/fpr  # positive likelihood ratio
+    nlr = fnr/tnr  # negative likelihood ratio
     acc = accuracy_score(yTrueUrgent, 
                          yPredUrgent)
     err = 1 - acc
