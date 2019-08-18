@@ -74,7 +74,7 @@ def plotModelHist(modelHistory,
 def oneHotDecoder(y):
     """
     Transform endpoints form one-hot encoding to integer labels.
-    :param y: array, shape = [nSamples, nClasses]
+    :param y: array, shape = [nSamples, n_classes]
     return y: integer labels, shape = [nSamples]
     """
     y = y.argmax(axis=1)
@@ -96,7 +96,7 @@ def getROC(yTrue, yPred, classMap):
     assert(yTrue.shape==yPred.shape)
     assert(len(yTrue.shape)==2)
     yTrue1Hot, yPred1Hot = yTrue, yPred
-    #yTrue, yPred = oneHotDecoder(yTrue), oneHotDecoder(yPred)
+    #yTrue, y_pred = oneHotDecoder(yTrue), oneHotDecoder(y_pred)
     lbls = classMap.keys()
     TPRs, FPRs, AUCs = {}, {}, {}
     colors = ['red', 'green', 'blue', 'orange']

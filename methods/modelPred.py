@@ -22,7 +22,7 @@ def get_parser():
     """defines the parser for this script"""
     module_parser = ArgumentParser(
         formatter_class=ArgumentDefaultsHelpFormatter)
-    module_parser.add_argument("-x", dest="XTestPath", type=str,
+    module_parser.add_argument("-x", dest="x_test_path", type=str,
                                help='x test path')
     module_parser.add_argument("-y", dest="yTestPath", type=str,
                                default=None,

@@ -1,11 +1,13 @@
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter, ArgumentError
 import os
+
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 import traceback
 import sys
 import numpy as np
 import pandas as pd
 import tensorflow as tf
+
 tf.logging.set_verbosity(tf.logging.ERROR)
 from keras.applications.inception_v3 import InceptionV3
 from keras.applications.vgg16 import VGG16
@@ -30,43 +32,43 @@ import time
 import skimage
 
 
-def getModel(modelName,
-             inputShape,
-             nClasses=4,
-             weights='imagenet'):
+def get_model(model_name,
+              input_shape,
+              n_classes=4,
+              weights='imagenet'):
     """
     get keras model
-    :param modelName: Name of CNN model to train (str)
+    :param model_name: Name of CNN model to train (str)
     Either [InceptionV3, VGG16, Xception, or ResNet50]
-    :param inputShape: Input shape for CNN model [Xres, YRes, nChannels] (tuple)
-    :param nClasses:  NUmber of unique output classes (int)
+    :param input_shape: Input shape for CNN model [Xres, YRes, nChannels] (tuple)
+    :param n_classes:  NUmber of unique output classes (int)
     :param weights: path to pretrained model weights or enter
     string 'imagenet' to automatically download weights (str)
     :return: keras model
     """
-    input_tensor = Input(shape=inputShape)
-    if modelName == 'InceptionV3':
+    input_tensor = Input(shape=input_shape)
+    if model_name == 'InceptionV3':
         base_model = InceptionV3(weights=weights,
                                  include_top=False,
                                  input_tensor=input_tensor)
         x = base_model.output
         x = GlobalAveragePooling2D()(x)
-    elif modelName == 'VGG16':
-        lastLayer = 4096  # number of nodes
+    elif model_name == 'VGG16':
+        last_layer = 4096  # number of nodes
         base_model = VGG16(weights=weights,
                            include_top=False,
                            input_tensor=input_tensor)
         x = base_model.output
         x = Flatten()(x)
-        x = Dense(lastLayer, activation='relu')(x)
-        x = Dense(lastLayer, activation='relu')(x)
-    elif modelName == 'ResNet50':
+        x = Dense(last_layer, activation='relu')(x)
+        x = Dense(last_layer, activation='relu')(x)
+    elif model_name == 'ResNet50':
         base_model = ResNet50(weights=weights,
                               include_top=False,
                               input_tensor=input_tensor)
         x = base_model.output
         x = GlobalAveragePooling2D()(x)
-    elif modelName == 'Xception':
+    elif model_name == 'Xception':
         base_model = Xception(weights=weights,
                               include_top=False,
                               input_tensor=input_tensor)
@@ -75,7 +77,7 @@ def getModel(modelName,
     else:
         raise Exception('model name not recognized')
 
-    predictions = Dense(nClasses, activation='softmax')(x)
+    predictions = Dense(n_classes, activation='softmax')(x)
     model = Model(inputs=base_model.input, outputs=predictions)
     for layer in base_model.layers:
         if hasattr(layer, 'moving_mean') and hasattr(layer, 'moving_variance'):
@@ -91,187 +93,185 @@ def getModel(modelName,
     return model
 
 
-def preprocessInputVGG16(X, newSize=(224, 224, 3)):
+def preprocess_input_vgg16(x, new_size=(224, 224, 3)):
     """
     preprocess image data for VGG16 by resizing
-    :param X: image data array [nSamples, xRes, yRes, channels] (np array)
-    :param newSize: new resolution of each sample [xResNew, yResNew, nChannels] (tuple)
+    :param x: image data array [nSamples, x_res, y_res, channels] (np array)
+    :param new_size: new resolution of each sample [xResNew, yResNew, nChannels] (tuple)
     :return: resized image array stack [nSamples, xResNew, yResNew, nChannels] (np array)
     """
-    xShape = X.shape
-    if (xShape[1], xShape[2]) == (newSize[0], newSize[1]):
-        return X
+    if (x.shape[1], x.shape[2]) == (new_size[0], new_size[1]):
+        return x
 
-    xResized = []
-    for xi in X:
-        xiR = skimage.transform.resize(xi, newSize)
-        xResized.append(xiR)
-    xResized = np.stack(xResized, axis=0)
-    return xResized
+    x_resized = []
+    for xi in x:
+        xi_r = skimage.transform.resize(xi, new_size)
+        x_resized.append(xi_r)
+    x_resized = np.stack(x_resized, axis=0)
+    return x_resized
 
 
-def getPreprocess(modelName):
+def get_preprocess(model_name):
     """
     retrieve the model specific preprocessing function
-    :param modelName: name of pretrained model (str)
+    :param model_name: name of pretrained model (str)
     :return: preprocessing function
     """
-    if modelName == 'InceptionV3':
-        preprocessInput = preprocess_input_inception_v3
-    elif modelName == 'VGG16':
-        preprocessInput = preprocessInputVGG16
-    elif modelName == 'ResNet50':
-        preprocessInput = preprocess_input_ResNet50
-    elif modelName == 'Xception':
-        preprocessInput = preprocess_input_xception
+    if model_name == 'InceptionV3':
+        preprocess_input = preprocess_input_inception_v3
+    elif model_name == 'VGG16':
+        preprocess_input = preprocess_input_vgg16
+    elif model_name == 'ResNet50':
+        preprocess_input = preprocess_input_ResNet50
+    elif model_name == 'Xception':
+        preprocess_input = preprocess_input_xception
     else:
         raise Exception('model name not recognized')
-    return preprocessInput
+    return preprocess_input
 
 
-def getDebugParams(xTrn, yTrn, xVal, yVal, xTest,
-                   nEpochs = 2, batchSize = 2, nDebug = 6):
+def get_debug_params(x_trn, y_trn, x_val, y_val, x_test,
+                     n_epochs=2, batch_size=2, n_debug=6):
+    x_trn, y_trn = x_trn[0:n_debug], y_trn[0:n_debug]
+    if not (x_val is None) and not (y_val is None):
+        x_val, y_val = x_val[0:n_debug], y_val[0:n_debug]
+    if x_test is not None:
+        x_test = x_test[0:n_debug]
+    debug_params = (x_trn, y_trn, x_val, y_val,
+                    x_test, n_epochs, batch_size
+                    )
+    return debug_params
 
-    xTrn, yTrn = xTrn[0:nDebug], yTrn[0:nDebug]
-    if not (xVal is None) and not (yVal is None):
-        xVal, yVal = xVal[0:nDebug], yVal[0:nDebug]
-    if xTest is not None:
-        xTest = xTest[0:nDebug]
-    debugParams = (xTrn, yTrn, xVal, yVal,
-                   xTest, nEpochs, batchSize
-    )
-    return debugParams
 
-
-def setValData(preprocessInput, xVal, yVal):
-    valSplit = 0.0
-    if not(xVal is None) and not(yVal is None):
-        xVal = preprocessInput(xVal)
-        yVal = to_categorical(yVal)
-        valData = (xVal, yVal)
+def set_val_data(preprocess_input, x_val, y_val):
+    val_split = 0.0
+    if not (x_val is None) and not (y_val is None):
+        x_val = preprocess_input(x_val)
+        y_val = to_categorical(y_val)
+        val_data = (x_val, y_val)
     else:
-        valData = None
-        valSplit = 0.1
-    return valData, valSplit
+        val_data = None
+        val_split = 0.1
+    return val_data, val_split
 
 
-def setCallbacks(modelOutPath):
-    modelCheckpoint = ModelCheckpoint(modelOutPath, monitor='val_loss',
-                                      save_best_only=True,
-                                      save_weights_only=True,
-                                      mode='auto', period=1)
-    earlyStop = EarlyStopping(monitor='val_loss',
-                              min_delta=0,
-                              patience=150,
-                              verbose=1,
-                              restore_best_weights=True)
-    callbacks = [modelCheckpoint, earlyStop]
+def set_callbacks(model_out_path):
+    model_checkpoint = ModelCheckpoint(model_out_path, monitor='val_loss',
+                                       save_best_only=True,
+                                       save_weights_only=True,
+                                       mode='auto', period=1)
+    early_stop = EarlyStopping(monitor='val_loss',
+                               min_delta=0,
+                               patience=150,
+                               verbose=1,
+                               restore_best_weights=True)
+    callbacks = [model_checkpoint, early_stop]
     return callbacks
 
 
-def saveModel(modelOutputDir, modelName, history, model):
-    historyPath = os.path.join(modelOutputDir, '{}_History.csv'.format(modelName))
+def save_model(model_output_dir, model_name, history, model):
+    history_path = os.path.join(model_output_dir, '{}_History.csv'.format(model_name))
     hist = history.history
-    histDf = pd.DataFrame(hist)
-    histDf.to_csv(historyPath)
+    hist_df = pd.DataFrame(hist)
+    hist_df.to_csv(history_path)
 
     # save model architecture to json
-    jsonPath = os.path.join(modelOutputDir, '{}_architecture.json'.format(modelName))
-    modelJson = model.to_json()
-    with open(jsonPath, "w") as json_file:
-        json_file.write(modelJson)
+    json_path = os.path.join(model_output_dir, '{}_architecture.json'.format(model_name))
+    model_json = model.to_json()
+    with open(json_path, "w") as json_file:
+        json_file.write(model_json)
 
 
-def modelPred(xTest, preprocessInput, model,
-              modelOutputDir, modelName,
-              xShape, nEpochs, batchSize):
-    xTest = preprocessInput(xTest)
+def model_pred(x_test, preprocess_input, model,
+               model_output_dir, model_name,
+               x_shape, n_epochs, batch_size):
+    x_test = preprocess_input(x_test)
     print('running model pred on test set')
-    yTestPred = model.predict(xTest,
-                              batch_size=20,
-                              verbose=1)
-    yTestPredPath = os.path.join(modelOutputDir, 'yTestPred.npy')
-    np.save(yTestPredPath, yTestPred)
+    y_test_pred = model.predict(x_test,
+                                batch_size=20,
+                                verbose=1)
+    y_test_pred_path = os.path.join(model_output_dir, 'yTestPred.npy')
+    np.save(y_test_pred_path, y_test_pred)
 
-    with open(os.path.join(modelOutputDir, 'trnInfo.txt'), 'w') as fid:
-        fid.write("model: {} \n".format(modelName))
-        fid.write("x shape: {} \n".format(xShape))
-        fid.write("nEpochs: {} \n".format(nEpochs))
-        fid.write("batchSize: {} \n".format(batchSize))
+    with open(os.path.join(model_output_dir, 'trnInfo.txt'), 'w') as fid:
+        fid.write("model: {} \n".format(model_name))
+        fid.write("x shape: {} \n".format(x_shape))
+        fid.write("n_epochs: {} \n".format(n_epochs))
+        fid.write("batch_size: {} \n".format(batch_size))
 
 
-def trainModel(xTrn, yTrn,
-               xVal, yVal,
-               modelOutputDir,
-               modelName,
-               modelWeights,
-               aug, d, note,
-               xTest = None,
-               nEpochs=300,
-               batchSize=30):
+def train_model(x_trn, y_trn,
+                x_val, y_val,
+                model_output_dir,
+                model_name,
+                model_weights,
+                aug, d, note,
+                x_test=None,
+                n_epochs=300,
+                batch_size=30):
     """
     train CNN
-    :param xTrn: training data image stack [n_train, xRes, yRes, channels=3] (npy array)
-    :param yTrn: training image labels [nSamples] (npy array)
-    :param xVal: validation data image stack [n_train, xRes, yRes, channels=3] (npy array)
-    If set to None, validation data will be selected from xTrn
-    :param yVal: If set to None, validation data will be selected from yTrn
-    :param outputPath: output path for training output (str)
-    :param modelName: Name of CNN model to train (str)
+    :param x_trn: training data image stack [n_train, x_res, y_res, channels=3] (npy array)
+    :param y_trn: training image labels [nSamples] (npy array)
+    :param x_val: validation data image stack [n_train, x_res, y_res, channels=3] (npy array)
+    If set to None, validation data will be selected from x_trn
+    :param y_val: If set to None, validation data will be selected from y_trn
+    :param output_path: output path for training output (str)
+    :param model_name: Name of CNN model to train (str)
     one of - [InceptionV3, VGG16, Xception, or ResNet50]
-    :param modelWeights: path to pretrained model weights (str)
+    :param model_weights: path to pretrained model weights (str)
     or set to imagenet to download the pretrained model weights
     :param aug: enable data augmentation (1=On, 0=Off) (int/bool)
     :param d: debugging mode [limit dataset size and training iterations] (int/bool)
     1=On, 0=Off
     :param note: print during model training (str)
-    :param xTest: test data image stack [n_train, xRes, yRes, channels=3] (npy array)
+    :param x_test: test data image stack [n_train, x_res, y_res, channels=3] (npy array)
     [optional]
-    :param nEpochs: number of training epochs (int)
-    :param batchSize: batch size (int)
-    :return: modelOutputDir: path to model output directory (str)
+    :param n_epochs: number of training epochs (int)
+    :param batch_size: batch size (int)
+    :return: model_output_dir: path to model output directory (str)
     """
     # set random seed for numpy and tensorflow
     seed(0)
     set_random_seed(0)
     set_image_data_format('channels_last')
-    print(modelName, note)
+    print(model_name, note)
 
     # reduce dataset, epochs, and batch size for debugging mode
     if d:
-        debugParams = getDebugParams(xTrn, yTrn, xVal, yVal, xTest,
-                                     nEpochs=2, batchSize=2, nDebug=6)
-        xTrn, yTrn, xVal, yVal = debugParams[:4]
-        xTest, nEpochs, batchSize = debugParams[4:]
+        debug_params = get_debug_params(x_trn, y_trn, x_val, y_val, x_test,
+                                        n_epochs=2, batch_size=2, n_debug=6)
+        x_trn, y_trn, x_val, y_val = debug_params[:4]
+        x_test, n_epochs, batch_size = debug_params[4:]
 
-    xShape = xTrn.shape[1:4]
-    model = getModel(modelName=modelName,
-                     inputShape=xShape,
-                     weights=modelWeights)
+    x_shape = x_trn.shape[1:4]
+    model = get_model(model_name=model_name,
+                      input_shape=x_shape,
+                      weights=model_weights)
     print(model.summary())
     # normalize data to the network's specifications
-    preprocessInput = getPreprocess(modelName)
-    xTrn = preprocessInput(xTrn)
-    yTrn = to_categorical(yTrn)
+    preprocess_input = get_preprocess(model_name)
+    x_trn = preprocess_input(x_trn)
+    y_trn = to_categorical(y_trn)
 
     # Set Validation Data
-    valData, valSplit = setValData(preprocessInput, xVal, yVal)
+    val_data, val_split = set_val_data(preprocess_input, x_val, y_val)
 
     # Set Callbacks
-    modelOutPath = os.path.join(modelOutputDir, '{}.hdf5'.format(modelName))
-    callbacks = setCallbacks(modelOutPath)
+    model_out_path = os.path.join(model_output_dir, '{}.hdf5'.format(model_name))
+    callbacks = set_callbacks(model_out_path)
 
     # train model
     t0 = time.time()
     if not aug:
-        history = model.fit(x=xTrn,
-                            y=yTrn,
-                            batch_size=batchSize,
-                            epochs=nEpochs,
+        history = model.fit(x=x_trn,
+                            y=y_trn,
+                            batch_size=batch_size,
+                            epochs=n_epochs,
                             verbose=1,
                             callbacks=callbacks,
-                            validation_data=valData,
-                            validation_split=valSplit,
+                            validation_data=val_data,
+                            validation_split=val_split,
                             shuffle=True)
     else:
         print('fitting image generator')
@@ -289,66 +289,66 @@ def trainModel(xTrn, yTrn,
                                      vertical_flip=False,
                                      horizontal_flip=True)
 
-        history = model.fit_generator(datagen.flow(xTrn, yTrn,
-                                                   batch_size=batchSize),
-                                      steps_per_epoch=len(xTrn) / batchSize,
-                                      epochs=nEpochs, callbacks=callbacks,
-                                      validation_data=valData, shuffle=True,
+        history = model.fit_generator(datagen.flow(x_trn, y_trn,
+                                                   batch_size=batch_size),
+                                      steps_per_epoch=len(x_trn) / batch_size,
+                                      epochs=n_epochs, callbacks=callbacks,
+                                      validation_data=val_data, shuffle=True,
                                       verbose=1)
-    dt = (time.time() - t0)/3600
+    dt = (time.time() - t0) / 3600
     print("training time: {} h".format(dt))
     # save history output
-    saveModel(modelOutputDir, modelName, history, model)
+    save_model(model_output_dir, model_name, history, model)
 
     # Run inference on test set if provided
-    if xTest is not None:
-        modelPred(xTest, preprocessInput, model,
-                  modelOutputDir, modelName,
-                  xShape, nEpochs, batchSize)
+    if x_test is not None:
+        model_pred(x_test, preprocess_input, model,
+                   model_output_dir, model_name,
+                   x_shape, n_epochs, batch_size)
 
 
-def loadTargetData(yPath):
+def load_target_data(y_path):
     """
     load target data labels
-    :param yPath: path to image labels file (str)
+    :param y_path: path to image labels file (str)
     :return: numpy assay of image labels (npy arr), index for images ()
     """
-    if yPath.endswith('.npy'):
-        yArr = np.load(yPath)
-        idx = np.arange(len(yArr))
-    elif yPath.endswith('.csv'):
-        yArr = pd.read_csv(yPath,
-                           index_col=0)
-        idx = yArr.index
-        yArr = yArr.values
+    if y_path.endswith('.npy'):
+        y_arr = np.load(y_path)
+        idx = np.arange(len(y_arr))
+    elif y_path.endswith('.csv'):
+        y_arr = pd.read_csv(y_path,
+                            index_col=0)
+        idx = y_arr.index
+        y_arr = y_arr.values
     else:
-        raise Exception('unknown file type: {}'.format(yPath))
-    return yArr, idx
+        raise Exception('unknown file type: {}'.format(y_path))
+    return y_arr, idx
 
 
 def get_parser():
     """defines the parser for this script"""
     module_parser = ArgumentParser(
         formatter_class=ArgumentDefaultsHelpFormatter)
-    module_parser.add_argument("-xtrn", dest="XTrainPath", type=str,
-                               help="X train path")
-    module_parser.add_argument("-xval", dest="XValPath", type=str,
+    module_parser.add_argument("-xtrn", dest="x_train_path", type=str,
+                               help="x train path")
+    module_parser.add_argument("-xval", dest="x_val_path", type=str,
                                default='',
-                               help="X val path")
-    module_parser.add_argument("-ytrn", dest="yTrainPath", type=str,
+                               help="x val path")
+    module_parser.add_argument("-ytrn", dest="y_train_path", type=str,
                                help="y train path ")
-    module_parser.add_argument("-yval", dest="yValPath", type=str,
+    module_parser.add_argument("-yval", dest="y_val_path", type=str,
                                default='',
                                help="y val path")
-    module_parser.add_argument("-xtest", dest="XTestPath", type=str,
+    module_parser.add_argument("-xtest", dest="x_test_path", type=str,
                                default=None,
                                help='model weights')
-    module_parser.add_argument("-o", dest="outputPath", type=str,
+    module_parser.add_argument("-o", dest="output_path", type=str,
                                help='base dir for outputs')
     module_parser.add_argument("-m", dest="model", type=str,
                                default='InceptionV3',
                                help='model (default: inception)')
-    module_parser.add_argument("-w", dest="modelWeights", type=str,
+    module_parser.add_argument("-w", dest="model_weights", type=str,
                                default='imagenet',
                                help='model weights')
     module_parser.add_argument("-aug", dest="aug",
@@ -368,89 +368,89 @@ def get_parser():
     return module_parser
 
 
-def main_driver(XTrainPath, yTrainPath,
-                XValPath, yValPath,
-                XTestPath,
-                outputPath, model,
-                modelWeights,
+def main_driver(x_train_path, y_train_path,
+                x_val_path, y_val_path,
+                x_test_path,
+                output_path, model,
+                model_weights,
                 aug, d, note):
     """
-    Load Training and Validation data and call trainModel.
-    :param XTrainPath (str): path to preprocessed training image data
-    :param yTrainPath (str): path to training target classes
-    :param XValPath (str): path to val image data
-    :param yValPath (str): path to val target classes
-    :param outputPath (str): path to output dir
+    Load Training and Validation data and call train_model.
+    :param x_train_path (str): path to preprocessed training image data
+    :param y_train_path (str): path to training target classes
+    :param x_val_path (str): path to val image data
+    :param y_val_path (str): path to val target classes
+    :param output_path (str): path to output dir
     :param model (str): Name of Keras pretrained model
     :param d (str): set d=1 to debug.
     :return: None
     """
 
-    print('trn path:', XTrainPath)
+    print('trn path:', x_train_path)
     aug = bool(aug)
     print("data augmentation: {}".format(aug))
     d = bool(d)
     if d:
         print('debugging mode: ON')
-    assert(os.path.isfile(XTrainPath))
-    assert(os.path.isfile(yTrainPath))
-    if XTestPath is not None:
-        assert(os.path.isfile(XTestPath))
-        xTest = np.load(XTestPath)
+    assert (os.path.isfile(x_train_path))
+    assert (os.path.isfile(y_train_path))
+    if x_test_path is not None:
+        assert (os.path.isfile(x_test_path))
+        x_test = np.load(x_test_path)
     """############################################################################
                         0. Load Data
     ############################################################################"""
-    xTrn = np.load(XTrainPath)
-    yTrn, idx = loadTargetData(yTrainPath)
+    x_trn = np.load(x_train_path)
+    y_trn, idx = load_target_data(y_train_path)
 
-    if os.path.isfile(XValPath) and os.path.isfile(yValPath):
-        XVal = np.load(XValPath)
-        yVal, idx = loadTargetData(yValPath)
+    if os.path.isfile(x_val_path) and os.path.isfile(y_val_path):
+        x_val = np.load(x_val_path)
+        y_val, idx = load_target_data(y_val_path)
     else:
-        XVal = None
-        yVal = None
+        x_val = None
+        y_val = None
 
     print(note)
     now = datetime.datetime.now()
     today = str(now.date()) + \
-                '_' + str(now.hour) + \
-                '_' + str(now.minute)
-    modelOutputDir = os.path.join(outputPath,
-                                  model + '_' +
-                                  today + '_' + note)
-    if not(os.path.isdir(modelOutputDir)):
-        os.makedirs(modelOutputDir)
+            '_' + str(now.hour) + \
+            '_' + str(now.minute)
+    model_output_dir = os.path.join(output_path,
+                                    model + '_' +
+                                    today + '_' + note)
+    if not (os.path.isdir(model_output_dir)):
+        os.makedirs(model_output_dir)
     """############################################################################
                         1. train CNN and save training info
     ############################################################################"""
-    trainModel(xTrn, yTrn,
-               XVal, yVal,
-               outputPath,
-               model,
-               modelWeights,
-               aug, d,
-               note,
-               xTest=xTest)
+    train_model(x_trn, y_trn,
+                x_val, y_val,
+                output_path,
+                model,
+                model_weights,
+                aug, d,
+                note,
+                x_test=x_test)
 
-    #save training info
-    with open(os.path.join(modelOutputDir, 'dataInfo.txt'), 'w') as fid:
-        fid.write("XTrainPath: {} \n".format(XTrainPath))
-        fid.write("XValPath: {} \n".format(XValPath))
-        fid.write("XTestPath: {} \n".format(str(XTestPath)))
+    # save training info
+    with open(os.path.join(model_output_dir, 'dataInfo.txt'), 'w') as fid:
+        fid.write("x_train_path: {} \n".format(x_train_path))
+        fid.write("x_val_path: {} \n".format(x_val_path))
+        fid.write("x_test_path: {} \n".format(str(x_test_path)))
 
 
 if __name__ == "__main__":
     parser = get_parser()
     try:
         args = parser.parse_args()
-        main_driver(args.XTrainPath,
-                    args.yTrainPath,
-                    args.XValPath,
-                    args.yValPath,
-                    args.XTestPath,
-                    args.outputPath,
+        main_driver(args.x_train_path,
+                    args.y_train_path,
+                    args.x_val_path,
+                    args.y_val_path,
+                    args.x_test_path,
+                    args.output_path,
                     args.model,
-                    args.modelWeights,
+                    args.model_weights,
                     args.aug,
                     args.d,
                     args.note)
