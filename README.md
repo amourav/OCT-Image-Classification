@@ -1,6 +1,6 @@
 ﻿# OCT Image Classification
 
-Click [here](https://oct.eigenvolution.com/) to test out the classifier yourself.
+Click [here](https://oct.eigenvolution.com/) to test out the classifier yourself. (temporarily offline!)
 
 ## Background
 
